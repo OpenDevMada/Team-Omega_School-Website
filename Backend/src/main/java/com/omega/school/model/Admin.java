@@ -1,7 +1,6 @@
 package com.omega.school.model;
 
 import java.util.UUID;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

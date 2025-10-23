@@ -1,7 +1,7 @@
 package com.omega.school.model;
 
-import java.util.UUID;
-
+import java.time.LocalDateTime;
+import jakarta.persistence.EmbeddedId;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,7 +15,10 @@ import lombok.ToString;
 @Setter
 @EqualsAndHashCode
 @ToString
-public class Group {
-    private UUID id;
-    private String groupName;
+public class Enrollment {
+    @EmbeddedId
+    private EmbeddedId id;
+    private Student student;
+    private Course course;
+    private LocalDateTime enrolledAt;
 }

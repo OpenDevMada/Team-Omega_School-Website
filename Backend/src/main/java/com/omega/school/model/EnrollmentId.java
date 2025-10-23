@@ -1,21 +1,18 @@
 package com.omega.school.model;
 
-import java.util.UUID;
-
-import lombok.AllArgsConstructor;
+import java.io.Serializable;
+import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
-public class Group {
-    private UUID id;
-    private String groupName;
+@Embeddable
+public class EnrollmentId implements Serializable {
+    private String studentId;
+    private String courseId;
 }

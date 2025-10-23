@@ -1,21 +1,19 @@
 package com.omega.school.model;
 
-import java.util.UUID;
+import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Embeddable;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @EqualsAndHashCode
 @Setter
-@ToString
-public class Level {
-    private UUID id;
-    private String levelName;
+@Embeddable
+public class GradeId implements Serializable {
+    private String studentId;
+    private String courseId;
 }
