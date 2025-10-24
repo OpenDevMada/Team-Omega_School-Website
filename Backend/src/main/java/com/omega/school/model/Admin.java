@@ -1,23 +1,30 @@
 package com.omega.school.model;
 
 import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Entity
+@Table(name = "admin")
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 public class Admin extends User {
+    @Column(name = "admin_id", unique = true)
     private String adminId;
-    private Permission permission;
 
-    public Admin(UUID userId, String adminId, Permission permission, String firstName, String lastName,
-            String email, String address, String phoneNumber, Role role) {
-        super(userId, firstName, lastName, email, address, phoneNumber, role, null, null);
+    private String permission = "FULL";
+
+    public Admin(UUID userId, String adminId, String firstName, String lastName,
+            String email, String password, String address, String phoneNumber, Role role) {
+        super(userId, firstName, lastName, email, password, address, phoneNumber, role, null, null);
         this.adminId = adminId;
-        this.permission = permission;
     }
 }
