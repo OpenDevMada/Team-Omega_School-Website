@@ -29,7 +29,7 @@ import lombok.ToString;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
+    @Column(name = "course_id")
     private UUID courseId;
 
     @Column(unique = true)

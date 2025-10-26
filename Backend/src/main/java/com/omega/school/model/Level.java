@@ -28,6 +28,6 @@ public class Level {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "level_name", unique = true)
+    @Column(name = "name", unique = true)
     private String levelName;
 }

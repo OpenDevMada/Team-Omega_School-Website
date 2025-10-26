@@ -26,7 +26,7 @@ import lombok.ToString;
 @ToString
 public class Enrollment {
     @EmbeddedId
-    private EmbeddedId id;
+    private EnrollmentId id;
 
     @ManyToOne
     @MapsId("studentId")

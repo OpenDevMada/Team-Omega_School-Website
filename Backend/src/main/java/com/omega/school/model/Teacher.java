@@ -29,9 +29,9 @@ public class Teacher extends User {
     private List<Course> courses = new ArrayList<>();
 
     public Teacher(UUID userId, String firstName, String lastName,
-            String email, String address, String phoneNumber, Role role, String password, String matriculeNumber,
+            String email, String address, String phoneNumber, Role role, String passwordHash, String matriculeNumber,
             String bio) {
-        super(userId, firstName, lastName, email, password, address, phoneNumber, role, null, null);
+        super(userId, firstName, lastName, email, passwordHash, address, phoneNumber, role, null, null);
         this.matriculeNumber = matriculeNumber;
         this.bio = bio;
     }
