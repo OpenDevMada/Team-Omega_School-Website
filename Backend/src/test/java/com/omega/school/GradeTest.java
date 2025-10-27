@@ -43,6 +43,7 @@ public class GradeTest {
         teacher.setLastName("Doe");
         teacher.setEmail("john.doe@school.com");
         teacher.setPasswordHash("password123");
+        teacher.setAddress("Antananarivo 101");
         teacher.setRole(Role.TEACHER);
         teacher.setCreatedAt(LocalDateTime.now());
         teacher.setMatriculeNumber("T-001");
@@ -54,6 +55,7 @@ public class GradeTest {
         student.setLastName("Smith");
         student.setEmail("jane.smith@student.com");
         student.setPasswordHash("password456");
+        student.setAddress("Antananarivo 101");
         student.setRole(Role.STUDENT);
         student.setCreatedAt(LocalDateTime.now());
         student.setRegistrationNumber("S-001");

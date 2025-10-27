@@ -36,7 +36,7 @@ public class Course {
     private String title;
 
     @ManyToOne
-    @JoinColumn(name = "teacher_id")
+    @JoinColumn(name = "teacher_id", referencedColumnName = "user_id")
     private Teacher teacher;
 
     private String description;
