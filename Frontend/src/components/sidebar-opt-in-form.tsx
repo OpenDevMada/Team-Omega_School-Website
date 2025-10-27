@@ -23,9 +23,8 @@ export function SidebarOptInForm() {
           <div className="grid gap-2.5">
             <SidebarInput type="email" placeholder="Message" />
             <Button
-              className="bg-[#10B981] text-white w-full shadow-none"
+              className="bg-[#10B981] hover:bg-[#05895d] text-white w-full shadow-none"
               size="sm"
-              variant={"destructive"}
             >
               Envoyer <Send />
             </Button>

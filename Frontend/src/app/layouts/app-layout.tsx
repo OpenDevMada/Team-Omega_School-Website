@@ -44,7 +44,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <SidebarHeader className="p-4">
             <span className="flex items-center gap-2">
               <img
-                src="/logo_opendev.jpg"
+                src="/images/logo_opendev.jpg"
                 alt="OpenDev-logo"
                 className="w-14 rounded-full"
               />
