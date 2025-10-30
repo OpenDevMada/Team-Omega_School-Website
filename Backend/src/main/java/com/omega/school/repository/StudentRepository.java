@@ -10,7 +10,9 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     Optional<Student> findByRegistrationNumber(String registrationNumber);
 
-    List<Student> findByLevel_LevelName(String levelName);
+    List<Student> findByLevelName(String levelName);
 
-    List<Student> findByGroup_GroupName(String groupName);
+    List<Student> findByGroupName(String groupName);
+
+    boolean existByRegistrationNumber(String registrationNumber);
 }

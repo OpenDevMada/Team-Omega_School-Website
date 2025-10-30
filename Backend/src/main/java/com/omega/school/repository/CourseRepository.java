@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.omega.school.model.Course;
 
 public interface CourseRepository extends JpaRepository<Course, UUID> {
-    List<Course> findByTeacher_UserId(UUID teacherId);
+    List<Course> findByTeacherUserId(UUID teacherId);
 
     boolean existsByTitle(String title);
 }

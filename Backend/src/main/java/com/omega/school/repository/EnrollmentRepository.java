@@ -8,7 +8,7 @@ import com.omega.school.model.EnrollmentId;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, EnrollmentId> {
 
-    List<Enrollment> findByStudent_UserId(UUID studentId);
+    List<Enrollment> findByStudentUserId(UUID studentId);
 
-    List<Enrollment> findByCourse_CourseId(UUID courseId);
+    List<Enrollment> findByCourseCourseId(UUID courseId);
 }

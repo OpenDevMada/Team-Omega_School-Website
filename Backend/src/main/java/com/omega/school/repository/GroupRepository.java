@@ -7,4 +7,6 @@ import com.omega.school.model.Group;
 
 public interface GroupRepository extends JpaRepository<Group, UUID> {
     Optional<Group> findByGroupName(String groupName);
+
+    boolean existByGroupName(String groupName);
 }

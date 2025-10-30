@@ -10,7 +10,7 @@ import com.omega.school.model.GradeId;
 
 public interface GradeRepository extends JpaRepository<Grade, GradeId> {
 
-    List<Grade> findByStudent_UserId(UUID studentId);
+    List<Grade> findByStudentUserId(UUID studentId);
 
-    List<Grade> findByCourse_CourseId(UUID courseId);
+    List<Grade> findByCourseCourseId(UUID courseId);
 }
