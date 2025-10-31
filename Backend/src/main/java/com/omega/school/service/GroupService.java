@@ -6,13 +6,13 @@ import java.util.UUID;
 import com.omega.school.model.Group;
 
 public interface GroupService {
-    Group createGroup(Group group);
+    Group createGroup(String groupName);
 
     Optional<Group> getGroupByName(String name);
 
     List<Group> getAllGroups();
 
-    Group updateGroup(UUID id, Group newData);
+    Group updateGroup(UUID id, String newGroupName);
 
     void deleteGroup(UUID id);
 }

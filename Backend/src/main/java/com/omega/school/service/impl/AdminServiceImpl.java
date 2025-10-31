@@ -5,26 +5,29 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+
+import com.omega.school.dto.AdminRequestDto;
+import com.omega.school.mapper.AdminMapper;
 import com.omega.school.model.Admin;
 import com.omega.school.repository.AdminRepository;
 import com.omega.school.service.AdminService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
 
-    public AdminServiceImpl(AdminRepository adminRepository) {
-        this.adminRepository = adminRepository;
-    }
-
     @Override
-    public Admin createAdmin(Admin admin) {
-        if (adminRepository.existsByAdminId(admin.getAdminId())) {
+    public Admin createAdmin(AdminRequestDto dto) {
+        if (adminRepository.existsByAdminId(dto.getAdminId())) {
             throw new IllegalArgumentException("Admin ID déjà utilisé");
         }
+
+        Admin admin = AdminMapper.toEntity(dto);
         return adminRepository.save(admin);
     }
 
@@ -44,7 +47,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin updateAdmin(UUID id, Admin updatedAdmin) {
+    public Admin updateAdmin(UUID id, AdminRequestDto updatedAdmin) {
         return adminRepository.findById(id)
                 .map(existing -> {
                     existing.setFirstName(updatedAdmin.getFirstName());

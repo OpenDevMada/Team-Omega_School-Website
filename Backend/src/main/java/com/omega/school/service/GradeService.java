@@ -1,18 +1,16 @@
 package com.omega.school.service;
 
+import com.omega.school.dto.*;
 import java.util.List;
-import java.util.UUID;
-import com.omega.school.model.Grade;
-import com.omega.school.model.GradeId;
 
 public interface GradeService {
-    Grade createGrade(Grade grade);
+    GradeResponseDto createGrade(GradeRequestDto dto);
 
-    List<Grade> getGradesByStudent(UUID studentId);
+    List<GradeResponseDto> getGradesByStudentRegistration(String registration);
 
-    List<Grade> getGradesByCourse(UUID courseId);
+    List<GradeResponseDto> getGradesByCourseTitle(String title);
 
-    Grade updateGrade(GradeId id, Grade newData);
+    GradeResponseDto updateGrade(GradeRequestDto dto);
 
-    void deleteGrade(GradeId id);
+    void deleteGrade(String studentRegistration, String courseTitle);
 }

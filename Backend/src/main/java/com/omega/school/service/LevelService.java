@@ -3,17 +3,16 @@ package com.omega.school.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import com.omega.school.model.Level;
 
 public interface LevelService {
-    Level createLevel(Level level);
+    Level createLevel(String level);
 
     Optional<Level> getLevelByName(String levelName);
 
     List<Level> getAllLevels();
 
-    Level updateLevel(UUID id, Level newData);
+    Level updateLevel(UUID id, String newLevelName);
 
     void deleteLevel(UUID id);
 }

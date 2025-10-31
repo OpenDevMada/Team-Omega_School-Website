@@ -2,7 +2,7 @@ package com.omega.school.model;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString(exclude = "teacher")
 public class Course {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "course_id")

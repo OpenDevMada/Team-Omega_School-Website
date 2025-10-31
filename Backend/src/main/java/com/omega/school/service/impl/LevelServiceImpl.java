@@ -20,10 +20,13 @@ public class LevelServiceImpl implements LevelService {
     private final LevelRepository levelRepository;
 
     @Override
-    public Level createLevel(Level level) {
-        if (levelRepository.existByLevelName(level.getLevelName())) {
+    public Level createLevel(String levelName) {
+        if (levelRepository.existByLevelName(levelName)) {
             throw new IllegalArgumentException("Nom de niveau déjà utilisé");
         }
+
+        Level level = new Level();
+        level.setLevelName(levelName);
 
         return levelRepository.save(level);
     }
@@ -39,10 +42,10 @@ public class LevelServiceImpl implements LevelService {
     }
 
     @Override
-    public Level updateLevel(UUID id, Level newData) {
+    public Level updateLevel(UUID id, String newLevelName) {
         return levelRepository.findById(id)
                 .map(existing -> {
-                    existing.setLevelName(newData.getLevelName());
+                    existing.setLevelName(newLevelName);
                     return levelRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé"));

@@ -1,6 +1,9 @@
 package com.omega.school.model;
 
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -24,6 +27,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class Grade {
+    @JsonIgnore
     @EmbeddedId
     private GradeId id;
 

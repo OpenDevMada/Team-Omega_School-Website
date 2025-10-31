@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.omega.school.dto.StudentRequestDto;
 import com.omega.school.model.Student;
 
 public interface StudentService {
-    Student createStudent(Student student);
+    Student createStudent(StudentRequestDto student);
 
     Optional<Student> getStudentById(UUID id);
 
@@ -19,7 +20,7 @@ public interface StudentService {
 
     List<Student> getByGroup(String groupName);
 
-    Student updateStudent(UUID id, Student updatedStudent);
+    Student updateStudent(UUID id, StudentRequestDto updatedStudent);
 
     void deleteStudent(UUID id);
 }

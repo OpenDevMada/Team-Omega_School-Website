@@ -1,19 +1,16 @@
 package com.omega.school.service;
 
 import java.util.List;
-import java.util.UUID;
 
-import com.omega.school.model.Enrollment;
-import com.omega.school.model.EnrollmentId;
+import com.omega.school.dto.EnrollmentRequestDto;
+import com.omega.school.dto.EnrollmentResponseDto;
 
 public interface EnrollmentService {
-    Enrollment enrollStudent(Enrollment enrollment);
+    EnrollmentResponseDto enrollStudent(EnrollmentRequestDto dto);
 
-    List<Enrollment> getEnrollmentsByStudent(UUID studentId);
+    List<EnrollmentResponseDto> getEnrollmentsByStudent(String registrationNumber);
 
-    List<Enrollment> getEnrollmentsByCourse(UUID courseId);
+    List<EnrollmentResponseDto> getEnrollmentsByCourse(String title);
 
-    Enrollment updateEnrollment(EnrollmentId id, Enrollment newData);
-
-    void deleteEnrollment(EnrollmentId id);
+    void deleteEnrollment(String registrationNumber, String title);
 }

@@ -5,26 +5,29 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+
+import com.omega.school.dto.StudentRequestDto;
+import com.omega.school.mapper.StudentMapper;
 import com.omega.school.model.Student;
 import com.omega.school.repository.StudentRepository;
 import com.omega.school.service.StudentService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
-
     @Override
-    public Student createStudent(Student student) {
-        if (studentRepository.existByRegistrationNumber(student.getRegistrationNumber())) {
+    public Student createStudent(StudentRequestDto dto) {
+        if (studentRepository.existByRegistrationNumber(dto.getRegistrationNumber())) {
             throw new IllegalArgumentException("Numéro d'enregistrement déjà utilisé");
         }
+
+        Student student = StudentMapper.toEntity(dto);
         return studentRepository.save(student);
     }
 
@@ -54,7 +57,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student updateStudent(UUID id, Student updatedStudent) {
+    public Student updateStudent(UUID id, StudentRequestDto updatedStudent) {
         return studentRepository.findById(id)
                 .map(existing -> {
                     existing.setFirstName(updatedStudent.getFirstName());

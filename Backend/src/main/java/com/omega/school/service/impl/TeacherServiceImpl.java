@@ -5,26 +5,29 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+
+import com.omega.school.dto.TeacherRequestDto;
+import com.omega.school.mapper.TeacherMapper;
 import com.omega.school.model.Teacher;
 import com.omega.school.repository.TeacherRepository;
 import com.omega.school.service.TeacherService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
 
-    public TeacherServiceImpl(TeacherRepository teacherRepository) {
-        this.teacherRepository = teacherRepository;
-    }
-
     @Override
-    public Teacher createTeacher(Teacher teacher) {
-        if (teacherRepository.existsByMatriculeNumber(teacher.getMatriculeNumber())) {
+    public Teacher createTeacher(TeacherRequestDto dto) {
+        if (teacherRepository.existsByMatriculeNumber(dto.getMatriculeNumber())) {
             throw new IllegalArgumentException("Matricule déjà utilisé");
         }
+
+        Teacher teacher = TeacherMapper.toEntity(dto);
         return teacherRepository.save(teacher);
     }
 
@@ -44,7 +47,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Teacher updateTeacher(UUID id, Teacher updatedTeacher) {
+    public Teacher updateTeacher(UUID id, TeacherRequestDto updatedTeacher) {
         return teacherRepository.findById(id)
                 .map(existing -> {
                     existing.setFirstName(updatedTeacher.getFirstName());

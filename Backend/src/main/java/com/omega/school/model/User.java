@@ -1,7 +1,9 @@
 package com.omega.school.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,6 +31,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class User {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -43,6 +46,13 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "birthdate")
+    private LocalDate birthDate;
+
+    @Column(name = "sex")
+    private Sex sex;
+
+    @JsonIgnore
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 

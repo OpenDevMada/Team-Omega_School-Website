@@ -1,8 +1,12 @@
 package com.omega.school.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,12 +32,14 @@ public class Teacher extends User {
     private String bio;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Course> courses = new ArrayList<>();
 
     public Teacher(UUID userId, String firstName, String lastName,
-            String email, String address, String phoneNumber, Role role, String passwordHash, String matriculeNumber,
+            String email, LocalDate birthDate, Sex sex, String address, String phoneNumber, Role role,
+            String passwordHash, String matriculeNumber,
             String bio) {
-        super(userId, firstName, lastName, email, passwordHash, address, phoneNumber, role, null, null);
+        super(userId, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role, null, null);
         this.matriculeNumber = matriculeNumber;
         this.bio = bio;
     }

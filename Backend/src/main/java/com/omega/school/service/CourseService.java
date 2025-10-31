@@ -1,22 +1,18 @@
 package com.omega.school.service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import com.omega.school.model.Course;
+import com.omega.school.dto.*;
 
 public interface CourseService {
-    List<Course> getAllCourses();
+    CourseResponseDto createCourse(CourseRequestDto dto);
 
-    Optional<Course> getCourseById(UUID id);
+    CourseResponseDto updateCourse(CourseRequestDto dto);
 
-    Course createCourse(Course course);
+    CourseResponseDto getCourseByTitle(String title);
 
-    Course updateCourse(UUID id, Course updatedCourse);
+    List<CourseResponseDto> getAllCourses();
 
-    void deleteCourse(UUID id);
+    List<CourseResponseDto> getCoursesByTeacherMatricule(String matricule);
 
-    List<Course> getCoursesByTeacher(UUID teacherId);
-
+    void deleteCourse(String title);
 }

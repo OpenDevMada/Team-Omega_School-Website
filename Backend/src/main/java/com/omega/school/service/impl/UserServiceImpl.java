@@ -1,35 +1,32 @@
 package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import org.springframework.stereotype.Service;
+import com.omega.school.dto.UserRequestDto;
+import com.omega.school.mapper.UserMapper;
 import com.omega.school.model.Role;
 import com.omega.school.model.User;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.UserService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     @Override
-    public User createUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
+    public User createUser(UserRequestDto userDto) {
+        if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new IllegalArgumentException("Email déjà utilisé");
         }
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
-        return userRepository.save(user);
+
+        User newUser = UserMapper.toEntity(userDto);
+        return userRepository.save(newUser);
     }
 
     @Override
@@ -72,5 +69,4 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
     }
-
 }

@@ -3,11 +3,13 @@ package com.omega.school.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.omega.school.dto.UserRequestDto;
 import com.omega.school.model.Role;
 import com.omega.school.model.User;
 
 public interface UserService {
-    User createUser(User user);
+    User createUser(UserRequestDto userDto);
 
     Optional<User> getUserById(UUID id);
 

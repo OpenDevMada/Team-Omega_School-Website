@@ -17,10 +17,14 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
 
     @Override
-    public Group createGroup(Group group) {
-        if (groupRepository.existByGroupName(group.getGroupName())) {
+    public Group createGroup(String groupName) {
+        if (groupRepository.existByGroupName(groupName)) {
             throw new IllegalArgumentException("Nom de groupe déjà utilisé");
         }
+
+        Group group = new Group();
+        group.setGroupName(groupName);
+
         return groupRepository.save(group);
     }
 
@@ -35,10 +39,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group updateGroup(UUID id, Group newData) {
+    public Group updateGroup(UUID id, String newGroupName) {
         return groupRepository.findById(id)
                 .map(existing -> {
-                    existing.setGroupName(newData.getGroupName());
+                    existing.setGroupName(newGroupName);
                     return groupRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé"));

@@ -1,5 +1,6 @@
 package com.omega.school.model;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -25,8 +26,9 @@ public class Admin extends User {
     private String permission = "FULL";
 
     public Admin(UUID userId, String adminId, String firstName, String lastName,
-            String email, String passwordHash, String address, String phoneNumber, Role role) {
-        super(userId, firstName, lastName, email, passwordHash, address, phoneNumber, role, null, null);
+            String email, LocalDate birthDate, Sex sex, String passwordHash, String address, String phoneNumber,
+            Role role) {
+        super(userId, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role, null, null);
         this.adminId = adminId;
     }
 }
