@@ -21,7 +21,7 @@ public class Group {
     private UUID id;
 
     @Column(name = "name", unique = true, nullable = false)
-    private String groupName;
+    private String name;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

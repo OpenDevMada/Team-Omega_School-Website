@@ -22,7 +22,7 @@ public class Level {
     private UUID id;
 
     @Column(name = "name", unique = true, nullable = false, length = 10)
-    private String levelName;
+    private String name;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

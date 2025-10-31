@@ -22,12 +22,12 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group createGroup(String groupName) {
-        if (groupRepository.existsByGroupName(groupName)) {
+        if (groupRepository.existsByName(groupName)) {
             throw new IllegalArgumentException("Nom de groupe déjà utilisé");
         }
 
         Group group = new Group();
-        group.setGroupName(groupName);
+        group.setName(groupName);
         group.setCreatedAt(LocalDateTime.now());
         group.setUpdatedAt(LocalDateTime.now());
 
@@ -36,7 +36,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Optional<Group> getGroupByName(String name) {
-        return groupRepository.findByGroupName(name);
+        return groupRepository.findByName(name);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class GroupServiceImpl implements GroupService {
     public Group updateGroup(UUID id, String newGroupName) {
         return groupRepository.findById(id)
                 .map(existing -> {
-                    existing.setGroupName(newGroupName);
+                    existing.setName(newGroupName);
                     existing.setUpdatedAt(LocalDateTime.now());
                     return groupRepository.save(existing);
                 })

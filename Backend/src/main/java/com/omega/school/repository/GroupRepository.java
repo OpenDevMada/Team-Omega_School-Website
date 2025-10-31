@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.omega.school.model.Group;
 
 public interface GroupRepository extends JpaRepository<Group, UUID> {
-    Optional<Group> findByGroupName(String groupName);
+    Optional<Group> findByName(String name);
 
-    boolean existsByGroupName(String groupName);
+    boolean existsByName(String name);
 }
