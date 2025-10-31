@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.StudentRequestDto;
 import com.omega.school.mapper.StudentMapper;
+import com.omega.school.model.Group;
+import com.omega.school.model.Level;
 import com.omega.school.model.Student;
+import com.omega.school.repository.GroupRepository;
+import com.omega.school.repository.LevelRepository;
 import com.omega.school.repository.StudentRepository;
 import com.omega.school.service.StudentService;
 
@@ -25,6 +29,8 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
+    private final LevelRepository levelRepository;
+    private final GroupRepository groupRepository;
 
     @Override
     public Student createStudent(StudentRequestDto dto) {
@@ -32,7 +38,13 @@ public class StudentServiceImpl implements StudentService {
             throw new IllegalArgumentException("Numéro d'enregistrement déjà utilisé");
         }
 
-        Student student = StudentMapper.toEntity(dto);
+        Level level = levelRepository.findByName(dto.getLevel())
+                .orElseThrow(() -> new RuntimeException("Level not found: " + dto.getLevel()));
+
+        Group group = groupRepository.findByName(dto.getGroup())
+                .orElseThrow(() -> new RuntimeException("Group not found: " + dto.getGroup()));
+
+        Student student = StudentMapper.toEntity(dto, level, group);
         student.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         return studentRepository.save(student);
     }
@@ -64,13 +76,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student updateStudent(UUID id, StudentRequestDto updatedStudent) {
+        Level level = levelRepository.findByName(updatedStudent.getLevel())
+                .orElseThrow(() -> new RuntimeException("Level not found: " + updatedStudent.getLevel()));
+        Group group = groupRepository.findByName(updatedStudent.getGroup())
+                .orElseThrow(() -> new RuntimeException("Group not found: " + updatedStudent.getGroup()));
+
         return studentRepository.findById(id)
                 .map(existing -> {
                     existing.setFirstName(updatedStudent.getFirstName());
                     existing.setLastName(updatedStudent.getLastName());
                     existing.setRegistrationNumber(updatedStudent.getRegistrationNumber());
-                    existing.setGroup(updatedStudent.getGroup());
-                    existing.setLevel(updatedStudent.getLevel());
+                    existing.setGroup(group);
+                    existing.setLevel(level);
                     existing.setUpdatedAt(LocalDateTime.now());
 
                     if (updatedStudent.getPassword() != null && !updatedStudent.getPassword().isBlank()) {

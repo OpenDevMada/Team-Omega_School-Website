@@ -1,9 +1,6 @@
 package com.omega.school.dto;
 
-import com.omega.school.model.Group;
-import com.omega.school.model.Level;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,9 +14,9 @@ public class StudentRequestDto extends UserRequestDto {
     @NotBlank
     private String registrationNumber;
 
-    @NotNull
-    private Level level;
+    @NotBlank
+    private String level;
 
-    @NotNull
-    private Group group;
+    @NotBlank
+    private String group;
 }
