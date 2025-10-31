@@ -32,6 +32,9 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
 
         Course course = CourseMapper.toEntity(dto, teacher);
+        course.setCreatedAt(LocalDateTime.now());
+        course.setUpdatedAt(LocalDateTime.now());
+
         return CourseMapper.toDto(courseRepository.save(course));
     }
 
@@ -59,8 +62,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseResponseDto updateCourse(CourseRequestDto dto) {
-        Course course = courseRepository.findByTitle(dto.getTitle())
+    public CourseResponseDto updateCourse(String title, CourseRequestDto dto) {
+        Course course = courseRepository.findByTitle(title)
                 .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
 
         Teacher teacher = teacherRepository.findByMatriculeNumber(dto.getTeacherMatricule())
@@ -69,7 +72,6 @@ public class CourseServiceImpl implements CourseService {
         course.setDescription(dto.getDescription());
         course.setTeacher(teacher);
         course.setUpdatedAt(LocalDateTime.now());
-
         return CourseMapper.toDto(courseRepository.save(course));
     }
 

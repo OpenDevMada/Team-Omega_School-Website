@@ -1,7 +1,5 @@
 package com.omega.school.mapper;
 
-import java.time.LocalDateTime;
-
 import com.omega.school.dto.TeacherRequestDto;
 import com.omega.school.model.Teacher;
 
@@ -23,8 +21,6 @@ public class TeacherMapper {
         teacher.setRole(dto.getRole());
         teacher.setMatriculeNumber(dto.getMatriculeNumber());
         teacher.setBio(dto.getBio());
-        teacher.setCreatedAt(LocalDateTime.now());
-        teacher.setUpdatedAt(LocalDateTime.now());
         return teacher;
     }
 }

@@ -6,7 +6,7 @@ import com.omega.school.dto.*;
 public interface CourseService {
     CourseResponseDto createCourse(CourseRequestDto dto);
 
-    CourseResponseDto updateCourse(CourseRequestDto dto);
+    CourseResponseDto updateCourse(String title, CourseRequestDto dto);
 
     CourseResponseDto getCourseByTitle(String title);
 

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS teacher(
-    matricule_number VARCHAR(50) UNIQUE,
+    matricule_number VARCHAR(50) UNIQUE NOT NULL,
     user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     bio TEXT
 );

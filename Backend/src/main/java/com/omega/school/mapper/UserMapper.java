@@ -2,7 +2,6 @@ package com.omega.school.mapper;
 
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.model.User;
-import java.time.LocalDateTime;
 
 public class UserMapper {
 
@@ -20,8 +19,6 @@ public class UserMapper {
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setPasswordHash(dto.getPassword());
         user.setRole(dto.getRole());
-        user.setCreatedAt(LocalDateTime.now());
-        user.setUpdatedAt(LocalDateTime.now());
         return user;
     }
 
@@ -37,7 +34,7 @@ public class UserMapper {
                 user.getSex(),
                 user.getAddress(),
                 user.getPhoneNumber(),
-                user.getPasswordHash(), // tu peux masquer plus tard
+                user.getPasswordHash(),
                 user.getRole());
     }
 }

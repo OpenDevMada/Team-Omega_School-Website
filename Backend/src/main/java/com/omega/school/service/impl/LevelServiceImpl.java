@@ -21,7 +21,7 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public Level createLevel(String levelName) {
-        if (levelRepository.existByLevelName(levelName)) {
+        if (levelRepository.existsByLevelName(levelName)) {
             throw new IllegalArgumentException("Nom de niveau déjà utilisé");
         }
 

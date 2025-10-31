@@ -3,6 +3,8 @@ package com.omega.school.controller;
 import com.omega.school.dto.TeacherRequestDto;
 import com.omega.school.model.Teacher;
 import com.omega.school.service.TeacherService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ public class TeacherController {
     private final TeacherService teacherService;
 
     @PostMapping
-    public ResponseEntity<Teacher> create(@RequestBody TeacherRequestDto dto) {
+    public ResponseEntity<Teacher> create(@Valid @RequestBody TeacherRequestDto dto) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(teacherService.createTeacher(dto));
@@ -46,7 +48,7 @@ public class TeacherController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Teacher> update(@PathVariable UUID id, @RequestBody TeacherRequestDto teacher) {
+    public ResponseEntity<Teacher> update(@PathVariable UUID id, @Valid @RequestBody TeacherRequestDto teacher) {
         try {
             return ResponseEntity.ok(teacherService.updateTeacher(id, teacher));
         } catch (NoSuchElementException e) {

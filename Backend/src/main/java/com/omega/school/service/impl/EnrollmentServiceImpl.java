@@ -1,5 +1,6 @@
 package com.omega.school.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,45 +20,48 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EnrollmentServiceImpl implements EnrollmentService {
 
-    private final EnrollmentRepository enrollmentRepository;
-    private final StudentRepository studentRepository;
-    private final CourseRepository courseRepository;
+        private final EnrollmentRepository enrollmentRepository;
+        private final StudentRepository studentRepository;
+        private final CourseRepository courseRepository;
 
-    @Override
-    public EnrollmentResponseDto enrollStudent(EnrollmentRequestDto dto) {
-        Student student = studentRepository.findByRegistrationNumber(dto.getStudentRegistration())
-                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
-        Course course = courseRepository.findByTitle(dto.getCourseTitle())
-                .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
+        @Override
+        public EnrollmentResponseDto enrollStudent(EnrollmentRequestDto dto) {
+                Student student = studentRepository.findByRegistrationNumber(dto.getStudentRegistration())
+                                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+                Course course = courseRepository.findByTitle(dto.getCourseTitle())
+                                .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
 
-        Enrollment enrollment = EnrollmentMapper.toEntity(dto, student, course);
-        return EnrollmentMapper.toDto(enrollmentRepository.save(enrollment));
-    }
+                Enrollment enrollment = EnrollmentMapper.toEntity(dto, student, course);
 
-    @Override
-    public List<EnrollmentResponseDto> getEnrollmentsByStudent(String registrationNumber) {
-        return enrollmentRepository.findByStudentRegistrationNumber(registrationNumber)
-                .stream()
-                .map(EnrollmentMapper::toDto)
-                .collect(Collectors.toList());
-    }
+                enrollment.setEnrolledAt(LocalDateTime.now());
 
-    @Override
-    public List<EnrollmentResponseDto> getEnrollmentsByCourse(String title) {
-        return enrollmentRepository.findByCourseTitle(title)
-                .stream()
-                .map(EnrollmentMapper::toDto)
-                .collect(Collectors.toList());
-    }
+                return EnrollmentMapper.toDto(enrollmentRepository.save(enrollment));
+        }
 
-    @Override
-    public void deleteEnrollment(String registrationNumber, String title) {
-        Student student = studentRepository.findByRegistrationNumber(registrationNumber)
-                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
-        Course course = courseRepository.findByTitle(title)
-                .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
+        @Override
+        public List<EnrollmentResponseDto> getEnrollmentsByStudent(String registrationNumber) {
+                return enrollmentRepository.findByStudentRegistrationNumber(registrationNumber)
+                                .stream()
+                                .map(EnrollmentMapper::toDto)
+                                .collect(Collectors.toList());
+        }
 
-        EnrollmentId id = new EnrollmentId(student.getUserId(), course.getCourseId());
-        enrollmentRepository.deleteById(id);
-    }
+        @Override
+        public List<EnrollmentResponseDto> getEnrollmentsByCourse(String title) {
+                return enrollmentRepository.findByCourseTitle(title)
+                                .stream()
+                                .map(EnrollmentMapper::toDto)
+                                .collect(Collectors.toList());
+        }
+
+        @Override
+        public void deleteEnrollment(String registrationNumber, String title) {
+                Student student = studentRepository.findByRegistrationNumber(registrationNumber)
+                                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+                Course course = courseRepository.findByTitle(title)
+                                .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
+
+                EnrollmentId id = new EnrollmentId(student.getUserId(), course.getCourseId());
+                enrollmentRepository.deleteById(id);
+        }
 }

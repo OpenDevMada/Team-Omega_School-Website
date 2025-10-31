@@ -8,5 +8,6 @@ import com.omega.school.model.Level;
 public interface LevelRepository extends JpaRepository<Level, UUID> {
     Optional<Level> findByLevelName(String levelName);
 
-    boolean existByLevelName(String levelName);
+    boolean existsByLevelName(String levelName);
+
 }

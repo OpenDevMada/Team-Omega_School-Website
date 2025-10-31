@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     "role" VARCHAR(10) NOT NULL CHECK (role IN ('ADMIN', 'TEACHER', 'STUDENT')),
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
 );

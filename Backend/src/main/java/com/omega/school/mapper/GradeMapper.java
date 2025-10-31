@@ -2,7 +2,6 @@ package com.omega.school.mapper;
 
 import com.omega.school.dto.*;
 import com.omega.school.model.*;
-import java.time.LocalDateTime;
 
 public class GradeMapper {
 
@@ -17,8 +16,6 @@ public class GradeMapper {
         grade.setCourse(course);
         grade.setValue(dto.getValue());
         grade.setComment(dto.getComment());
-        grade.setCreatedAt(LocalDateTime.now());
-        grade.setUpdatedAt(LocalDateTime.now());
         return grade;
     }
 

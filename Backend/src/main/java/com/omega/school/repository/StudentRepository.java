@@ -14,5 +14,6 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     List<Student> findByGroupName(String groupName);
 
-    boolean existByRegistrationNumber(String registrationNumber);
+    boolean existsByRegistrationNumber(String registrationNumber);
+
 }

@@ -26,12 +26,12 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true, exclude = "courses")
 public class Teacher extends User {
-    @Column(name = "matricule_number", unique = true)
+    @Column(name = "matricule_number", unique = true, nullable = false)
     private String matriculeNumber;
 
     private String bio;
 
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Course> courses = new ArrayList<>();
 

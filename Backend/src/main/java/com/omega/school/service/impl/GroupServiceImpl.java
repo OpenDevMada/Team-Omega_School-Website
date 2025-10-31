@@ -1,12 +1,16 @@
 package com.omega.school.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.springframework.stereotype.Service;
+
 import com.omega.school.model.Group;
 import com.omega.school.repository.GroupRepository;
 import com.omega.school.service.GroupService;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
@@ -18,12 +22,14 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group createGroup(String groupName) {
-        if (groupRepository.existByGroupName(groupName)) {
+        if (groupRepository.existsByGroupName(groupName)) {
             throw new IllegalArgumentException("Nom de groupe déjà utilisé");
         }
 
         Group group = new Group();
         group.setGroupName(groupName);
+        group.setCreatedAt(LocalDateTime.now());
+        group.setUpdatedAt(LocalDateTime.now());
 
         return groupRepository.save(group);
     }
@@ -43,6 +49,7 @@ public class GroupServiceImpl implements GroupService {
         return groupRepository.findById(id)
                 .map(existing -> {
                     existing.setGroupName(newGroupName);
+                    existing.setUpdatedAt(LocalDateTime.now());
                     return groupRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé"));

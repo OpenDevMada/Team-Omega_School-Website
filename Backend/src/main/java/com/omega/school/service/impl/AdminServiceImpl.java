@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.AdminRequestDto;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Admin createAdmin(AdminRequestDto dto) {
@@ -28,6 +31,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         Admin admin = AdminMapper.toEntity(dto);
+        admin.setPasswordHash(passwordEncoder.encode(dto.getPassword())); // hash
         return adminRepository.save(admin);
     }
 
@@ -54,6 +58,11 @@ public class AdminServiceImpl implements AdminService {
                     existing.setLastName(updatedAdmin.getLastName());
                     existing.setAddress(updatedAdmin.getAddress());
                     existing.setPhoneNumber(updatedAdmin.getPhoneNumber());
+
+                    if (updatedAdmin.getPassword() != null && !updatedAdmin.getPassword().isBlank()) {
+                        existing.setPasswordHash(passwordEncoder.encode(updatedAdmin.getPassword()));
+                    }
+
                     return adminRepository.save(existing);
                 })
                 .orElseThrow(() -> new NoSuchElementException("Admin non trouvé"));
