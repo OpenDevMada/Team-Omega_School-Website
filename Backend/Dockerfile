@@ -23,13 +23,13 @@ USER spring:spring
 # Copy the JAR file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose the application port (default Spring Boot port)
-EXPOSE 8080
+# Expose the new application port (set to 10000)
+EXPOSE 10000
 
-# Health check to ensure the application is running
+# Health check to ensure the application is running on port 10000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+CMD wget --no-verbose --tries=1 --spider http://localhost:10000/actuator/health || exit 1
 
-# Run the application, binding explicitly to 0.0.0.0 to open port 8080 on all interfaces
-ENTRYPOINT ["java", "-jar", "app.jar", "--server.address=0.0.0.0"]
+# Run the application, binding explicitly to 0.0.0.0 with port 10000
+ENTRYPOINT ["java", "-jar", "app.jar", "--server.address=0.0.0.0", "--server.port=10000"]
 
