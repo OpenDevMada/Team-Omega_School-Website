@@ -15,8 +15,10 @@ jobs:
         name: Build & push Docker image
         with:
           image: opendevalpha/opendevmada-school
-          tags: v1, latest
+          appendMode: true
+          addLatest: true
           registry: docker.io
           dockerfile: ./Backend/Dockerfile
+          directory: ./Backend
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
