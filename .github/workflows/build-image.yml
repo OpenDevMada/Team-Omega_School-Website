@@ -17,6 +17,6 @@ jobs:
           image: opendevalpha/opendevmada-school
           tags: v1, latest
           registry: docker.io
-          dockerfile: .Backend/Dockerfile
+          dockerfile: ./Backend/Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
