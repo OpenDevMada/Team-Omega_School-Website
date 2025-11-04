@@ -36,9 +36,9 @@ export function Header() {
           <Link
             to="/login"
             className={buttonVariants({
-              variant: "ghost",
+              variant: null,
               className:
-                "border border-[#1E40AF] text-[#1E40AF] transition",
+                "border border-(--blue) text-(--blue) hover:text-white hover:bg-(--blue) transition",
             })}
           >
             Connexion
@@ -46,6 +46,7 @@ export function Header() {
           <Link
             to="/register"
             className={buttonVariants({
+              variant: null,
               className:
                 "bg-[#10B981] hover:bg-[#0EA972] text-white transition",
             })}
