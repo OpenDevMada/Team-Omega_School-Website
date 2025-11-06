@@ -7,3 +7,7 @@ export interface Student extends User {
   level: Level;
   group: Group;
 }
+
+export type StudentPostData = Required<
+  Omit<Student, "id" | "createdAt" | "updatedAt" | "avatar">
+>;
