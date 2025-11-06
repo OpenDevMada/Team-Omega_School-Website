@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const StudentSchema = z.object({
+export const UserSchema = z.object({
   firstName: z.string().min(3, "Le prenom doit avoir au moins 3 caracteres."),
   lastName: z.string().min(3, "Un nom doit avoir au moins 3 caracteres"),
   email: z.email(),

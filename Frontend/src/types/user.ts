@@ -16,3 +16,5 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type UserCredentials = Required<Pick<User, "email" | "password">>;
