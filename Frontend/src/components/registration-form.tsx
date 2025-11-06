@@ -8,7 +8,6 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import { useForm, FormProvider } from "react-hook-form";
-import { StudentSchema } from "@/types/registration";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -31,38 +30,42 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { toast } from "sonner";
+import { studentPostDataSchema } from "@/schemas/student.schema";
 
-export function RegistrationForm() {
+export function RegistrationForm({ isStudent, props }: { isStudent: boolean, props?: object }) {
   const [pending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof StudentSchema>>({
-    resolver: zodResolver(StudentSchema),
+  const form = useForm<z.infer<typeof studentPostDataSchema>>({
+    resolver: zodResolver(studentPostDataSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       address: "",
       email: "",
-      grade: "",
       phoneNumber: "",
+      gender: "Pas specifie",
       birthDate: undefined,
+      role: "STUDENT"
     },
   });
 
+  // @ts-ignore
   const onSubmit = (values: z.infer<typeof StudentSchema>) => {
     startTransition(async () => {
       await new Promise((res) => setTimeout(res, 3000));
-      console.log(values);
+      toast.success("L'élève a bien été enregistré");
     });
   };
 
   return (
-    <CardContent className="p-4 flex flex-wrap gap-4">
+    <CardContent className="p-2 flex flex-wrap gap-4" {...props}>
       <FormProvider {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col  gap-4"
+          className="flex flex-col gap-4"
         >
           {/* For names */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center flex-col md:flex-row gap-4">
             <FormField
               control={form.control}
               name="firstName"
@@ -113,9 +116,9 @@ export function RegistrationForm() {
 
           {/* Grade and phone number */}
           <div className="flex items-center gap-4">
-            <FormField
+            {isStudent && <FormField
               control={form.control}
-              name="grade"
+              name="group.groupName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Classe</FormLabel>
@@ -143,7 +146,7 @@ export function RegistrationForm() {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            />}
 
             <FormField
               control={form.control}
@@ -222,15 +225,15 @@ export function RegistrationForm() {
           <Button
             type="submit"
             // this cursor doesn't work as well - to fix later
-            className={`cursor-pointer bg-(--blue) hover:bg-[#0d2c93f] ${cn("disabled:cursor-not-allowed")}`}
+            className={`cursor-pointer w-full bg-(--blue) hover:bg-[#0d2c93f] ${cn("disabled:cursor-not-allowed")}`}
             disabled={pending}
           >
             {pending ? (
               <>
-                <Spinner /> Submitting
+                <Spinner /> Inscription
               </>
             ) : (
-              "Submit"
+              "Inscrire l'élève"
             )}
           </Button>
         </form>
