@@ -21,11 +21,10 @@ export function SidebarOptInForm() {
       <CardContent className="px-4">
         <form>
           <div className="grid gap-2.5">
-            <SidebarInput type="email" placeholder="Message" />
+            <SidebarInput type="email" autoFocus={false} placeholder="Message" />
             <Button
-              className="bg-[#10B981] text-white w-full shadow-none"
+              className="bg-[#10B981] hover:bg-[#05895d] text-white w-full shadow-none"
               size="sm"
-              variant={"destructive"}
             >
               Envoyer <Send />
             </Button>

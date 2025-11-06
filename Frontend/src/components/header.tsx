@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { buttonVariants } from "./ui/button";
-import { Menu, X, GraduationCap } from "lucide-react";
+import { Button, buttonVariants } from "./ui/button";
+import { Menu, GraduationCap } from "lucide-react";
 import { useState } from "react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -35,9 +36,9 @@ export function Header() {
           <Link
             to="/login"
             className={buttonVariants({
-              variant: "ghost",
+              variant: null,
               className:
-                "border border-[#1E40AF] text-[#1E40AF] transition",
+                "border border-(--blue) text-(--blue) hover:text-white hover:bg-(--blue) transition",
             })}
           >
             Connexion
@@ -45,6 +46,7 @@ export function Header() {
           <Link
             to="/register"
             className={buttonVariants({
+              variant: null,
               className:
                 "bg-[#10B981] hover:bg-[#0EA972] text-white transition",
             })}
@@ -53,67 +55,74 @@ export function Header() {
           </Link>
         </div>
 
-        <button
-          className="md:hidden text-[#1E40AF]"
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
-
-      {open && (
-        <div className="md:hidden bg-white border-t flex flex-col items-center gap-4 py-4 text-[#0F172A] font-medium">
-          <Link
-            to="/"
-            onClick={() => setOpen(false)}
-            className="hover:text-[#1E40AF]"
-          >
-            Accueil
-          </Link>
-          <Link
-            to="/annonces"
-            onClick={() => setOpen(false)}
-            className="hover:text-[#1E40AF]"
-          >
-            Annonces
-          </Link>
-          <Link
-            to="#about"
-            onClick={() => setOpen(false)}
-            className="hover:text-[#1E40AF]"
-          >
-            À propos
-          </Link>
-          <Link
-            to="/contact"
-            onClick={() => setOpen(false)}
-            className="hover:text-[#1E40AF]"
-          >
-            Contact
-          </Link>
-          <div className="flex gap-3">
-            <Link
-              to="/login"
-              className={buttonVariants({
-                variant: "outline",
-                className: "border-[#1E40AF] text-[#1E40AF]",
-              })}
-              onClick={() => setOpen(false)}
-            >
-              Connexion
-            </Link>
-            <Link
-              to="/register"
-              className={buttonVariants({
-                className: "bg-[#10B981] text-white hover:bg-[#0EA972]",
-              })}
-              onClick={() => setOpen(false)}
-            >
-              S'inscrire
-            </Link>
-          </div>
+        <div className="md:hidden">
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button variant={"ghost"} size={"icon"}>
+                <Menu size={20} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[250px]">
+              <SheetHeader>
+                <SheetTitle className="text-lg font-semibold">
+                  Menu principal
+                </SheetTitle>
+              </SheetHeader>
+              <div className="md:hidden w-full border-t flex flex-col items-start gap-4 p-4 text-[#0F172A] font-medium">
+                <Link
+                  to="/"
+                  onClick={() => setOpen(false)}
+                  className="hover:text-[#1E40AF]"
+                >
+                  Accueil
+                </Link>
+                <Link
+                  to="/annonces"
+                  onClick={() => setOpen(false)}
+                  className="hover:text-[#1E40AF]"
+                >
+                  Annonces
+                </Link>
+                <Link
+                  to="#about"
+                  onClick={() => setOpen(false)}
+                  className="hover:text-[#1E40AF]"
+                >
+                  À propos
+                </Link>
+                <Link
+                  to="/contact"
+                  onClick={() => setOpen(false)}
+                  className="hover:text-[#1E40AF]"
+                >
+                  Contact
+                </Link>
+                <div className="flex w-full gap-3 items-center">
+                  <Link
+                    to="/login"
+                    className={buttonVariants({
+                      variant: "outline",
+                      className: "border-[#1E40AF] text-[#1E40AF]",
+                    })}
+                    onClick={() => setOpen(false)}
+                  >
+                    Connexion
+                  </Link>
+                  <Link
+                    to="/register"
+                    className={buttonVariants({
+                      className: "bg-[#10B981] text-white hover:bg-[#0EA972]",
+                    })}
+                    onClick={() => setOpen(false)}
+                  >
+                    S'inscrire
+                  </Link>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
-      )}
+      </div>
     </header>
   );
 }
