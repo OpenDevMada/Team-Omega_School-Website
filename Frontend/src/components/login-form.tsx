@@ -6,9 +6,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { Spinner } from "./ui/spinner";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -17,20 +18,32 @@ export function LoginForm({
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const location = useLocation();
+  const shown = useRef(false);
+  const params = new URLSearchParams(location.search);
+  const error = params.get("err");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
 
-    await new Promise((res) => setTimeout(res, 2000));
+    await new Promise((res) => setTimeout(res, 2000)); // for UX, improve loader
     try {
       console.log(`Data: \nEmail: ${email}\nPassword: ${password}`)
+      toast.success("Authentified dude XD");
     } catch (error: any) {
       alert(error?.message || "Unexpected error occured !");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (error && !shown.current && error === "brut-force") {
+      shown.current = true;
+      toast.error("Ressource privée, connectez-vous");
+    }
+  }, [params]);
 
   return (
     <form
@@ -76,7 +89,9 @@ export function LoginForm({
         </Field>
         <Field>
           <Button type="submit" onClick={handleSubmit} disabled={loading}>
-            {loading ? <Spinner /> : "Se connecter"}
+            {loading ? <>
+              <Spinner /> Connection...
+            </> : "Se connecter"}
           </Button>
         </Field>
       </FieldGroup>
