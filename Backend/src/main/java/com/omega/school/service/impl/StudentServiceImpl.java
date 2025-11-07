@@ -50,8 +50,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Optional<Student> getStudentById(UUID id) {
-        return studentRepository.findById(id);
+    public Optional<Student> getStudentById(UUID userId) {
+        return studentRepository.findById(userId);
     }
 
     @Override
@@ -75,13 +75,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student updateStudent(UUID id, StudentRequestDto updatedStudent) {
+    public Student updateStudent(UUID userId, StudentRequestDto updatedStudent) {
         Level level = levelRepository.findByName(updatedStudent.getLevel())
                 .orElseThrow(() -> new RuntimeException("Level not found: " + updatedStudent.getLevel()));
         Group group = groupRepository.findByName(updatedStudent.getGroup())
                 .orElseThrow(() -> new RuntimeException("Group not found: " + updatedStudent.getGroup()));
 
-        return studentRepository.findById(id)
+        return studentRepository.findById(
+                userId)
                 .map(existing -> {
                     existing.setFirstName(updatedStudent.getFirstName());
                     existing.setLastName(updatedStudent.getLastName());
@@ -100,7 +101,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteStudent(UUID id) {
-        studentRepository.deleteById(id);
+    public void deleteStudent(UUID userId) {
+        studentRepository.deleteById(userId);
     }
 }

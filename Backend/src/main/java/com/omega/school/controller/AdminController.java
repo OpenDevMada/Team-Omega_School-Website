@@ -26,9 +26,9 @@ public class AdminController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Admin> getById(@PathVariable UUID id) {
-        return adminService.getAdminById(id)
+    @GetMapping("/{userId}")
+    public ResponseEntity<Admin> getById(@PathVariable UUID userId) {
+        return adminService.getAdminById(userId)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Admin non trouvé"));
     }
@@ -45,18 +45,18 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getAllAdmins());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Admin> update(@PathVariable UUID id, @RequestBody AdminRequestDto admin) {
+    @PutMapping("/{userId}")
+    public ResponseEntity<Admin> update(@PathVariable UUID userId, @RequestBody AdminRequestDto admin) {
         try {
-            return ResponseEntity.ok(adminService.updateAdmin(id, admin));
+            return ResponseEntity.ok(adminService.updateAdmin(userId, admin));
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        adminService.deleteAdmin(id);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID userId) {
+        adminService.deleteAdmin(userId);
         return ResponseEntity.noContent().build();
     }
 }

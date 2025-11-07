@@ -9,13 +9,13 @@ import com.omega.school.model.Teacher;
 public interface TeacherService {
     Teacher createTeacher(TeacherRequestDto teacherDto);
 
-    Optional<Teacher> getTeacherById(UUID id);
+    Optional<Teacher> getTeacherById(UUID userId);
 
     Optional<Teacher> getByMatriculeNumber(String matriculeNumber);
 
     List<Teacher> getAllTeachers();
 
-    Teacher updateTeacher(UUID id, TeacherRequestDto updatedTeacherDto);
+    Teacher updateTeacher(UUID userId, TeacherRequestDto updatedTeacherDto);
 
-    void deleteTeacher(UUID id);
+    void deleteTeacher(UUID userId);
 }

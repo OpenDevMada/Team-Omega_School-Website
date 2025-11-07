@@ -23,7 +23,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class Student extends User {
 
-    @Column(name = "registration_number", unique = true)
+    @Column(name = "registration_number", unique = true, nullable = false)
     private String registrationNumber;
 
     @ManyToOne

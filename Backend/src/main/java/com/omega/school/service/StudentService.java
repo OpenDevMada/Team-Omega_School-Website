@@ -10,7 +10,7 @@ import com.omega.school.model.Student;
 public interface StudentService {
     Student createStudent(StudentRequestDto student);
 
-    Optional<Student> getStudentById(UUID id);
+    Optional<Student> getStudentById(UUID userId);
 
     Optional<Student> getByRegistrationNumber(String regNumber);
 
@@ -20,7 +20,7 @@ public interface StudentService {
 
     List<Student> getByGroup(String groupName);
 
-    Student updateStudent(UUID id, StudentRequestDto updatedStudent);
+    Student updateStudent(UUID userId, StudentRequestDto updatedStudent);
 
-    void deleteStudent(UUID id);
+    void deleteStudent(UUID userId);
 }

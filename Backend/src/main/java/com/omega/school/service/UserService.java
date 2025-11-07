@@ -19,7 +19,7 @@ public interface UserService {
 
     List<User> getUsersByRole(Role role);
 
-    User updateUser(UUID id, User updatedUser);
+    User updateUser(UUID id, UserRequestDto updatedUser);
 
     void deleteUser(UUID id);
 }

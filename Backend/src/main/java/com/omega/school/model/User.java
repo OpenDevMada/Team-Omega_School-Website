@@ -54,7 +54,6 @@ public class User {
     @Column(name = "sex")
     private Sex sex;
 
-    @JsonIgnore
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 

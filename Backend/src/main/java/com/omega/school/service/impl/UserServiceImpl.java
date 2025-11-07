@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(UUID id, User updatedUser) {
+    public User updateUser(UUID id, UserRequestDto updatedUser) {
         return userRepository.findById(id)
                 .map(existing -> {
 
@@ -77,8 +77,8 @@ public class UserServiceImpl implements UserService {
                     existing.setRole(updatedUser.getRole());
                     existing.setUpdatedAt(LocalDateTime.now());
 
-                    if (updatedUser.getPasswordHash() != null && !updatedUser.getPasswordHash().isBlank()) {
-                        existing.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
+                    if (updatedUser.getPassword() != null && !updatedUser.getPassword().isBlank()) {
+                        existing.setPasswordHash(passwordEncoder.encode(updatedUser.getPassword()));
                     }
 
                     return userRepository.save(existing);

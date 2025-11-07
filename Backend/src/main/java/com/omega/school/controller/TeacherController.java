@@ -21,16 +21,20 @@ public class TeacherController {
     @PostMapping
     public ResponseEntity<Teacher> create(@Valid @RequestBody TeacherRequestDto dto) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(teacherService.createTeacher(dto));
+            Teacher created = teacherService.createTeacher(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Erreur lors de la création de l’enseignant");
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getById(@PathVariable UUID id) {
-        return teacherService.getTeacherById(id)
+    @GetMapping("/{userId}")
+    public ResponseEntity<Teacher> getById(@PathVariable UUID userId) {
+        return teacherService.getTeacherById(
+                userId)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enseignant non trouvé"));
     }
@@ -44,21 +48,38 @@ public class TeacherController {
 
     @GetMapping
     public ResponseEntity<List<Teacher>> getAll() {
-        return ResponseEntity.ok(teacherService.getAllTeachers());
+        List<Teacher> teachers = teacherService.getAllTeachers();
+        if (teachers.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(teachers);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Teacher> update(@PathVariable UUID id, @Valid @RequestBody TeacherRequestDto teacher) {
+    @PutMapping("/{userId}")
+    public ResponseEntity<Teacher> update(@PathVariable UUID userId, @Valid @RequestBody TeacherRequestDto teacher) {
         try {
-            return ResponseEntity.ok(teacherService.updateTeacher(id, teacher));
+            Teacher updated = teacherService.updateTeacher(userId, teacher);
+            return ResponseEntity.ok(updated);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Erreur lors de la mise à jour de l’enseignant");
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        teacherService.deleteTeacher(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID userId) {
+        try {
+            teacherService.deleteTeacher(userId);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Enseignant non trouvé");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Erreur lors de la suppression de l’enseignant");
+        }
     }
 }

@@ -19,15 +19,20 @@ public class StudentController {
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody StudentRequestDto student) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student));
+            Student created = studentService.createStudent(student);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Erreur lors de la création de l’étudiant");
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Student> getById(@PathVariable UUID id) {
-        return studentService.getStudentById(id)
+    @GetMapping("/{userId}")
+    public ResponseEntity<Student> getById(@PathVariable UUID userId) {
+        return studentService.getStudentById(
+                userId)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Étudiant non trouvé"));
     }
@@ -41,31 +46,56 @@ public class StudentController {
 
     @GetMapping
     public ResponseEntity<List<Student>> getAll() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+        List<Student> students = studentService.getAllStudents();
+        if (students.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/level/{level}")
     public ResponseEntity<List<Student>> getByLevel(@PathVariable String level) {
-        return ResponseEntity.ok(studentService.getByLevel(level));
+        List<Student> students = studentService.getByLevel(level);
+        if (students.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucun étudiant trouvé pour ce niveau");
+        }
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/group/{group}")
     public ResponseEntity<List<Student>> getByGroup(@PathVariable String group) {
-        return ResponseEntity.ok(studentService.getByGroup(group));
+        List<Student> students = studentService.getByGroup(group);
+        if (students.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Aucun étudiant trouvé pour ce groupe");
+        }
+        return ResponseEntity.ok(students);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Student> update(@PathVariable UUID id, @RequestBody StudentRequestDto student) {
+    @PutMapping("/{userId}")
+    public ResponseEntity<Student> update(@PathVariable UUID userId, @RequestBody StudentRequestDto student) {
         try {
-            return ResponseEntity.ok(studentService.updateStudent(id, student));
+            Student updated = studentService.updateStudent(userId, student);
+            return ResponseEntity.ok(updated);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Erreur lors de la mise à jour de l’étudiant");
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        studentService.deleteStudent(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID userId) {
+        try {
+            studentService.deleteStudent(userId);
+            return ResponseEntity.noContent().build();
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Étudiant non trouvé");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Erreur lors de la suppression de l’étudiant");
+        }
     }
 }

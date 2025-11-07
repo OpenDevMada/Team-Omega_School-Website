@@ -36,8 +36,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Optional<Admin> getAdminById(UUID id) {
-        return adminRepository.findById(id);
+    public Optional<Admin> getAdminById(UUID userId) {
+        return adminRepository.findById(userId);
     }
 
     @Override
@@ -51,8 +51,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin updateAdmin(UUID id, AdminRequestDto updatedAdmin) {
-        return adminRepository.findById(id)
+    public Admin updateAdmin(UUID userId, AdminRequestDto updatedAdmin) {
+        return adminRepository.findById(
+                userId)
                 .map(existing -> {
                     existing.setFirstName(updatedAdmin.getFirstName());
                     existing.setLastName(updatedAdmin.getLastName());
@@ -69,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void deleteAdmin(UUID id) {
-        adminRepository.deleteById(id);
+    public void deleteAdmin(UUID userId) {
+        adminRepository.deleteById(userId);
     }
 }

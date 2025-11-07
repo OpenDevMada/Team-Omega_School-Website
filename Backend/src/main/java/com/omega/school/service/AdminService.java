@@ -10,13 +10,13 @@ import com.omega.school.model.Admin;
 public interface AdminService {
     Admin createAdmin(AdminRequestDto admin);
 
-    Optional<Admin> getAdminById(UUID id);
+    Optional<Admin> getAdminById(UUID userId);
 
     Optional<Admin> getByAdminId(String adminId);
 
     List<Admin> getAllAdmins();
 
-    Admin updateAdmin(UUID id, AdminRequestDto updatedAdmin);
+    Admin updateAdmin(UUID userId, AdminRequestDto updatedAdmin);
 
-    void deleteAdmin(UUID id);
+    void deleteAdmin(UUID userId);
 }

@@ -20,7 +20,7 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true)
 public class Admin extends User {
-    @Column(name = "admin_id", unique = true)
+    @Column(name = "admin_id", unique = true, nullable = false)
     private String adminId;
 
     private String permission = "FULL";

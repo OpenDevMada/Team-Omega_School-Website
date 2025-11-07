@@ -45,8 +45,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Optional<Teacher> getTeacherById(UUID id) {
-        return teacherRepository.findById(id);
+    public Optional<Teacher> getTeacherById(UUID userId) {
+        return teacherRepository.findById(userId);
     }
 
     @Override
@@ -60,8 +60,9 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Teacher updateTeacher(UUID id, TeacherRequestDto updatedTeacher) {
-        return teacherRepository.findById(id)
+    public Teacher updateTeacher(UUID userId, TeacherRequestDto updatedTeacher) {
+        return teacherRepository.findById(
+                userId)
                 .map(existing -> {
                     if (!existing.getMatriculeNumber().equals(updatedTeacher.getMatriculeNumber()) &&
                             teacherRepository.existsByMatriculeNumber(updatedTeacher.getMatriculeNumber())) {
@@ -84,7 +85,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public void deleteTeacher(UUID id) {
-        teacherRepository.deleteById(id);
+    public void deleteTeacher(UUID userId) {
+        teacherRepository.deleteById(userId);
     }
 }
