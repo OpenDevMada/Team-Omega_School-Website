@@ -1,6 +1,7 @@
 package com.omega.school.controller;
 
 import com.omega.school.dto.UserRequestDto;
+import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Role;
 import com.omega.school.model.User;
 import com.omega.school.service.UserService;
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequestDto updatedUser) {
+    public ResponseEntity<User> updateUser(@PathVariable UUID id, @Valid @RequestBody UserUpdateDto updatedUser) {
         User updated = userService.updateUser(id, updatedUser);
         return ResponseEntity.ok(updated);
     }

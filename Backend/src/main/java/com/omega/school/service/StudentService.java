@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.omega.school.dto.StudentRequestDto;
+import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Student;
 
 public interface StudentService {
@@ -20,7 +21,7 @@ public interface StudentService {
 
     List<Student> getByGroup(String groupName);
 
-    Student updateStudent(UUID userId, StudentRequestDto updatedStudent);
+    Student updateStudent(UUID userId, StudentUpdateDto updatedStudent);
 
     void deleteStudent(UUID userId);
 }

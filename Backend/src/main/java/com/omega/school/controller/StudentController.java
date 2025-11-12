@@ -1,6 +1,7 @@
 package com.omega.school.controller;
 
 import com.omega.school.dto.StudentRequestDto;
+import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Student;
 import com.omega.school.service.StudentService;
 
@@ -65,7 +66,7 @@ public class StudentController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Student> update(@PathVariable UUID userId, @RequestBody StudentRequestDto student) {
+    public ResponseEntity<Student> update(@PathVariable UUID userId, @RequestBody StudentUpdateDto student) {
         Student updated = studentService.updateStudent(userId, student);
         return ResponseEntity.ok(updated);
     }

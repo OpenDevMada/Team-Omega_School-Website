@@ -1,6 +1,7 @@
 package com.omega.school.controller;
 
 import com.omega.school.dto.AdminRequestDto;
+import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
 import com.omega.school.service.AdminService;
 
@@ -45,7 +46,7 @@ public class AdminController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<Admin> update(@PathVariable UUID userId, @Valid @RequestBody AdminRequestDto admin) {
+    public ResponseEntity<Admin> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdateDto admin) {
         Admin updated = adminService.updateAdmin(userId, admin);
         return ResponseEntity.ok(updated);
     }

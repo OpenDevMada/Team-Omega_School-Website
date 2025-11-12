@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.omega.school.dto.AdminRequestDto;
+import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
 
 public interface AdminService {
@@ -16,7 +17,7 @@ public interface AdminService {
 
     List<Admin> getAllAdmins();
 
-    Admin updateAdmin(UUID userId, AdminRequestDto updatedAdmin);
+    Admin updateAdmin(UUID userId, UserUpdateDto updatedAdmin);
 
     void deleteAdmin(UUID userId);
 }

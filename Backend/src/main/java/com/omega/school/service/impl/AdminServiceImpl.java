@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.AdminRequestDto;
+import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.mapper.AdminMapper;
 import com.omega.school.model.Admin;
 import com.omega.school.repository.AdminRepository;
@@ -52,22 +53,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin updateAdmin(UUID userId, AdminRequestDto updatedAdmin) {
-        return adminRepository.findById(
-                userId)
+    public Admin updateAdmin(UUID userId, UserUpdateDto updatedAdmin) {
+        return adminRepository.findById(userId)
                 .map(existing -> {
-                    existing.setFirstName(updatedAdmin.getFirstName());
-                    existing.setLastName(updatedAdmin.getLastName());
-                    existing.setAddress(updatedAdmin.getAddress());
-                    existing.setPhoneNumber(updatedAdmin.getPhoneNumber());
-
-                    if (updatedAdmin.getPassword() != null && !updatedAdmin.getPassword().isBlank()) {
-                        existing.setPasswordHash(passwordEncoder.encode(updatedAdmin.getPassword()));
-                    }
-                    if (!existing.getAdminId().equals(updatedAdmin.getAdminId()) &&
-                            adminRepository.existsByAdminId(updatedAdmin.getAdminId())) {
-                        throw new IllegalArgumentException("Admin ID déjà utilisé");
-                    }
+                    AdminMapper.updateEntity(existing, updatedAdmin);
 
                     return adminRepository.save(existing);
                 })

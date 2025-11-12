@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.StudentRequestDto;
+import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.mapper.StudentMapper;
 import com.omega.school.model.Group;
 import com.omega.school.model.Level;
@@ -75,26 +76,17 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student updateStudent(UUID userId, StudentRequestDto updatedStudent) {
+    public Student updateStudent(UUID userId, StudentUpdateDto updatedStudent) {
         Level level = levelRepository.findByName(updatedStudent.getLevel())
                 .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé : " + updatedStudent.getLevel()));
 
         Group group = groupRepository.findByName(updatedStudent.getGroup())
                 .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé : " + updatedStudent.getGroup()));
 
-        return studentRepository.findById(
-                userId)
+        return studentRepository.findById(userId)
                 .map(existing -> {
-                    existing.setFirstName(updatedStudent.getFirstName());
-                    existing.setLastName(updatedStudent.getLastName());
-                    existing.setRegistrationNumber(updatedStudent.getRegistrationNumber());
-                    existing.setGroup(group);
-                    existing.setLevel(level);
+                    StudentMapper.updateEntityFromDto(updatedStudent, existing, level, group);
                     existing.setUpdatedAt(LocalDateTime.now());
-
-                    if (updatedStudent.getPassword() != null && !updatedStudent.getPassword().isBlank()) {
-                        existing.setPasswordHash(passwordEncoder.encode(updatedStudent.getPassword()));
-                    }
 
                     return studentRepository.save(existing);
                 })

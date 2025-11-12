@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.TeacherRequestDto;
+import com.omega.school.dto.TeacherUpdateDto;
 import com.omega.school.mapper.TeacherMapper;
 import com.omega.school.model.Teacher;
 import com.omega.school.repository.TeacherRepository;
@@ -61,24 +62,18 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Teacher updateTeacher(UUID userId, TeacherRequestDto updatedTeacher) {
+    public Teacher updateTeacher(UUID userId, TeacherUpdateDto updatedTeacher) {
         return teacherRepository.findById(
                 userId)
                 .map(existing -> {
-                    if (!existing.getMatriculeNumber().equals(updatedTeacher.getMatriculeNumber()) &&
-                            teacherRepository.existsByMatriculeNumber(updatedTeacher.getMatriculeNumber())) {
-                        throw new IllegalArgumentException("Matricule déjà utilisé");
+
+                    if (!existing.getEmail().equals(updatedTeacher.getEmail()) &&
+                            userRepository.existsByEmail(updatedTeacher.getEmail())) {
+                        throw new IllegalArgumentException("Email déjà utilisé");
                     }
 
-                    existing.setFirstName(updatedTeacher.getFirstName());
-                    existing.setLastName(updatedTeacher.getLastName());
-                    existing.setBio(updatedTeacher.getBio());
-                    existing.setMatriculeNumber(updatedTeacher.getMatriculeNumber());
+                    TeacherMapper.updateEntityFromDto(updatedTeacher, existing);
                     existing.setUpdatedAt(LocalDateTime.now());
-
-                    if (updatedTeacher.getPassword() != null && !updatedTeacher.getPassword().isBlank()) {
-                        existing.setPasswordHash(passwordEncoder.encode(updatedTeacher.getPassword()));
-                    }
 
                     return teacherRepository.save(existing);
                 })
