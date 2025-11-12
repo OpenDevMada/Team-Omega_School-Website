@@ -21,7 +21,7 @@ export default function RegistrationPage() {
               School
             </CardDescription>
           </CardHeader>
-          <RegistrationForm />
+          <RegistrationForm isStudent={true} />
         </Card>
       </div>
     </div>
