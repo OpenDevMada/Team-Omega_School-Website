@@ -76,7 +76,7 @@ export function LoginForm({
               to="/forgot-password"
               className="ml-auto text-sm underline-offset-4 hover:underline"
             >
-              Mot de passe oublie?
+              Mot de passe oublié?
             </Link>
           </div>
           <Input
@@ -88,7 +88,7 @@ export function LoginForm({
           />
         </Field>
         <Field>
-          <Button type="submit" onClick={handleSubmit} disabled={loading}>
+          <Button type="submit" className="bg-(--blue) hover:bg-blue-900" onClick={handleSubmit} disabled={loading}>
             {loading ? <>
               <Spinner /> Connection...
             </> : "Se connecter"}

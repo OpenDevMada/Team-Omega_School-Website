@@ -1,243 +1,114 @@
-import { CardContent } from "../components/ui/card";
-import { Input } from "../components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import { useForm, FormProvider } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form";
-import { Button } from "./ui/button";
-import { useTransition } from "react";
-import { Spinner } from "./ui/spinner";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { studentPostDataSchema } from "@/schemas/student.schema";
+import { CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { useTransition, type Dispatch, type SetStateAction } from "react";
+import { Form } from "@/components/ui/form";
+import { userSchema } from "@/validation/user";
+import { z } from "zod";
+import { StudentFormFields } from "./forms/student-form";
+import { TeacherFormFields } from "./forms/teacher-form";
+import { UserFields } from "./forms/user-form";
 
-export function RegistrationForm({ isStudent, props }: { isStudent: boolean, props?: object }) {
+export function RegistrationForm({
+  isStudent,
+  setOpen,
+}: {
+  isStudent: boolean;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
+}) {
   const [pending, startTransition] = useTransition();
-  const form = useForm<z.infer<typeof studentPostDataSchema>>({
-    resolver: zodResolver(studentPostDataSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      address: "",
-      email: "",
-      phoneNumber: "",
-      gender: "Pas specifie",
-      birthDate: undefined,
-      role: "STUDENT"
-    },
+
+  const form = useForm<z.infer<typeof userSchema>>({
+    resolver: zodResolver(userSchema),
+    defaultValues: isStudent
+      ? {
+          role: isStudent ? "STUDENT" : "TEACHER",
+          firstName: "",
+          lastName: "",
+          birthDate: undefined,
+          gender: "Pas spécifié",
+          email: "",
+          phoneNumber: "",
+          address: "",
+          group: { groupName: "" },
+          level: { levelName: "" },
+        }
+      : {
+          role: "TEACHER",
+          firstName: "",
+          lastName: "",
+          birthDate: undefined,
+          gender: "Pas spécifié",
+          email: "",
+          phoneNumber: "",
+          address: "",
+          courses: [],
+          matriculeNumber: "",
+        },
   });
 
-  // @ts-ignore
-  const onSubmit = (values: z.infer<typeof StudentSchema>) => {
+  const onSubmit = async (values: z.infer<typeof userSchema>) => {
     startTransition(async () => {
-      await new Promise((res) => setTimeout(res, 3000));
-      toast.success("L'élève a bien été enregistré");
+      await new Promise((res) => setTimeout(res, 2000));
+      try {
+        if (values.role === "STUDENT") {
+          toast.success(
+            `${values.firstName} inscrit avec succes en tant qu'éleve.`
+          );
+          console.log(values);
+          setOpen?.(false);
+        } else {
+          toast.success(
+            `${values.firstName} inscrit avec succes en tant qu'enseignant.`
+          );
+          console.log(values);
+          setOpen?.(false);
+        }
+      } catch (error: any) {
+        toast.error(error?.message);
+      } finally {
+        form.reset();
+      }
     });
   };
 
   return (
-    <CardContent className="p-2 flex flex-wrap gap-4" {...props}>
-      <FormProvider {...form}>
+    <CardContent className="p-4">
+      <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
-          {/* For names */}
-          <div className="flex items-center flex-col md:flex-row gap-4">
-            <FormField
-              control={form.control}
-              name="firstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Prenom</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Aina Koto" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <UserFields form={form} />
 
-            <FormField
-              control={form.control}
-              name="lastName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nom</FormLabel>
-                  <FormControl>
-                    <Input placeholder="RANDRIANARIVONY" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+          {isStudent ? (
+            <StudentFormFields form={form} />
+          ) : (
+            <TeacherFormFields form={form} />
+          )}
+
+          <div className="md:col-span-2">
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700"
+              disabled={pending}
+            >
+              {pending ? (
+                <>
+                  <Spinner /> &nbsp;Enregistrement...
+                </>
+              ) : isStudent ? (
+                "Inscrire l'élève"
+              ) : (
+                "Inscrire l'enseignant"
               )}
-            />
+            </Button>
           </div>
-
-          {/* Email */}
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="name@example.com"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Grade and phone number */}
-          <div className="flex items-center gap-4">
-            {isStudent && <FormField
-              control={form.control}
-              name="group.groupName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Classe</FormLabel>
-                  <FormControl>
-                    <div className="w-full">
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value || ""}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Classe" />
-                        </SelectTrigger>
-                        {/* This should fetch to /api/grades */}
-                        <SelectContent>
-                          <SelectItem value="1">1</SelectItem>
-                          <SelectItem value="2">2</SelectItem>
-                          <SelectItem value="3">3</SelectItem>
-                          <SelectItem value="4">4</SelectItem>
-                          <SelectItem value="5">5</SelectItem>
-                          <SelectItem value="6">6</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />}
-
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Téléphone</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="+261 34 12 345 67"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {/* Birth date */}
-          <FormField
-            control={form.control}
-            name="birthDate"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date de naissance</FormLabel>
-                <FormControl>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        data-empty={field}
-                        className={`data-[empty=true]:text-muted-foreground w-full justify-start text-left font-normal ${field.value && "text-muted-foreground"
-                          }`}
-                      >
-                        <CalendarIcon />
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: fr })
-                        ) : (
-                          <span>Choisi ta date de naissance</span>
-                        )}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        locale={fr}
-                        onSelect={field.onChange}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Long address */}
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Adresse</FormLabel>
-                <FormControl>
-                  <Input placeholder="Lot T III Antaninandro, Antananarivo" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          {/* Submit button */}
-          <Button
-            type="submit"
-            // this cursor doesn't work as well - to fix later
-            className={`cursor-pointer w-full bg-(--blue) hover:bg-[#0d2c93f] ${cn("disabled:cursor-not-allowed")}`}
-            disabled={pending}
-          >
-            {pending ? (
-              <>
-                <Spinner /> Inscription
-              </>
-            ) : (
-              "Inscrire l'élève"
-            )}
-          </Button>
         </form>
-      </FormProvider>
+      </Form>
     </CardContent>
   );
 }
