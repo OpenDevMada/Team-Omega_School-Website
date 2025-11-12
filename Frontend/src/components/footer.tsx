@@ -45,7 +45,7 @@ export function Footer() {
                   <Link to="/" className="hover:text-[#10B981]">Accueil</Link>
                 </li>
                 <li>
-                  <Link to="/annonces" className="hover:text-[#10B981]">Annonces</Link>
+                  <Link to="/announcements" className="hover:text-[#10B981]">Annonces</Link>
                 </li>
                 <li>
                   <Link to="/apropos" className="hover:text-[#10B981]">À propos</Link>
@@ -59,7 +59,7 @@ export function Footer() {
               <h4 className="mb-4 text-lg font-semibold">Ressources</h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link to="/inscription" className="hover:text-[#10B981]">Admissions</Link>
+                  <Link to="/register" className="hover:text-[#10B981]">Admissions</Link>
                 </li>
                 <li>
                   <Link to="/programmes" className="hover:text-[#10B981]">Programmes</Link>
@@ -79,12 +79,12 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-gray-300">
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-5 w-5 text-[#FACC15]" />
-                <span>Campus Omega, Lot 00, Antananarivo, Madagascar</span>
+                <span>Campus Omega, Lot 100, Antananarivo, Madagascar</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-[#10B981]" />
-                <a href="tel:+26120000000" className="hover:text-white">
-                  +261 20 00 000 00
+                <a href="tel:+261341047894" className="hover:text-white">
+                  +261 34 10 478 94
                 </a>
               </li>
               <li className="flex items-center gap-3">

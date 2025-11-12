@@ -74,7 +74,7 @@ export function FaqSection() {
             </h3>
             <div className="flex items-center gap-3 text-sm text-[#0F172A]/75">
               <Phone className="h-5 w-5 text-[#10B981]" />
-              +261 20 00 000 00 (lun.-ven. / 8h-17h)
+              +261 34 10 478 94 (lun.-ven. / 8h-17h)
             </div>
             <div className="flex items-center gap-3 text-sm text-[#0F172A]/75">
               <Mail className="h-5 w-5 text-[#1E40AF]" />
