@@ -2,7 +2,6 @@ package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,6 +18,7 @@ import com.omega.school.repository.LevelRepository;
 import com.omega.school.repository.StudentRepository;
 import com.omega.school.service.StudentService;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -39,10 +39,10 @@ public class StudentServiceImpl implements StudentService {
         }
 
         Level level = levelRepository.findByName(dto.getLevel())
-                .orElseThrow(() -> new RuntimeException("Level not found: " + dto.getLevel()));
+                .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé : " + dto.getLevel()));
 
         Group group = groupRepository.findByName(dto.getGroup())
-                .orElseThrow(() -> new RuntimeException("Group not found: " + dto.getGroup()));
+                .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé : " + dto.getGroup()));
 
         Student student = StudentMapper.toEntity(dto, level, group);
         student.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
@@ -77,9 +77,10 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student updateStudent(UUID userId, StudentRequestDto updatedStudent) {
         Level level = levelRepository.findByName(updatedStudent.getLevel())
-                .orElseThrow(() -> new RuntimeException("Level not found: " + updatedStudent.getLevel()));
+                .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé : " + updatedStudent.getLevel()));
+
         Group group = groupRepository.findByName(updatedStudent.getGroup())
-                .orElseThrow(() -> new RuntimeException("Group not found: " + updatedStudent.getGroup()));
+                .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé : " + updatedStudent.getGroup()));
 
         return studentRepository.findById(
                 userId)
@@ -97,11 +98,14 @@ public class StudentServiceImpl implements StudentService {
 
                     return studentRepository.save(existing);
                 })
-                .orElseThrow(() -> new NoSuchElementException("Étudiant non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
     }
 
     @Override
     public void deleteStudent(UUID userId) {
+        if (!studentRepository.existsById(userId)) {
+            throw new EntityNotFoundException("Étudiant non trouvé");
+        }
         studentRepository.deleteById(userId);
     }
 }

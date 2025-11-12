@@ -1,7 +1,6 @@
 package com.omega.school.service.impl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,6 +12,8 @@ import com.omega.school.mapper.AdminMapper;
 import com.omega.school.model.Admin;
 import com.omega.school.repository.AdminRepository;
 import com.omega.school.service.AdminService;
+
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -63,14 +64,21 @@ public class AdminServiceImpl implements AdminService {
                     if (updatedAdmin.getPassword() != null && !updatedAdmin.getPassword().isBlank()) {
                         existing.setPasswordHash(passwordEncoder.encode(updatedAdmin.getPassword()));
                     }
+                    if (!existing.getAdminId().equals(updatedAdmin.getAdminId()) &&
+                            adminRepository.existsByAdminId(updatedAdmin.getAdminId())) {
+                        throw new IllegalArgumentException("Admin ID déjà utilisé");
+                    }
 
                     return adminRepository.save(existing);
                 })
-                .orElseThrow(() -> new NoSuchElementException("Admin non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Admin non trouvé"));
     }
 
     @Override
     public void deleteAdmin(UUID userId) {
+        if (!adminRepository.existsById(userId)) {
+            throw new EntityNotFoundException("Admin non trouvé");
+        }
         adminRepository.deleteById(userId);
     }
 }

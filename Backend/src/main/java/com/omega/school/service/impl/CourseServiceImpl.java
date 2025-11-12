@@ -27,6 +27,9 @@ public class CourseServiceImpl implements CourseService {
         if (courseRepository.existsByTitle(dto.getTitle())) {
             throw new IllegalArgumentException("Titre déjà utilisé");
         }
+        if (dto.getTitle() == null || dto.getTitle().isBlank()) {
+            throw new IllegalArgumentException("Le titre du cours ne peut pas être vide");
+        }
 
         Teacher teacher = teacherRepository.findByMatriculeNumber(dto.getTeacherMatricule())
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
@@ -68,6 +71,10 @@ public class CourseServiceImpl implements CourseService {
 
         Teacher teacher = teacherRepository.findByMatriculeNumber(dto.getTeacherMatricule())
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
+
+        if (!course.getTitle().equals(dto.getTitle()) && courseRepository.existsByTitle(dto.getTitle())) {
+            throw new IllegalArgumentException("Titre déjà utilisé");
+        }
 
         course.setDescription(dto.getDescription());
         course.setTeacher(teacher);

@@ -3,6 +3,8 @@ package com.omega.school.controller;
 import com.omega.school.dto.EnrollmentRequestDto;
 import com.omega.school.dto.EnrollmentResponseDto;
 import com.omega.school.service.EnrollmentService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -16,19 +18,21 @@ public class EnrollmentController {
     private final EnrollmentService enrollmentService;
 
     @PostMapping
-    public ResponseEntity<EnrollmentResponseDto> enroll(@RequestBody EnrollmentRequestDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(enrollmentService.enrollStudent(dto));
+    public ResponseEntity<EnrollmentResponseDto> enroll(@Valid @RequestBody EnrollmentRequestDto dto) {
+        EnrollmentResponseDto created = enrollmentService.enrollStudent(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/student/{registration}")
     public ResponseEntity<List<EnrollmentResponseDto>> getByStudent(@PathVariable String registration) {
-        return ResponseEntity.ok(enrollmentService.getEnrollmentsByStudent(registration));
+        List<EnrollmentResponseDto> enrollments = enrollmentService.getEnrollmentsByStudent(registration);
+        return ResponseEntity.ok(enrollments);
     }
 
     @GetMapping("/course/{title}")
     public ResponseEntity<List<EnrollmentResponseDto>> getByCourse(@PathVariable String title) {
-        return ResponseEntity.ok(enrollmentService.getEnrollmentsByCourse(title));
+        List<EnrollmentResponseDto> enrollments = enrollmentService.getEnrollmentsByCourse(title);
+        return ResponseEntity.ok(enrollments);
     }
 
     @DeleteMapping("/{registration}/{title}")

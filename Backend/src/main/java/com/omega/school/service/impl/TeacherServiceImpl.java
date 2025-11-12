@@ -2,7 +2,6 @@ package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +14,8 @@ import com.omega.school.model.Teacher;
 import com.omega.school.repository.TeacherRepository;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.TeacherService;
+
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -81,11 +82,14 @@ public class TeacherServiceImpl implements TeacherService {
 
                     return teacherRepository.save(existing);
                 })
-                .orElseThrow(() -> new NoSuchElementException("Enseignant non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
     }
 
     @Override
     public void deleteTeacher(UUID userId) {
+        if (!teacherRepository.existsById(userId)) {
+            throw new EntityNotFoundException("Enseignant non trouvé");
+        }
         teacherRepository.deleteById(userId);
     }
 }

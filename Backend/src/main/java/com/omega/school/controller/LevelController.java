@@ -2,10 +2,11 @@ package com.omega.school.controller;
 
 import com.omega.school.model.Level;
 import com.omega.school.service.LevelService;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
 @RestController
@@ -17,32 +18,27 @@ public class LevelController {
 
     @PostMapping
     public ResponseEntity<Level> create(@RequestBody String levelName) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(levelService.createLevel(levelName));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        Level created = levelService.createLevel(levelName);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<Level> getByName(@PathVariable String name) {
         return levelService.getLevelByName(name)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Niveau non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé"));
     }
 
     @GetMapping
     public ResponseEntity<List<Level>> getAll() {
-        return ResponseEntity.ok(levelService.getAllLevels());
+        List<Level> levels = levelService.getAllLevels();
+        return ResponseEntity.ok(levels);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Level> update(@PathVariable UUID id, @RequestBody String levelName) {
-        try {
-            return ResponseEntity.ok(levelService.updateLevel(id, levelName));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        Level updated = levelService.updateLevel(id, levelName);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")

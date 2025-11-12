@@ -2,10 +2,11 @@ package com.omega.school.controller;
 
 import com.omega.school.model.Group;
 import com.omega.school.service.GroupService;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
 @RestController
@@ -17,32 +18,27 @@ public class GroupController {
 
     @PostMapping
     public ResponseEntity<Group> create(@RequestBody String groupName) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createGroup(groupName));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        Group created = groupService.createGroup(groupName);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<Group> getByName(@PathVariable String name) {
         return groupService.getGroupByName(name)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Groupe non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé"));
     }
 
     @GetMapping
     public ResponseEntity<List<Group>> getAll() {
-        return ResponseEntity.ok(groupService.getAllGroups());
+        List<Group> groups = groupService.getAllGroups();
+        return ResponseEntity.ok(groups);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Group> update(@PathVariable UUID id, @RequestBody String groupName) {
-        try {
-            return ResponseEntity.ok(groupService.updateGroup(id, groupName));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        Group updated = groupService.updateGroup(id, groupName);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")

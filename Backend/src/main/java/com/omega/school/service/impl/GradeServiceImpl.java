@@ -79,6 +79,9 @@ public class GradeServiceImpl implements GradeService {
                                 .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
 
                 GradeId id = new GradeId(student.getUserId(), course.getCourseId());
+                if (!gradeRepository.existsById(id)) {
+                        throw new EntityNotFoundException("Note non trouvée");
+                }
                 gradeRepository.deleteById(id);
         }
 }

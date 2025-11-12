@@ -24,6 +24,9 @@ public class LevelServiceImpl implements LevelService {
         if (levelRepository.existsByName(name)) {
             throw new IllegalArgumentException("Nom de niveau déjà utilisé");
         }
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Le nom du niveau ne peut pas être vide");
+        }
 
         Level level = new Level();
         level.setName(name);
@@ -53,6 +56,9 @@ public class LevelServiceImpl implements LevelService {
 
     @Override
     public void deleteLevel(UUID id) {
+        if (!levelRepository.existsById(id)) {
+            throw new EntityNotFoundException("Niveau non trouvé");
+        }
         levelRepository.deleteById(id);
     }
 }

@@ -25,6 +25,9 @@ public class GroupServiceImpl implements GroupService {
         if (groupRepository.existsByName(groupName)) {
             throw new IllegalArgumentException("Nom de groupe déjà utilisé");
         }
+        if (groupName == null || groupName.isBlank()) {
+            throw new IllegalArgumentException("Le nom du groupe ne peut pas être vide");
+        }
 
         Group group = new Group();
         group.setName(groupName);
@@ -57,6 +60,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void deleteGroup(UUID id) {
+        if (!groupRepository.existsById(id)) {
+            throw new EntityNotFoundException("Groupe non trouvé");
+        }
         groupRepository.deleteById(id);
     }
 }
