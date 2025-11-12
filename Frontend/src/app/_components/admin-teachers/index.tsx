@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { teachers } from "@/seeders/users";
-import { TeachersFilterBar } from "./teachers-filter-bar";
 import { TeachersGrid } from "./teachers-grid";
 import { TeachersHeader } from "./teachers-header";
+import type { UserSearchType } from "../user-search.type";
+import { FilterBar } from "../filter-bar";
 
 export function TeachersList() {
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("Tous");
-  const [sort, setSort] = useState("A-Z");
+  const [filter, setFilter] =
+    useState<UserSearchType["genderFilter"]>("Tous");
+  const [sort, setSort] =
+    useState<UserSearchType["sort"]>("A-Z");
 
   const filteredTeachers = teachers
     .filter(
@@ -23,13 +26,13 @@ export function TeachersList() {
     });
 
   return (
-    <div className="min-h-screen flex flex-col gap-6 p-8 dark:bg-background">
+    <div className="min-h-screen flex flex-col gap-2 p-8 dark:bg-background">
       <TeachersHeader />
-      <TeachersFilterBar
+      <FilterBar
         search={search}
         setSearch={setSearch}
-        filter={filter}
-        setFilter={setFilter}
+        genderFilter={filter}
+        setGenderFilter={setFilter}
         sort={sort}
         setSort={setSort}
       />

@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { RegistrationForm } from "@/components/registration-form";
 import { Separator } from "@/components/ui/separator";
+import { useState } from "react";
 
 export function StudentsHeader() {
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <div className="flex justify-between items-center">
       <div>
@@ -22,7 +24,7 @@ export function StudentsHeader() {
         <p className="text-sm text-muted-foreground">Gérez les élèves inscrits</p>
       </div>
 
-      <AlertDialog>
+      <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>
           <Button className="bg-(--yellow) hover:bg-yellow-500 text-white shadow-sm">
             <UserPlus2 className="w-4 h-4" /> Ajouter un élève
@@ -34,7 +36,7 @@ export function StudentsHeader() {
               <div>
                 <AlertDialogTitle>Créer un nouvel élève</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Renseignez les informations de l'élève.
+                  Renseignez les informations de l'élève en question.
                 </AlertDialogDescription>
               </div>
               <AlertDialogCancel asChild>
@@ -45,7 +47,7 @@ export function StudentsHeader() {
             </div>
           </AlertDialogHeader>
           <Separator />
-          <RegistrationForm isStudent />
+          <RegistrationForm isStudent={true} setOpen={setOpen} />
         </AlertDialogContent>
       </AlertDialog>
     </div>

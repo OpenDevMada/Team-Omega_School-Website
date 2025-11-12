@@ -8,30 +8,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Users, SlidersHorizontal, ChevronDown, Search } from "lucide-react";
-
-interface TeachersFilterBarProps {
-  search: string;
-  setSearch: (value: string) => void;
-  filter: string;
-  setFilter: (value: string) => void;
-  sort: string;
-  setSort: (value: string) => void;
-}
+import {
+  Users,
+  SlidersHorizontal,
+  ChevronDown,
+  Search,
+  Check,
+  ArrowDownAZ,
+  ArrowUpZA,
+} from "lucide-react";
+import type { UserSearchType } from "../user-search.type";
 
 export function TeachersFilterBar({
   search,
   setSearch,
-  filter,
-  setFilter,
+  genderFilter,
+  setGenderFilter,
+  sort,
   setSort,
-}: TeachersFilterBarProps) {
+}: UserSearchType) {
   return (
-    <div className="flex flex-col md:flex-row items-center gap-4 justify-between mt-4">
+    <div className="flex flex-wrap items-center gap-4 justify-between mt-4">
       <div className="relative w-full md:w-1/2">
         <Search className="absolute left-2 top-2.5 text-gray-400 h-4 w-4" />
         <Input
-          placeholder="Recherche par nom ou prenom"
+          placeholder="Recherche par nom ou prénom"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-8"
@@ -42,29 +43,50 @@ export function TeachersFilterBar({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
-              <Users className="w-4 h-4" /> {filter} <ChevronDown className="w-4 h-4" />
+              <Users className="w-4 h-4" /> {genderFilter}{" "}
+              <ChevronDown className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Filtrer par genre</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setFilter("Tous")}>Tous</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setFilter("Masculin")}>Masculin</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setFilter("Féminin")}>Féminin</DropdownMenuItem>
+            {["Tous", "Masculin", "Féminin"].map((option) => (
+              <DropdownMenuItem
+                key={option}
+                onClick={() => setGenderFilter(option as "Tous" | "Masculin" | "Féminin")}
+                className="flex items-center justify-between"
+              >
+                <span>{option}</span>
+                {genderFilter === option && <Check className="w-4 h-4 text-blue-600" />}
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4" /> Trier <ChevronDown className="w-4 h-4" />
+              <SlidersHorizontal className="w-4 h-4" /> {sort}
+              <ChevronDown className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Trier par nom</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setSort("A-Z")}>A → Z</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setSort("Z-A")}>Z → A</DropdownMenuItem>
+            {["A-Z", "Z-A"].map((order) => (
+              <DropdownMenuItem
+                key={order}
+                onClick={() => setSort(order as "A-Z" | "Z-A")}
+                className="flex items-center justify-between"
+              >
+                <span className="flex items-center gap-2">{order === "A-Z" ? <>
+                  <ArrowDownAZ /> A → Z
+                </> : <>
+                  <ArrowUpZA /> Z → A
+                </>}</span>
+                {sort === order && <Check className="w-4 h-4 text-blue-600" />}
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

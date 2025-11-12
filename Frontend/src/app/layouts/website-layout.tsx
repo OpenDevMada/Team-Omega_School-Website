@@ -5,10 +5,10 @@ import { Toaster } from "sonner";
 
 export default function WebsiteLayout() {
   return (
-    <div className="w-full min-h-screen">
+    <div className="flex flex-col w-full min-h-screen">
       <Toaster position="bottom-center" richColors />
       <Header />
-      <main>
+      <main className="flex-1">
         <Outlet />
       </main>
       <Footer />

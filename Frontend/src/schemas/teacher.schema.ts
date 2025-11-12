@@ -4,6 +4,6 @@ import { courseSchema } from "./course.schema";
 
 export const teacherSchema = userSchema.extend({
   matriculeNumber: z.string(),
-  bio: z.string(),
-  courses: z.array(courseSchema),
+  bio: z.string().optional(),
+  courses: courseSchema.pick({ title: true }),
 });

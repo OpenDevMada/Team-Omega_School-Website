@@ -4,20 +4,22 @@ import { Spinner } from "@/components/ui/spinner";
 import type { Student } from "@/types/student";
 import type { Teacher } from "@/types/teacher";
 import { Trash2 } from "lucide-react";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 export const DeleteUserButton = ({ user, withLabel = false }: { user: Teacher | Student, withLabel: boolean }) => {
   const [pending, startTransition] = useTransition();
+  const [open, setOpen] = useState<boolean>(false);
   const handleDelete = () => {
     startTransition(async () => {
       await new Promise(res => setTimeout(res, 1500));
+      setOpen(false);
       toast.success(`${user.firstName} supprime avec success`);
     });
   }
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button
           title={`Supprimer ${user.firstName}`}

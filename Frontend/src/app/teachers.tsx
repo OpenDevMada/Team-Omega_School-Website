@@ -1,4 +1,6 @@
+import { Separator } from "@/components/ui/separator";
 import { TeachersList } from "./_components/admin-teachers";
+import { TeachersListOnStudentBoard } from "./_components/student-teachers";
 
 export default function TeachersPage() {
   /**
@@ -7,6 +9,10 @@ export default function TeachersPage() {
    * Update view according to this
    */
   return (
-    <TeachersList />
+    <div>
+      <TeachersList />
+      <Separator />
+      <TeachersListOnStudentBoard />
+    </div>
   );
 }
