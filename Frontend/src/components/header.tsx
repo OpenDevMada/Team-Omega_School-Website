@@ -8,7 +8,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b shadow-sm">
+    <header className="sticky w-full top-0 z-30 bg-white/40 backdrop-blur-3xl border-b shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 md:py-4">
         <Link to="/" className="flex items-center gap-2">
           <GraduationCap className="text-[#1E40AF]" size={28} />
