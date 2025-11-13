@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.omega.school.dto.GroupRequestDto;
 import com.omega.school.model.Group;
 import com.omega.school.repository.GroupRepository;
 import com.omega.school.service.GroupService;
@@ -21,16 +22,16 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
 
     @Override
-    public Group createGroup(String groupName) {
-        if (groupRepository.existsByName(groupName)) {
+    public Group createGroup(GroupRequestDto dto) {
+        if (groupRepository.existsByName(dto.getGroupName())) {
             throw new IllegalArgumentException("Nom de groupe déjà utilisé");
         }
-        if (groupName == null || groupName.isBlank()) {
+        if (dto.getGroupName() == null || dto.getGroupName().isBlank()) {
             throw new IllegalArgumentException("Le nom du groupe ne peut pas être vide");
         }
 
         Group group = new Group();
-        group.setName(groupName);
+        group.setName(dto.getGroupName());
         group.setCreatedAt(LocalDateTime.now());
         group.setUpdatedAt(LocalDateTime.now());
 
@@ -48,10 +49,10 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group updateGroup(UUID id, String newGroupName) {
+    public Group updateGroup(UUID id, GroupRequestDto dto) {
         return groupRepository.findById(id)
                 .map(existing -> {
-                    existing.setName(newGroupName);
+                    existing.setName(dto.getGroupName());
                     existing.setUpdatedAt(LocalDateTime.now());
                     return groupRepository.save(existing);
                 })

@@ -1,5 +1,6 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.LevelRequestDto;
 import com.omega.school.model.Level;
 import com.omega.school.service.LevelService;
 
@@ -17,8 +18,8 @@ public class LevelController {
     private final LevelService levelService;
 
     @PostMapping
-    public ResponseEntity<Level> create(@RequestBody String levelName) {
-        Level created = levelService.createLevel(levelName);
+    public ResponseEntity<Level> create(@RequestBody LevelRequestDto dto) {
+        Level created = levelService.createLevel(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -36,8 +37,8 @@ public class LevelController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Level> update(@PathVariable UUID id, @RequestBody String levelName) {
-        Level updated = levelService.updateLevel(id, levelName);
+    public ResponseEntity<Level> update(@PathVariable UUID id, @RequestBody LevelRequestDto dto) {
+        Level updated = levelService.updateLevel(id, dto);
         return ResponseEntity.ok(updated);
     }
 
