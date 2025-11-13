@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.omega.school.dto.LevelRequestDto;
 import com.omega.school.model.Level;
 import com.omega.school.repository.LevelRepository;
 import com.omega.school.service.LevelService;
@@ -20,16 +21,16 @@ public class LevelServiceImpl implements LevelService {
     private final LevelRepository levelRepository;
 
     @Override
-    public Level createLevel(String name) {
-        if (levelRepository.existsByName(name)) {
+    public Level createLevel(LevelRequestDto dto) {
+        if (levelRepository.existsByName(dto.getLevelName())) {
             throw new IllegalArgumentException("Nom de niveau déjà utilisé");
         }
-        if (name == null || name.isBlank()) {
+        if (dto.getLevelName() == null || dto.getLevelName().isBlank()) {
             throw new IllegalArgumentException("Le nom du niveau ne peut pas être vide");
         }
 
         Level level = new Level();
-        level.setName(name);
+        level.setName(dto.getLevelName());
 
         return levelRepository.save(level);
     }
@@ -45,10 +46,10 @@ public class LevelServiceImpl implements LevelService {
     }
 
     @Override
-    public Level updateLevel(UUID id, String newLevelName) {
+    public Level updateLevel(UUID id, LevelRequestDto dto) {
         return levelRepository.findById(id)
                 .map(existing -> {
-                    existing.setName(newLevelName);
+                    existing.setName(dto.getLevelName());
                     return levelRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé"));

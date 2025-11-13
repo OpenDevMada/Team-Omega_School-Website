@@ -1,5 +1,6 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.GroupRequestDto;
 import com.omega.school.model.Group;
 import com.omega.school.service.GroupService;
 
@@ -17,8 +18,8 @@ public class GroupController {
     private final GroupService groupService;
 
     @PostMapping
-    public ResponseEntity<Group> create(@RequestBody String groupName) {
-        Group created = groupService.createGroup(groupName);
+    public ResponseEntity<Group> create(@RequestBody GroupRequestDto dto) {
+        Group created = groupService.createGroup(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -36,8 +37,8 @@ public class GroupController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Group> update(@PathVariable UUID id, @RequestBody String groupName) {
-        Group updated = groupService.updateGroup(id, groupName);
+    public ResponseEntity<Group> update(@PathVariable UUID id, @RequestBody GroupRequestDto dto) {
+        Group updated = groupService.updateGroup(id, dto);
         return ResponseEntity.ok(updated);
     }
 

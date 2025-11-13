@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
@@ -21,6 +22,7 @@ public class Level {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Size(max = 10)
     @Column(name = "name", unique = true, nullable = false, length = 10)
     private String name;
 
