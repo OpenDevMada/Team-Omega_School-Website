@@ -1,16 +1,14 @@
 package com.omega.school.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AdminRequestDto extends UserRequestDto {
-    @NotBlank
-    private String adminId;
+public class TeacherUpdateDto extends UserUpdateDto {
+    private String bio;
 }

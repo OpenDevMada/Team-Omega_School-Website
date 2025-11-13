@@ -2,6 +2,8 @@ package com.omega.school.controller;
 
 import com.omega.school.dto.*;
 import com.omega.school.service.GradeService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -16,23 +18,27 @@ public class GradeController {
     private final GradeService gradeService;
 
     @PostMapping
-    public ResponseEntity<GradeResponseDto> create(@RequestBody GradeRequestDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(gradeService.createGrade(dto));
+    public ResponseEntity<GradeResponseDto> create(@Valid @RequestBody GradeRequestDto dto) {
+        GradeResponseDto created = gradeService.createGrade(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/student/{registration}")
     public ResponseEntity<List<GradeResponseDto>> getByStudent(@PathVariable String registration) {
-        return ResponseEntity.ok(gradeService.getGradesByStudentRegistration(registration));
+        List<GradeResponseDto> grades = gradeService.getGradesByStudentRegistration(registration);
+        return ResponseEntity.ok(grades);
     }
 
     @GetMapping("/course/{title}")
     public ResponseEntity<List<GradeResponseDto>> getByCourse(@PathVariable String title) {
-        return ResponseEntity.ok(gradeService.getGradesByCourseTitle(title));
+        List<GradeResponseDto> grades = gradeService.getGradesByCourseTitle(title);
+        return ResponseEntity.ok(grades);
     }
 
     @PutMapping
-    public ResponseEntity<GradeResponseDto> update(@RequestBody GradeRequestDto dto) {
-        return ResponseEntity.ok(gradeService.updateGrade(dto));
+    public ResponseEntity<GradeResponseDto> update(@Valid @RequestBody GradeRequestDto dto) {
+        GradeResponseDto updated = gradeService.updateGrade(dto);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping

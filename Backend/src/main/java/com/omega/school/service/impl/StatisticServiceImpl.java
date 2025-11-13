@@ -28,6 +28,9 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public Optional<Statistic> getStatisticsByPeriodLabel(String periodLabel) {
+        if (periodLabel == null || periodLabel.isBlank()) {
+            throw new IllegalArgumentException("Le label de période ne peut pas être vide");
+        }
         return statisticRepository.findByPeriodLabel(periodLabel);
     }
 

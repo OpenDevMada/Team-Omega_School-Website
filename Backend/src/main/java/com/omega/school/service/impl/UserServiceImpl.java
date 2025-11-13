@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.omega.school.dto.UserRequestDto;
+import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.mapper.UserMapper;
 import com.omega.school.model.Role;
 import com.omega.school.model.User;
@@ -60,26 +61,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(UUID id, User updatedUser) {
+    public User updateUser(UUID id, UserUpdateDto updatedUserDto) {
         return userRepository.findById(id)
                 .map(existing -> {
 
-                    if (!existing.getEmail().equals(updatedUser.getEmail()) &&
-                            userRepository.existsByEmail(updatedUser.getEmail())) {
+                    if (!existing.getEmail().equals(updatedUserDto.getEmail()) &&
+                            userRepository.existsByEmail(updatedUserDto.getEmail())) {
                         throw new IllegalArgumentException("Email déjà utilisé");
                     }
 
-                    existing.setFirstName(updatedUser.getFirstName());
-                    existing.setLastName(updatedUser.getLastName());
-                    existing.setAddress(updatedUser.getAddress());
-                    existing.setPhoneNumber(updatedUser.getPhoneNumber());
-                    existing.setEmail(updatedUser.getEmail());
-                    existing.setRole(updatedUser.getRole());
+                    UserMapper.updateEntityFromDto(updatedUserDto, existing);
                     existing.setUpdatedAt(LocalDateTime.now());
-
-                    if (updatedUser.getPasswordHash() != null && !updatedUser.getPasswordHash().isBlank()) {
-                        existing.setPasswordHash(passwordEncoder.encode(updatedUser.getPasswordHash()));
-                    }
 
                     return userRepository.save(existing);
                 })

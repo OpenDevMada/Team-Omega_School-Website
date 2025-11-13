@@ -1,6 +1,7 @@
 package com.omega.school.mapper;
 
 import com.omega.school.dto.StudentRequestDto;
+import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Group;
 import com.omega.school.model.Level;
 import com.omega.school.model.Student;
@@ -26,5 +27,20 @@ public class StudentMapper {
         student.setPasswordHash(dto.getPassword());
 
         return student;
+    }
+
+    public static void updateEntityFromDto(StudentUpdateDto dto, Student student, Level level, Group group) {
+        if (dto == null || student == null)
+            return;
+
+        student.setFirstName(dto.getFirstName());
+        student.setLastName(dto.getLastName());
+        student.setEmail(dto.getEmail());
+        student.setAddress(dto.getAddress());
+        student.setBirthDate(dto.getBirthDate());
+        student.setPhoneNumber(dto.getPhoneNumber());
+        student.setSex(dto.getSex());
+        student.setGroup(group);
+        student.setLevel(level);
     }
 }

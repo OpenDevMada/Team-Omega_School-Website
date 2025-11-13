@@ -1,14 +1,15 @@
 package com.omega.school.controller;
 
 import com.omega.school.dto.TeacherRequestDto;
+import com.omega.school.dto.TeacherUpdateDto;
 import com.omega.school.model.Teacher;
 import com.omega.school.service.TeacherService;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
 @RestController
@@ -20,45 +21,42 @@ public class TeacherController {
 
     @PostMapping
     public ResponseEntity<Teacher> create(@Valid @RequestBody TeacherRequestDto dto) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(teacherService.createTeacher(dto));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        Teacher created = teacherService.createTeacher(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Teacher> getById(@PathVariable UUID id) {
-        return teacherService.getTeacherById(id)
+    @GetMapping("/{userId}")
+    public ResponseEntity<Teacher> getById(@PathVariable UUID userId) {
+        return teacherService.getTeacherById(userId)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enseignant non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
     }
 
     @GetMapping("/matricule/{matricule}")
     public ResponseEntity<Teacher> getByMatricule(@PathVariable String matricule) {
         return teacherService.getByMatriculeNumber(matricule)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Enseignant non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
     }
 
     @GetMapping
     public ResponseEntity<List<Teacher>> getAll() {
-        return ResponseEntity.ok(teacherService.getAllTeachers());
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Teacher> update(@PathVariable UUID id, @Valid @RequestBody TeacherRequestDto teacher) {
-        try {
-            return ResponseEntity.ok(teacherService.updateTeacher(id, teacher));
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        List<Teacher> teachers = teacherService.getAllTeachers();
+        if (teachers.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
+        return ResponseEntity.ok(teachers);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        teacherService.deleteTeacher(id);
+    @PutMapping("/{userId}")
+    public ResponseEntity<Teacher> update(@PathVariable UUID userId, @Valid @RequestBody TeacherUpdateDto teacher) {
+        Teacher updated = teacherService.updateTeacher(userId, teacher);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID userId) {
+        teacherService.deleteTeacher(userId);
         return ResponseEntity.noContent().build();
     }
 }

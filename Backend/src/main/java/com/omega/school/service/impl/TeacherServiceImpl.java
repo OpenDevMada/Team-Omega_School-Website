@@ -2,7 +2,6 @@ package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,11 +9,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.TeacherRequestDto;
+import com.omega.school.dto.TeacherUpdateDto;
 import com.omega.school.mapper.TeacherMapper;
 import com.omega.school.model.Teacher;
 import com.omega.school.repository.TeacherRepository;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.TeacherService;
+
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -45,8 +47,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Optional<Teacher> getTeacherById(UUID id) {
-        return teacherRepository.findById(id);
+    public Optional<Teacher> getTeacherById(UUID userId) {
+        return teacherRepository.findById(userId);
     }
 
     @Override
@@ -60,31 +62,29 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Teacher updateTeacher(UUID id, TeacherRequestDto updatedTeacher) {
-        return teacherRepository.findById(id)
+    public Teacher updateTeacher(UUID userId, TeacherUpdateDto updatedTeacher) {
+        return teacherRepository.findById(
+                userId)
                 .map(existing -> {
-                    if (!existing.getMatriculeNumber().equals(updatedTeacher.getMatriculeNumber()) &&
-                            teacherRepository.existsByMatriculeNumber(updatedTeacher.getMatriculeNumber())) {
-                        throw new IllegalArgumentException("Matricule déjà utilisé");
+
+                    if (!existing.getEmail().equals(updatedTeacher.getEmail()) &&
+                            userRepository.existsByEmail(updatedTeacher.getEmail())) {
+                        throw new IllegalArgumentException("Email déjà utilisé");
                     }
 
-                    existing.setFirstName(updatedTeacher.getFirstName());
-                    existing.setLastName(updatedTeacher.getLastName());
-                    existing.setBio(updatedTeacher.getBio());
-                    existing.setMatriculeNumber(updatedTeacher.getMatriculeNumber());
+                    TeacherMapper.updateEntityFromDto(updatedTeacher, existing);
                     existing.setUpdatedAt(LocalDateTime.now());
-
-                    if (updatedTeacher.getPassword() != null && !updatedTeacher.getPassword().isBlank()) {
-                        existing.setPasswordHash(passwordEncoder.encode(updatedTeacher.getPassword()));
-                    }
 
                     return teacherRepository.save(existing);
                 })
-                .orElseThrow(() -> new NoSuchElementException("Enseignant non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
     }
 
     @Override
-    public void deleteTeacher(UUID id) {
-        teacherRepository.deleteById(id);
+    public void deleteTeacher(UUID userId) {
+        if (!teacherRepository.existsById(userId)) {
+            throw new EntityNotFoundException("Enseignant non trouvé");
+        }
+        teacherRepository.deleteById(userId);
     }
 }

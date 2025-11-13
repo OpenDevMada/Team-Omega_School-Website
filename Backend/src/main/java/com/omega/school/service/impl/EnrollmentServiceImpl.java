@@ -31,6 +31,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 Course course = courseRepository.findByTitle(dto.getCourseTitle())
                                 .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
 
+                EnrollmentId id = new EnrollmentId(student.getUserId(), course.getCourseId());
+                if (enrollmentRepository.existsById(id)) {
+                        throw new IllegalArgumentException("L'étudiant est déjà inscrit à ce cours");
+                }
+
                 Enrollment enrollment = EnrollmentMapper.toEntity(dto, student, course);
 
                 enrollment.setEnrolledAt(LocalDateTime.now());
@@ -62,6 +67,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                                 .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
 
                 EnrollmentId id = new EnrollmentId(student.getUserId(), course.getCourseId());
+
+                if (!enrollmentRepository.existsById(id)) {
+                        throw new EntityNotFoundException("Inscription non trouvée");
+                }
+
                 enrollmentRepository.deleteById(id);
         }
 }
