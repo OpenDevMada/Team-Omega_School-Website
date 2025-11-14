@@ -38,7 +38,6 @@ public class UserRequestDto {
     @NotBlank
     private String phoneNumber;
 
-    @NotBlank
     private String password;
 
     @NotNull
