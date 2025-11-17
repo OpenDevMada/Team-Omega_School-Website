@@ -1,11 +1,15 @@
 package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Pageable;
 import com.omega.school.dto.EnrollmentRequestDto;
 import com.omega.school.dto.EnrollmentResponseDto;
 import com.omega.school.mapper.EnrollmentMapper;
@@ -44,19 +48,44 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         @Override
-        public List<EnrollmentResponseDto> getEnrollmentsByStudent(String registrationNumber) {
-                return enrollmentRepository.findByStudentRegistrationNumber(registrationNumber)
+        public Map<String, Object> getEnrollmentsByStudent(String registrationNumber, int page, int size) {
+                Pageable pageable = PageRequest.of(page, size);
+
+                Page<Enrollment> enrollmentPage = enrollmentRepository
+                                .findByStudentRegistrationNumber(registrationNumber, pageable);
+
+                List<EnrollmentResponseDto> content = enrollmentPage.getContent()
                                 .stream()
                                 .map(EnrollmentMapper::toDto)
                                 .collect(Collectors.toList());
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("content", content);
+                response.put("currentPage", enrollmentPage.getNumber());
+                response.put("totalItems", enrollmentPage.getTotalElements());
+                response.put("totalPages", enrollmentPage.getTotalPages());
+
+                return response;
         }
 
         @Override
-        public List<EnrollmentResponseDto> getEnrollmentsByCourse(String title) {
-                return enrollmentRepository.findByCourseTitle(title)
+        public Map<String, Object> getEnrollmentsByCourse(String title, int page, int size) {
+                Pageable pageable = PageRequest.of(page, size);
+
+                Page<Enrollment> enrollmentPage = enrollmentRepository.findByCourseTitle(title, pageable);
+
+                List<EnrollmentResponseDto> content = enrollmentPage.getContent()
                                 .stream()
                                 .map(EnrollmentMapper::toDto)
                                 .collect(Collectors.toList());
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("content", content);
+                response.put("currentPage", enrollmentPage.getNumber());
+                response.put("totalItems", enrollmentPage.getTotalElements());
+                response.put("totalPages", enrollmentPage.getTotalPages());
+
+                return response;
         }
 
         @Override

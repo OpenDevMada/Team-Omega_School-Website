@@ -7,6 +7,8 @@ import com.omega.school.service.StudentService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -39,11 +41,12 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getAll() {
-        List<Student> students = studentService.getAllStudents();
-        if (students.isEmpty()) {
+    public ResponseEntity<Page<Student>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Student> students = studentService.getAllStudents(page, size);
+        if (students.isEmpty())
             return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(students);
     }
 

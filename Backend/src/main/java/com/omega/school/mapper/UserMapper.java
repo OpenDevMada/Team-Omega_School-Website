@@ -20,6 +20,8 @@ public class UserMapper {
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setPasswordHash(dto.getPassword());
         user.setRole(dto.getRole());
+        user.setAvatarUrl(dto.getAvatarUrl());
+
         return user;
     }
 
@@ -28,6 +30,7 @@ public class UserMapper {
             return null;
         }
         return new UserRequestDto(
+                user.getAvatarUrl(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
@@ -50,5 +53,7 @@ public class UserMapper {
         user.setSex(dto.getSex());
         user.setAddress(dto.getAddress());
         user.setPhoneNumber(dto.getPhoneNumber());
+        user.setAvatarUrl(dto.getAvatarUrl());
+
     }
 }

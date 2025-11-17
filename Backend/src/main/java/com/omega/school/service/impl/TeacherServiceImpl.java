@@ -1,10 +1,12 @@
 package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import com.omega.school.model.Teacher;
 import com.omega.school.repository.TeacherRepository;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.TeacherService;
+import com.omega.school.utils.GenerateId;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -28,17 +31,20 @@ public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final GenerateId generateId;
 
     @Override
     public Teacher createTeacher(TeacherRequestDto dto) {
-        if (teacherRepository.existsByMatriculeNumber(dto.getMatriculeNumber())) {
-            throw new IllegalArgumentException("Matricule déjà utilisé");
-        }
+
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("Email déjà utilisé");
         }
 
         Teacher teacher = TeacherMapper.toEntity(dto);
+
+        String matricule = generateId.generateMatricule();
+        teacher.setMatriculeNumber(matricule);
+
         teacher.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         teacher.setCreatedAt(LocalDateTime.now());
         teacher.setUpdatedAt(LocalDateTime.now());
@@ -57,8 +63,8 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public List<Teacher> getAllTeachers() {
-        return teacherRepository.findAll();
+    public Page<Teacher> getAllTeachers(int page, int size) {
+        return teacherRepository.findAll(PageRequest.of(page, size));
     }
 
     @Override

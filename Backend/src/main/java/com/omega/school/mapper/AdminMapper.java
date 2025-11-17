@@ -2,12 +2,12 @@ package com.omega.school.mapper;
 
 import java.time.LocalDateTime;
 
-import com.omega.school.dto.AdminRequestDto;
+import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
 
 public class AdminMapper {
-    public static Admin toEntity(AdminRequestDto dto) {
+    public static Admin toEntity(UserRequestDto dto) {
         if (dto == null) {
             return null;
         }
@@ -24,7 +24,6 @@ public class AdminMapper {
         admin.setPasswordHash(dto.getPassword());
         admin.setCreatedAt(LocalDateTime.now());
         admin.setUpdatedAt(LocalDateTime.now());
-        admin.setAdminId(dto.getAdminId());
 
         return admin;
     }

@@ -6,6 +6,8 @@ import com.omega.school.service.LevelService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -31,8 +33,10 @@ public class LevelController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Level>> getAll() {
-        List<Level> levels = levelService.getAllLevels();
+    public ResponseEntity<Page<Level>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Level> levels = levelService.getAllLevels(page, size);
         return ResponseEntity.ok(levels);
     }
 

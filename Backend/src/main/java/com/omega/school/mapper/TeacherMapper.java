@@ -18,7 +18,6 @@ public class TeacherMapper {
         teacher.setSex(dto.getSex());
         teacher.setAddress(dto.getAddress());
         teacher.setPhoneNumber(dto.getPhoneNumber());
-        teacher.setMatriculeNumber(dto.getMatriculeNumber());
         teacher.setPasswordHash(dto.getPassword());
         teacher.setRole(dto.getRole());
         teacher.setBio(dto.getBio());

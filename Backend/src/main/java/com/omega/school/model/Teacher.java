@@ -38,8 +38,9 @@ public class Teacher extends User {
     public Teacher(UUID userId, String firstName, String lastName,
             String email, LocalDate birthDate, Sex sex, String address, String phoneNumber, Role role,
             String passwordHash, String matriculeNumber,
-            String bio) {
-        super(userId, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role, null, null);
+            String bio, String avatarUrl) {
+        super(userId, avatarUrl, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role,
+                null, null);
         this.matriculeNumber = matriculeNumber;
         this.bio = bio;
     }

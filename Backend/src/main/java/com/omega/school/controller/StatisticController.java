@@ -5,9 +5,10 @@ import com.omega.school.service.StatisticService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
 
 @RestController
 @RequestMapping("/dashboard/stat")
@@ -24,8 +25,11 @@ public class StatisticController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Statistic>> getAll() {
-        return ResponseEntity.ok(statisticService.getAllStatistics());
+    public ResponseEntity<Page<Statistic>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Statistic> stats = statisticService.getAllStatistics(page, size);
+        return ResponseEntity.ok(stats);
     }
 
     @GetMapping("/{periodLabel}")

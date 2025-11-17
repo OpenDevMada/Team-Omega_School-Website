@@ -22,9 +22,11 @@ public class StudentMapper {
         student.setRole(dto.getRole());
         student.setGroup(group);
         student.setLevel(level);
-        student.setRegistrationNumber(dto.getRegistrationNumber());
         student.setSex(dto.getSex());
         student.setPasswordHash(dto.getPassword());
+        student.setEmergencyContact(dto.getEmergencyContact() == null || dto.getEmergencyContact().isBlank()
+                ? dto.getPhoneNumber()
+                : dto.getEmergencyContact());
 
         return student;
     }
@@ -42,5 +44,8 @@ public class StudentMapper {
         student.setSex(dto.getSex());
         student.setGroup(group);
         student.setLevel(level);
+        student.setEmergencyContact(dto.getEmergencyContact() == null || dto.getEmergencyContact().isBlank()
+                ? dto.getPhoneNumber()
+                : dto.getEmergencyContact());
     }
 }

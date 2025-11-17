@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserUpdateDto {
+    private String avatarUrl;
+
     @NotBlank
     private String firstName;
 

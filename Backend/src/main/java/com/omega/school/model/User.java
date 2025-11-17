@@ -37,6 +37,9 @@ public class User {
     @Column(name = "id")
     private UUID userId;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @Column(name = "first_name", nullable = false)
     private String firstName;
 

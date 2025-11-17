@@ -1,8 +1,10 @@
 package com.omega.school.service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+
 import com.omega.school.dto.TeacherRequestDto;
 import com.omega.school.dto.TeacherUpdateDto;
 import com.omega.school.model.Teacher;
@@ -14,7 +16,7 @@ public interface TeacherService {
 
     Optional<Teacher> getByMatriculeNumber(String matriculeNumber);
 
-    List<Teacher> getAllTeachers();
+    Page<Teacher> getAllTeachers(int page, int size);
 
     Teacher updateTeacher(UUID userId, TeacherUpdateDto updatedTeacherDto);
 

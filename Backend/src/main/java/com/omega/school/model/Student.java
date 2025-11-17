@@ -34,12 +34,17 @@ public class Student extends User {
     @JoinColumn(name = "group_id")
     private Group group;
 
+    @Column(name = "emergency_contact")
+    private String emergencyContact;
+
     public Student(UUID userId, String registrationNumber, Level level, Group group, String firstName, String lastName,
             String email, LocalDate birthDate, Sex sex, String passwordHash, String address, String phoneNumber,
-            Role role) {
-        super(userId, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role, null, null);
+            Role role, String avatarUrl, String emeemergencyContact) {
+        super(userId, avatarUrl, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role,
+                null, null);
         this.group = group;
         this.level = level;
         this.registrationNumber = registrationNumber;
+        this.emergencyContact = emeemergencyContact;
     }
 }

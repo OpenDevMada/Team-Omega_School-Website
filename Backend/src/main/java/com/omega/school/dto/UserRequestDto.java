@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDto {
+    private String avatarUrl;
+
     @NotBlank
     private String firstName;
 

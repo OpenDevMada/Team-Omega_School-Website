@@ -1,9 +1,14 @@
 package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.*;
@@ -49,19 +54,46 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseResponseDto> getAllCourses() {
-        return courseRepository.findAll()
-                .stream().map(CourseMapper::toDto)
+    public Map<String, Object> getAllCourses(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Course> coursePage = courseRepository.findAll(pageable);
+
+        List<CourseResponseDto> content = coursePage.getContent()
+                .stream()
+                .map(CourseMapper::toDto)
                 .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", content);
+        response.put("currentPage", coursePage.getNumber());
+        response.put("totalItems", coursePage.getTotalElements());
+        response.put("totalPages", coursePage.getTotalPages());
+
+        return response;
     }
 
     @Override
-    public List<CourseResponseDto> getCoursesByTeacherMatricule(String matricule) {
+    public Map<String, Object> getCoursesByTeacherMatricule(String matricule, int page, int size) {
         Teacher teacher = teacherRepository.findByMatriculeNumber(matricule)
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
-        return courseRepository.findByTeacherUserId(teacher.getUserId())
-                .stream().map(CourseMapper::toDto)
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Course> coursePage = courseRepository.findByTeacherUserId(
+                teacher.getUserId(), pageable);
+
+        List<CourseResponseDto> content = coursePage.getContent()
+                .stream()
+                .map(CourseMapper::toDto)
                 .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", content);
+        response.put("currentPage", coursePage.getNumber());
+        response.put("totalItems", coursePage.getTotalElements());
+        response.put("totalPages", coursePage.getTotalPages());
+
+        return response;
     }
 
     @Override

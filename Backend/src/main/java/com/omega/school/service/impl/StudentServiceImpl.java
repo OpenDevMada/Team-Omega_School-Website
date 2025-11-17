@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,9 @@ import com.omega.school.model.Student;
 import com.omega.school.repository.GroupRepository;
 import com.omega.school.repository.LevelRepository;
 import com.omega.school.repository.StudentRepository;
+import com.omega.school.repository.UserRepository;
 import com.omega.school.service.StudentService;
+import com.omega.school.utils.GenerateId;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -32,11 +36,13 @@ public class StudentServiceImpl implements StudentService {
     private final PasswordEncoder passwordEncoder;
     private final LevelRepository levelRepository;
     private final GroupRepository groupRepository;
+    private final GenerateId generateId;
+    private final UserRepository userRepository;
 
     @Override
     public Student createStudent(StudentRequestDto dto) {
-        if (studentRepository.existsByRegistrationNumber(dto.getRegistrationNumber())) {
-            throw new IllegalArgumentException("Numéro d'enregistrement déjà utilisé");
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email déjà utilisé");
         }
 
         Level level = levelRepository.findByName(dto.getLevel())
@@ -46,7 +52,13 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé : " + dto.getGroup()));
 
         Student student = StudentMapper.toEntity(dto, level, group);
+
+        student.setRegistrationNumber(generateId.generateRegistrationNumber());
+
         student.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        student.setCreatedAt(LocalDateTime.now());
+        student.setUpdatedAt(LocalDateTime.now());
+
         return studentRepository.save(student);
     }
 
@@ -61,8 +73,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public Page<Student> getAllStudents(int page, int size) {
+        return studentRepository.findAll(PageRequest.of(page, size));
     }
 
     @Override

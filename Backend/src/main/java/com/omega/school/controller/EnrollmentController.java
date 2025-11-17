@@ -8,7 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/enrollments")
@@ -24,15 +25,21 @@ public class EnrollmentController {
     }
 
     @GetMapping("/student/{registration}")
-    public ResponseEntity<List<EnrollmentResponseDto>> getByStudent(@PathVariable String registration) {
-        List<EnrollmentResponseDto> enrollments = enrollmentService.getEnrollmentsByStudent(registration);
-        return ResponseEntity.ok(enrollments);
+    public ResponseEntity<Map<String, Object>> getByStudent(
+            @PathVariable String registration,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = enrollmentService.getEnrollmentsByStudent(registration, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/course/{title}")
-    public ResponseEntity<List<EnrollmentResponseDto>> getByCourse(@PathVariable String title) {
-        List<EnrollmentResponseDto> enrollments = enrollmentService.getEnrollmentsByCourse(title);
-        return ResponseEntity.ok(enrollments);
+    public ResponseEntity<Map<String, Object>> getByCourse(
+            @PathVariable String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = enrollmentService.getEnrollmentsByCourse(title, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{registration}/{title}")

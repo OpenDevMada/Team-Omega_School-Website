@@ -8,6 +8,8 @@ import com.omega.school.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -40,11 +42,15 @@ public class TeacherController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Teacher>> getAll() {
-        List<Teacher> teachers = teacherService.getAllTeachers();
+    public ResponseEntity<Page<Teacher>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Teacher> teachers = teacherService.getAllTeachers(page, size);
+
         if (teachers.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+
         return ResponseEntity.ok(teachers);
     }
 

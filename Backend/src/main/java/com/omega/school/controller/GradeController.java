@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/grades")
@@ -24,15 +24,21 @@ public class GradeController {
     }
 
     @GetMapping("/student/{registration}")
-    public ResponseEntity<List<GradeResponseDto>> getByStudent(@PathVariable String registration) {
-        List<GradeResponseDto> grades = gradeService.getGradesByStudentRegistration(registration);
-        return ResponseEntity.ok(grades);
+    public ResponseEntity<Map<String, Object>> getByStudent(
+            @PathVariable String registration,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = gradeService.getGradesByStudentRegistration(registration, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/course/{title}")
-    public ResponseEntity<List<GradeResponseDto>> getByCourse(@PathVariable String title) {
-        List<GradeResponseDto> grades = gradeService.getGradesByCourseTitle(title);
-        return ResponseEntity.ok(grades);
+    public ResponseEntity<Map<String, Object>> getByCourse(
+            @PathVariable String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = gradeService.getGradesByCourseTitle(title, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping
