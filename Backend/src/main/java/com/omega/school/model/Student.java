@@ -39,8 +39,9 @@ public class Student extends User {
 
     public Student(UUID userId, String registrationNumber, Level level, Group group, String firstName, String lastName,
             String email, LocalDate birthDate, Sex sex, String passwordHash, String address, String phoneNumber,
-            Role role, String avatarUrl, String emeemergencyContact) {
+            Role role, String avatarUrl, String emeemergencyContact, boolean mustChangePassword) {
         super(userId, avatarUrl, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role,
+                mustChangePassword,
                 null, null);
         this.group = group;
         this.level = level;

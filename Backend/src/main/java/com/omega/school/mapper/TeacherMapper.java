@@ -2,6 +2,7 @@ package com.omega.school.mapper;
 
 import com.omega.school.dto.TeacherRequestDto;
 import com.omega.school.dto.TeacherUpdateDto;
+import com.omega.school.model.Role;
 import com.omega.school.model.Teacher;
 
 public class TeacherMapper {
@@ -18,8 +19,7 @@ public class TeacherMapper {
         teacher.setSex(dto.getSex());
         teacher.setAddress(dto.getAddress());
         teacher.setPhoneNumber(dto.getPhoneNumber());
-        teacher.setPasswordHash(dto.getPassword());
-        teacher.setRole(dto.getRole());
+        teacher.setRole(Role.TEACHER);
         teacher.setBio(dto.getBio());
         return teacher;
     }

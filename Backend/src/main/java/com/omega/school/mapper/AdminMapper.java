@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
+import com.omega.school.model.Role;
 
 public class AdminMapper {
     public static Admin toEntity(UserRequestDto dto) {
@@ -19,9 +20,8 @@ public class AdminMapper {
         admin.setAddress(dto.getAddress());
         admin.setBirthDate(dto.getBirthDate());
         admin.setPhoneNumber(dto.getPhoneNumber());
-        admin.setRole(dto.getRole());
+        admin.setRole(Role.ADMIN);
         admin.setSex(dto.getSex());
-        admin.setPasswordHash(dto.getPassword());
         admin.setCreatedAt(LocalDateTime.now());
         admin.setUpdatedAt(LocalDateTime.now());
 

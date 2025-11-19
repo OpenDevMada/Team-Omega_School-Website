@@ -17,6 +17,7 @@ import com.omega.school.model.Role;
 import com.omega.school.model.User;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.UserService;
+import com.omega.school.utils.TemporaryPassword;
 
 import lombok.RequiredArgsConstructor;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,9 +37,17 @@ public class UserServiceImpl implements UserService {
         }
 
         User newUser = UserMapper.toEntity(userDto);
-        newUser.setPasswordHash(passwordEncoder.encode(userDto.getPassword()));
+
+        String tempPassword = TemporaryPassword.generateTemporaryPassword();
+
+        newUser.setPasswordHash(passwordEncoder.encode(tempPassword));
+
+        newUser.setMustChangePassword(true);
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
+
+        // TODO: envoyer l'email au user contenant le mot de passe temporaire
+        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
 
         return userRepository.save(newUser);
     }

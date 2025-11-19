@@ -16,6 +16,7 @@ import com.omega.school.repository.AdminRepository;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.AdminService;
 import com.omega.school.utils.GenerateId;
+import com.omega.school.utils.TemporaryPassword;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -39,10 +40,18 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = AdminMapper.toEntity(dto);
 
-        admin.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        String temporaryPassword = TemporaryPassword.generateTemporaryPassword();
+
+        admin.setPasswordHash(passwordEncoder.encode(temporaryPassword));
+        admin.setMustChangePassword(true);
 
         String adminId = generateId.generateAdminId();
         admin.setAdminId(adminId);
+
+        // TODO: envoyer l'email au user contenant le mot de passe temporaire
+        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
+
+        System.out.println("This is the temporary password: " + temporaryPassword);
 
         return adminRepository.save(admin);
     }

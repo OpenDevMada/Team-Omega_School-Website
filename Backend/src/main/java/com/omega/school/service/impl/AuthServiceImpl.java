@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.RegisterRequestDto;
 import com.omega.school.dto.StudentRequestDto;
-import com.omega.school.model.Role;
+
 import com.omega.school.model.Student;
 
 import com.omega.school.service.AuthService;
@@ -30,8 +30,6 @@ public class AuthServiceImpl implements AuthService {
         studentRequestDto.setLevel(request.getLevel());
         studentRequestDto.setSex(request.getSex());
         studentRequestDto.setPhoneNumber(request.getPhoneNumber());
-        studentRequestDto.setPassword(request.getPassword());
-        studentRequestDto.setRole(Role.STUDENT);
 
         return studentServiceImpl.createStudent(studentRequestDto);
 

@@ -2,7 +2,6 @@ package com.omega.school.dto;
 
 import java.time.LocalDate;
 
-import com.omega.school.model.Role;
 import com.omega.school.model.Sex;
 
 import jakarta.validation.constraints.Email;
@@ -25,6 +24,7 @@ public class UserRequestDto {
     @NotBlank
     private String lastName;
 
+    @NotBlank
     @Email
     private String email;
 
@@ -40,8 +40,4 @@ public class UserRequestDto {
     @NotBlank
     private String phoneNumber;
 
-    private String password;
-
-    @NotNull
-    private Role role;
 }

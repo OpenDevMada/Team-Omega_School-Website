@@ -4,6 +4,7 @@ import com.omega.school.dto.StudentRequestDto;
 import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Group;
 import com.omega.school.model.Level;
+import com.omega.school.model.Role;
 import com.omega.school.model.Student;
 
 public class StudentMapper {
@@ -19,11 +20,10 @@ public class StudentMapper {
         student.setAddress(dto.getAddress());
         student.setBirthDate(dto.getBirthDate());
         student.setPhoneNumber(dto.getPhoneNumber());
-        student.setRole(dto.getRole());
         student.setGroup(group);
         student.setLevel(level);
         student.setSex(dto.getSex());
-        student.setPasswordHash(dto.getPassword());
+        student.setRole(Role.STUDENT);
         student.setEmergencyContact(dto.getEmergencyContact() == null || dto.getEmergencyContact().isBlank()
                 ? dto.getPhoneNumber()
                 : dto.getEmergencyContact());

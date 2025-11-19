@@ -18,8 +18,6 @@ public class UserMapper {
         user.setSex(dto.getSex());
         user.setAddress(dto.getAddress());
         user.setPhoneNumber(dto.getPhoneNumber());
-        user.setPasswordHash(dto.getPassword());
-        user.setRole(dto.getRole());
         user.setAvatarUrl(dto.getAvatarUrl());
 
         return user;
@@ -37,9 +35,7 @@ public class UserMapper {
                 user.getBirthDate(),
                 user.getSex(),
                 user.getAddress(),
-                user.getPhoneNumber(),
-                user.getPasswordHash(),
-                user.getRole());
+                user.getPhoneNumber());
     }
 
     public static void updateEntityFromDto(UserUpdateDto dto, User user) {

@@ -18,6 +18,7 @@ import com.omega.school.repository.TeacherRepository;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.TeacherService;
 import com.omega.school.utils.GenerateId;
+import com.omega.school.utils.TemporaryPassword;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -45,9 +46,18 @@ public class TeacherServiceImpl implements TeacherService {
         String matricule = generateId.generateMatricule();
         teacher.setMatriculeNumber(matricule);
 
-        teacher.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        String temporaryPassword = TemporaryPassword.generateTemporaryPassword();
+
+        teacher.setPasswordHash(passwordEncoder.encode(temporaryPassword));
+
+        teacher.setMustChangePassword(true);
         teacher.setCreatedAt(LocalDateTime.now());
         teacher.setUpdatedAt(LocalDateTime.now());
+
+        System.out.println("This is the temporary password: " + temporaryPassword);
+
+        // TODO: envoyer l'email au user contenant le mot de passe temporaire
+        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
 
         return teacherRepository.save(teacher);
     }

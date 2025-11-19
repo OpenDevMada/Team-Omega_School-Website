@@ -22,6 +22,7 @@ import com.omega.school.repository.StudentRepository;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.StudentService;
 import com.omega.school.utils.GenerateId;
+import com.omega.school.utils.TemporaryPassword;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -55,9 +56,17 @@ public class StudentServiceImpl implements StudentService {
 
         student.setRegistrationNumber(generateId.generateRegistrationNumber());
 
-        student.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+        String temporaryPassword = TemporaryPassword.generateTemporaryPassword();
+
+        student.setPasswordHash(passwordEncoder.encode(temporaryPassword));
+        System.out.println("This is the temporary password: " + temporaryPassword);
+
+        student.setMustChangePassword(true);
         student.setCreatedAt(LocalDateTime.now());
         student.setUpdatedAt(LocalDateTime.now());
+
+        // TODO: envoyer l'email au user contenant le mot de passe temporaire
+        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
 
         return studentRepository.save(student);
     }

@@ -69,6 +69,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "must_change_password", nullable = false)
+    private boolean mustChangePassword;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
