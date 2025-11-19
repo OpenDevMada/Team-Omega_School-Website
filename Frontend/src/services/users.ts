@@ -1,17 +1,12 @@
 import { api } from "@/lib/api";
 import type { Student, StudentPostData } from "@/types/student";
 import type { Teacher } from "@/types/teacher";
-import { useState } from "react";
 
 export const getUsers = async (choosen: "teachers" | "students") => {
-  const [users, setUsers] = useState<Teacher[] | Student[] | null>();
   try {
     const endpoint = choosen === "teachers" ? "/teachers" : "/students";
     const response = await api.get(endpoint, { withCredentials: true });
-    if (response.status === 200) {
-      setUsers(response.data);
-      return users;
-    }
+    return response.data;
   } catch (error) {
     console.error(`Error on fetching users: ${error}`);
     throw error;
