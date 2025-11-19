@@ -7,20 +7,25 @@ import {
   AlertDialogFooter,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { Button, buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Separator } from "./ui/separator";
-import { Mail, PhoneCall, User, BookOpen, X, Eye, Edit } from "lucide-react";
+import { Mail, PhoneCall, User, BookOpen, X, Eye } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { DeleteUserButton } from "@/app/_components/delete-button";
-import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { TeacherUpdateDialog } from "@/app/_components/admin-teachers/update-dialog";
+import { useState } from "react";
+
+type Props = {
+  teacher: Teacher;
+  onDeleted?: () => void;
+}
 
 export function TeacherCard({
   teacher,
-}: {
-  teacher: Teacher;
-}) {
+  onDeleted
+}: Props) {
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <Card className="md:max-w-sm w-full py-4 hover:shadow-lg transition duration-100">
       <CardContent className="flex items-center gap-2 overflow-hidden">
@@ -38,7 +43,7 @@ export function TeacherCard({
 
         <div className="flex flex-col space-y-1">
           <h4 className="font-semibold text-xl">
-            {teacher.gender === "Féminin"
+            {teacher.sex === "FEMININ"
               ? `Mme ${teacher.firstName}`
               : `Mr ${teacher.firstName}`}
           </h4>
@@ -47,7 +52,7 @@ export function TeacherCard({
           </p>
 
           <div className="flex items-center gap-2 mt-2">
-            <AlertDialog>
+            <AlertDialog open={open} onOpenChange={setOpen}>
               <AlertDialogTrigger asChild>
                 <Button variant="outline" size="icon-sm">
                   <Eye />
@@ -100,7 +105,7 @@ export function TeacherCard({
 
                   <p className="flex items-center gap-2">
                     <User className="w-4 h-4 text-(--blue)" />
-                    <span>{teacher.gender}</span>
+                    <span>{teacher.sex}</span>
                   </p>
 
                   {teacher.courses && teacher.courses.length > 0 && (
@@ -124,9 +129,9 @@ export function TeacherCard({
                 </div>
                 {/* Dialog footer */}
                 <AlertDialogFooter>
-                  <Link to={`/teacher?edit=${teacher.id}`} className={cn(buttonVariants({ variant: "secondary" }))}><Edit size={16} /> Modifier</Link>
+                  <TeacherUpdateDialog teacher={teacher} id={teacher.userId} setOpen={setOpen} />
                   <AlertDialogAction asChild>
-                    <DeleteUserButton user={teacher} withLabel={true} />
+                    <DeleteUserButton user={teacher} withLabel={true} onSuccess={onDeleted} />
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

@@ -17,11 +17,12 @@ import {
 } from "@/components/ui/select";
 import { BirthDateField } from "./birth-date-field";
 
-export function UserFields({
-  form,
-}: {
+interface UserFieldsProps {
   form: UseFormReturn<UserFormType>;
-}) {
+  isOnMainRegistration?: boolean
+}
+
+export function UserFields({ form, isOnMainRegistration }: UserFieldsProps) {
   return (
     <>
       {/* First name */}
@@ -69,21 +70,6 @@ export function UserFields({
         )}
       />
 
-      {/* Address */}
-      <FormField
-        control={form.control}
-        name="address"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Adresse</FormLabel>
-            <FormControl>
-              <Input type="text" placeholder="Lot T II 10 Ter Antaninandro" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
       {/* Phone number */}
       <FormField
         control={form.control}
@@ -99,22 +85,41 @@ export function UserFields({
         )}
       />
 
-      {/* Gender */}
+      {/* Address */}
       <FormField
         control={form.control}
-        name="gender"
+        name="address"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Adresse</FormLabel>
+            <FormControl>
+              <Input
+                type="text"
+                placeholder="Lot T II 10 Ter Antaninandro"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Sex */}
+      <FormField
+        control={form.control}
+        name="sex"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Sexe</FormLabel>
             <FormControl>
               <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className={`${isOnMainRegistration ? "w-[265px]" : "w-[220px]"}`}>
                   <SelectValue placeholder="Sélectionne ton sexe" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Masculin">Masculin</SelectItem>
-                  <SelectItem value="Féminin">Féminin</SelectItem>
-                  <SelectItem value="Pas spécifié">Pas spécifié</SelectItem>
+                  <SelectItem value="MASCULIN">Masculin</SelectItem>
+                  <SelectItem value="FEMININ">Féminin</SelectItem>
+                  <SelectItem value="PAS_SPECIFIE">Pas spécifié</SelectItem>
                 </SelectContent>
               </Select>
             </FormControl>
@@ -123,6 +128,7 @@ export function UserFields({
         )}
       />
 
+      {/* Birth Date */}
       <BirthDateField />
     </>
   );

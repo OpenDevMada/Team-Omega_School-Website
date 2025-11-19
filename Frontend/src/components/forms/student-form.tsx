@@ -14,34 +14,54 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
+import type { Group, Level } from "@/types/student";
 
-export function StudentFormFields({
-  form,
-}: {
+interface StudentFormFieldsProps {
   form: UseFormReturn<StudentFormType | UserFormType>;
-}) {
+  groups: Group[];
+  levels: Level[];
+  isEditing: boolean;
+  isOnMainRegistration?: boolean;
+}
+
+export function StudentFormFields({ form, groups, levels, isEditing, isOnMainRegistration }: StudentFormFieldsProps) {
   return (
     <>
+      {/* Registration number */}
       <FormField
         control={form.control}
-        name="group.groupName"
+        name="registrationNumber"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Classe</FormLabel>
+            <FormLabel>Numéro d'inscription</FormLabel>
             <FormControl>
-              <Select onValueChange={field.onChange} value={field.value || ""}>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Classe" />
+              <Input placeholder="STU20240001" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Level */}
+      <FormField
+        control={form.control}
+        name="level"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Niveau</FormLabel>
+            <FormControl>
+              {/* @ts-ignore */}
+              <Select onValueChange={field.onChange} value={isEditing ? field.value?.name : field.value || ""}>
+                <SelectTrigger className={`${isOnMainRegistration ? "w-[260px]" : "w-[200px]"}`}>
+                  <SelectValue placeholder="Sélectionner votre niveau" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="6ème">6ème</SelectItem>
-                  <SelectItem value="5ème">5ème</SelectItem>
-                  <SelectItem value="4ème">4ème</SelectItem>
-                  <SelectItem value="3ème">3ème</SelectItem>
-                  <SelectItem value="2nde">2nde</SelectItem>
-                  <SelectItem value="1ère">1ère</SelectItem>
-                  <SelectItem value="Terminale">Terminale</SelectItem>
+                  {levels.map((level) => (
+                    <SelectItem key={level.name} value={level.name}>
+                      {level.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </FormControl>
@@ -50,19 +70,49 @@ export function StudentFormFields({
         )}
       />
 
+      {/* Group */}
       <FormField
         control={form.control}
-        name="level.levelName"
+        name="group"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Niveau</FormLabel>
+            <FormLabel>Classe</FormLabel>
             <FormControl>
-              <Input placeholder="Intermédiaire..." {...field} />
+              {/* @ts-ignore */}
+              <Select onValueChange={field.onChange} value={isEditing ? field.value?.name : field.value || ""}>
+                <SelectTrigger className={`${isOnMainRegistration ? "w-[260px]" : "w-[200px]"}`}>
+                  <SelectValue placeholder="Sélectionner votre classe" />
+                </SelectTrigger>
+                <SelectContent>
+                  {groups.map((group) => (
+                    <SelectItem key={group.name} value={group.name}>
+                      {group.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
+
+      {isOnMainRegistration && (
+        <FormField
+          control={form.control}
+          name="group"
+          render={({ field }) => (
+            <FormItem className="col-span-2">
+              <FormLabel>Contact d'urgence</FormLabel>
+              <FormControl>
+                <Input type="tel" placeholder="034 89 765 34" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </>
   );
 }
+

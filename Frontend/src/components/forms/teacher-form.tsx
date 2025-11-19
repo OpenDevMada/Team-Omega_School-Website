@@ -8,48 +8,25 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import type z from "zod";
+import type { teacherSchemaDto } from "@/schemas/teacher.schema";
 
-export function TeacherFormFields({
-  form,
-}: {
-  form: UseFormReturn<TeacherFormType | UserFormType>;
-}) {
-  const titleCourses = [
-    "Mathématiques",
-    "Physique",
-    "SVT",
-    "EPS",
-    "Malagasy",
-    "Anglais",
-    "Francais",
-  ];
+interface TeacherFormFieldsProps {
+  form: UseFormReturn<TeacherFormType | UserFormType | z.infer<typeof teacherSchemaDto>>;
+}
+
+export function TeacherFormFields({ form }: TeacherFormFieldsProps) {
   return (
     <>
       <FormField
         control={form.control}
-        name="courses"
+        name="matriculeNumber"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Cours attribué(s)</FormLabel>
+            <FormLabel>Numéro de matricule</FormLabel>
             <FormControl>
-              <Select>
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder={"Selectionner un cours"} />
-                </SelectTrigger>
-                <SelectContent
-                >
-                  {titleCourses.map((title, idx) => (
-                    <SelectItem value={title} key={idx}>{title}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Input placeholder="TCH 2025" type="text" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -58,12 +35,17 @@ export function TeacherFormFields({
 
       <FormField
         control={form.control}
-        name="matriculeNumber"
+        name="bio"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Numéro de matricule</FormLabel>
+          <FormItem className="md:col-span-2">
+            <FormLabel>Bio (optionnel)</FormLabel>
             <FormControl>
-              <Input placeholder="TCH 24879" {...field} />
+              <Textarea
+                placeholder="Brève description de l'enseignant..."
+                className="resize-none"
+                rows={3}
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
