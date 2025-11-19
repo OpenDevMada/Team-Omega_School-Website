@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, ChevronLeft, ChevronRight, UserX2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, UserX2 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { DeleteUserButton } from "../delete-button";
@@ -24,6 +24,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { StudentUpdateDialog } from "./update-dialog";
 
 type Props = {
   students: Student[];
@@ -31,6 +32,7 @@ type Props = {
   currentPage: number;
   loading: boolean;
   onPageChange: Dispatch<SetStateAction<number>>;
+  onDeleted?: () => void
 };
 
 export function StudentsTable({
@@ -39,6 +41,7 @@ export function StudentsTable({
   currentPage,
   onPageChange,
   loading,
+  onDeleted
 }: Props) {
   return (
     <Card className="border-none shadow-sm">
@@ -47,9 +50,9 @@ export function StudentsTable({
           Informations des élèves
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="overflow-x-">
         <div className="overflow-x-auto">
-          <Table className="min-w-full">
+          <Table className="min-w-full overflow-x-auto">
             <TableHeader className="bg-gray-50 dark:bg-gray-950">
               <TableRow>
                 <TableHead>Nom et prénoms</TableHead>
@@ -90,28 +93,22 @@ export function StudentsTable({
                 ))
               ) : students.length > 0 ? (
                 students.map((student) => (
-                  <TableRow key={student.id}>
+                  <TableRow key={student.userId}>
                     <TableCell>
                       <span className="font-medium">
                         {student.firstName} {student.lastName}
                       </span>
                     </TableCell>
-                    <TableCell>{student.gender}</TableCell>
+                    <TableCell>{student.sex}</TableCell>
                     <TableCell>{student.address}</TableCell>
-                    <TableCell>{student.group.groupName}</TableCell>
+                    <TableCell>{student.group.name}</TableCell>
                     <TableCell>
                       {format(student.birthDate, "PPP", { locale: fr })}
                     </TableCell>
-                    <TableCell>{student.phone}</TableCell>
+                    <TableCell>{student.phoneNumber}</TableCell>
                     <TableCell className="flex justify-center gap-2">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="text-(--green) dark:hover:text-green-300"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <DeleteUserButton user={student} withLabel={false} />
+                      <StudentUpdateDialog student={student} studentId={student.userId} />
+                      <DeleteUserButton user={student} withLabel={false} onSuccess={onDeleted} />
                     </TableCell>
                   </TableRow>
                 ))

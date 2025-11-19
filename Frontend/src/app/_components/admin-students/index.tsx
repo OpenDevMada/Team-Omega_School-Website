@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { students } from "@/seeders/users";
 import { StudentsHeader } from "./students-header";
 import { FilterBar } from "../filter-bar";
 import type { UserSearchType } from "../user-search.type";
 import { StudentsTable } from "./students-table";
+import type { Student } from "@/types/student";
+import { studentService } from "@/services/students";
 
 export default function StudentsListPageOnAdminBoard() {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -11,6 +12,11 @@ export default function StudentsListPageOnAdminBoard() {
   const [genderFilter, setGenderFilter] = useState<UserSearchType["genderFilter"]>("Tous");
   const [sortOrder, setSortOrder] = useState<UserSearchType["sort"]>("A-Z");
   const [loading, setLoading] = useState<boolean>(true);
+  const [students, setStudents] = useState<Student[]>([]);
+  const refreshList = async () => {
+    const data = await studentService.getAll();
+    setStudents(data as Student[]);
+  }
 
   const studentsPerPage = 7;
 
@@ -20,7 +26,7 @@ export default function StudentsListPageOnAdminBoard() {
         s.firstName.toLowerCase().includes(search.toLowerCase()) ||
         s.lastName.toLowerCase().includes(search.toLowerCase());
       const matchGender =
-        genderFilter === "Tous" || s.gender === genderFilter;
+        genderFilter === "Tous" || s.sex === genderFilter;
       return matchSearch && matchGender;
     })
     .sort((a, b) =>
@@ -33,8 +39,10 @@ export default function StudentsListPageOnAdminBoard() {
   const startIndex = (currentPage - 1) * studentsPerPage;
   const currentStudents = filtered.slice(startIndex, startIndex + studentsPerPage);
 
-  // Reset pagination if only search or gender filter change
   useEffect(() => {
+    studentService.getAll().then(setStudents);
+
+    // Reset pagination if only search or gender filter change
     setCurrentPage(1);
     const timer = setTimeout(() => {
       setLoading(false)
@@ -59,6 +67,7 @@ export default function StudentsListPageOnAdminBoard() {
         currentPage={currentPage}
         onPageChange={setCurrentPage}
         loading={loading}
+        onDeleted={refreshList}
       />
     </div>
   );
