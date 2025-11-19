@@ -1,16 +1,14 @@
 import { Spinner } from "@/components/ui/spinner";
-import { MegaphoneOff, Plus } from "lucide-react";
+import { MegaphoneOff } from "lucide-react";
 import type { Announcement } from "@/types/announcement";
 import { AnnouncementCard } from "./app-announcement-card";
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import { Button } from "@/components/ui/button";
 
 interface Props {
   announcements: Announcement[];
@@ -21,8 +19,8 @@ interface Props {
 export function AnnouncementList({ announcements, loading, onEdit }: Props) {
   if (loading)
     return (
-      <div className="col-span-full flex flex-col gap-4 justify-center items-center h-48">
-        <Spinner />
+      <div className="col-span-full flex flex-col gap-4 justify-center items-center min-h-[60vh]">
+        <Spinner className="size-8" />
         Chargement des annonces...
       </div>
     );
@@ -38,12 +36,6 @@ export function AnnouncementList({ announcements, loading, onEdit }: Props) {
             <EmptyTitle>0 annonces</EmptyTitle>
             <EmptyDescription>Pas d'annonce créée pour le moment.</EmptyDescription>
           </EmptyHeader>
-          <EmptyContent>
-            <Button className="bg-(--yellow) hover:bg-yellow-500 text-white flex items-center gap-2">
-              <Plus />
-              Créer une nouvelle
-            </Button>
-          </EmptyContent>
         </Empty>
       </div>
     );

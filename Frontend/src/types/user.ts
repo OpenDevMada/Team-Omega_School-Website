@@ -1,20 +1,24 @@
 export type Role = "ADMIN" | "TEACHER" | "STUDENT";
+export type Sex = "MASCULIN" | "FEMININ";
 
-export interface User {
-  id: string;
+export interface BaseUser {
+  userId: string;
   firstName: string;
   lastName: string;
-  gender: "Masculin" | "Féminin";
-  birthDate: Date;
   email: string;
-  phone: string;
-  password: string;
+  birthDate: Date;
+  sex: Sex;
   address: string;
+  password: string;
   phoneNumber: string;
   avatar: string | null;
   role: Role;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface User extends BaseUser {
+  passwordHash: string;
 }
 
 export type UserCredentials = Required<Pick<User, "email" | "password">>;

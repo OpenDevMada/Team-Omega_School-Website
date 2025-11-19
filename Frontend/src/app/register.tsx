@@ -21,7 +21,7 @@ export default function RegistrationPage() {
               School
             </CardDescription>
           </CardHeader>
-          <RegistrationForm isStudent={true} />
+          <RegistrationForm isStudent={true} onCreated={() => {}} isOnMainRegistration={true} />
         </Card>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { api } from "@/lib/api";
 import type { announcementPostDataSchema } from "@/schemas/announcement.schema";
 import type { Announcement } from "@/types/announcement";
-import type z from "zod";
+import * as z from "zod";
 
 export const createAnnouncement = async (
   values: z.infer<typeof announcementPostDataSchema>

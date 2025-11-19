@@ -18,9 +18,11 @@ import NotFound from "@/app/not-found";
 import CoursesPage from "@/app/courses";
 import StudentsPage from "@/app/students";
 import TeachersPage from "@/app/teachers";
-import PagesPreviewAll from "@/app/page";
 import { AnnouncementsPage } from "@/app/announcement";
 import AppCoursesPage from "@/app/app-courses";
+import DashboardPage from "@/app/dashboard";
+import GroupsAndLevelsPage from "@/app/groupsAndLevels";
+import SiteAnnouncementsPage from "@/app/site-announcement";
 
 const routes = createRoutesFromElements(
   <>
@@ -29,18 +31,18 @@ const routes = createRoutesFromElements(
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/all-courses" element={<CoursesPage />} />
-      <Route path="/announcements" element={<AnnouncementsPage />} />
+      <Route path="/announcements" element={<SiteAnnouncementsPage />} />
     </Route>
     {/* <Route element={<ProtectedRoute />}> */}{" "}
     {/* Reactive it when you finish to setup all UI */}
     <Route element={<AppLayout />}>
-      <Route path="/dashboard" element={<ProfilePage />} />
+      <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/students" element={<StudentsPage />} />
       <Route path="/teachers" element={<TeachersPage />} />
       <Route path="/courses" element={<AppCoursesPage />} />
-      <Route path="/view-all" element={<PagesPreviewAll />} />
       <Route path="/announcement" element={<AnnouncementsPage />} />
+      <Route path="/levels" element={<GroupsAndLevelsPage />} />
     </Route>
     {/* </Route> */}
     <Route path="/*" element={<NotFound />} />

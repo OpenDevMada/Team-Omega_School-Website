@@ -21,10 +21,10 @@ export function Header() {
           <Link to="/" className="hover:text-[#1E40AF] transition">
             Accueil
           </Link>
-          <Link to="/courses" className="hover:text-[#1E40AF] transition">
+          <Link to="/all-courses" className="hover:text-[#1E40AF] transition">
             Nos cours
           </Link>
-          <Link to="/announcement" className="hover:text-[#1E40AF] transition">
+          <Link to="/announcements" className="hover:text-[#1E40AF] transition">
             Annonces
           </Link>
           <Link to="/contact" className="hover:text-[#1E40AF] transition">

@@ -30,7 +30,9 @@ export function MainAnnouncement() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-blue-600">Annonces</h2>
+          <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-(--blue)">
+            Liste des annonces
+          </h1>
           <p className="text-sm text-muted-foreground">
             Informations importantes et communiqués
           </p>
@@ -38,7 +40,7 @@ export function MainAnnouncement() {
 
         <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <AlertDialogTrigger asChild>
-            <Button className="flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700">
+            <Button className="flex items-center gap-2 text-white bg-(--yellow) hover:bg-yellow-500">
               <Megaphone className="w-4 h-4" />{" "}
               {editing ? "Modifier annonce" : "Nouvelle annonce"}
             </Button>

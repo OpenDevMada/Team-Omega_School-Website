@@ -1,79 +1,100 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useTransition, type Dispatch, type SetStateAction } from "react";
+import {
+  useEffect,
+  useState,
+  useTransition,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { Form } from "@/components/ui/form";
 import { userSchema } from "@/validation/user";
 import { z } from "zod";
 import { StudentFormFields } from "./forms/student-form";
 import { TeacherFormFields } from "./forms/teacher-form";
 import { UserFields } from "./forms/user-form";
+import { studentService } from "@/services/students";
+import type { Group, Level } from "@/types/student";
+import { BaseService } from "@/services/base";
+import { teacherService } from "@/services/teacher";
+
+interface RegistrationFormProps {
+  isStudent: boolean;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
+  onCreated?: () => void;
+  isOnMainRegistration?: boolean;
+}
 
 export function RegistrationForm({
   isStudent,
   setOpen,
-}: {
-  isStudent: boolean;
-  setOpen?: Dispatch<SetStateAction<boolean>>;
-}) {
+  onCreated,
+  isOnMainRegistration,
+}: RegistrationFormProps) {
   const [pending, startTransition] = useTransition();
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [levels, setLevels] = useState<Level[]>([]);
+  const [levelService, groupService] = [
+    new BaseService<Level, any, any>("/levels"),
+    new BaseService<Group, any, any>("/groups"),
+  ];
 
   const form = useForm<z.infer<typeof userSchema>>({
-    resolver: zodResolver(userSchema),
     defaultValues: isStudent
       ? {
-          role: isStudent ? "STUDENT" : "TEACHER",
-          firstName: "",
-          lastName: "",
-          birthDate: undefined,
-          gender: "Pas spécifié",
-          email: "",
-          phoneNumber: "",
-          address: "",
-          group: { groupName: "" },
-          level: { levelName: "" },
-        }
+        role: "STUDENT",
+        firstName: "",
+        lastName: "",
+        birthDate: undefined,
+        sex: "PAS_SPECIFIE",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        registrationNumber: "",
+        level: "",
+        group: "",
+      }
       : {
-          role: "TEACHER",
-          firstName: "",
-          lastName: "",
-          birthDate: undefined,
-          gender: "Pas spécifié",
-          email: "",
-          phoneNumber: "",
-          address: "",
-          courses: [],
-          matriculeNumber: "",
-        },
+        role: "TEACHER",
+        firstName: "",
+        lastName: "",
+        birthDate: undefined,
+        sex: "PAS_SPECIFIE",
+        email: "",
+        phoneNumber: "",
+        address: "",
+        matriculeNumber: "",
+        bio: "",
+      },
   });
 
-  const onSubmit = async (values: z.infer<typeof userSchema>) => {
+  const onSubmit = (values: z.infer<typeof userSchema>) => {
+    const service = values.role === "STUDENT" ? studentService : teacherService;
+
     startTransition(async () => {
-      await new Promise((res) => setTimeout(res, 2000));
       try {
-        if (values.role === "STUDENT") {
-          toast.success(
-            `${values.firstName} inscrit avec succes en tant qu'éleve.`
-          );
-          console.log(values);
-          setOpen?.(false);
-        } else {
-          toast.success(
-            `${values.firstName} inscrit avec succes en tant qu'enseignant.`
-          );
-          console.log(values);
-          setOpen?.(false);
-        }
-      } catch (error: any) {
-        toast.error(error?.message);
-      } finally {
+        // @ts-ignore
+        const user = await service.create(values);
+        const fullName = `${user.firstName} ${user.lastName}`;
+        toast.success(`${fullName} inscrit avec succès.`);
+
+        setOpen?.(false);
+        onCreated?.();
         form.reset();
+      } catch (e) {
+        console.error("Registration error:", e);
+        toast.error("Une erreur est survenue.");
       }
     });
   };
+
+  useEffect(() => {
+    levelService.getAll().then((levels) => setLevels(levels));
+    groupService.getAll().then((groups) => setGroups(groups));
+  }, []);
 
   return (
     <CardContent className="p-4">
@@ -82,11 +103,18 @@ export function RegistrationForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
-          <UserFields form={form} />
+          <UserFields form={form} isOnMainRegistration={isOnMainRegistration} />
 
           {isStudent ? (
-            <StudentFormFields form={form} />
+            <StudentFormFields
+              form={form}
+              groups={groups}
+              levels={levels}
+              isEditing={false}
+              isOnMainRegistration={isOnMainRegistration}
+            />
           ) : (
+            // @ts-expect-error
             <TeacherFormFields form={form} />
           )}
 
@@ -100,7 +128,7 @@ export function RegistrationForm({
                 <>
                   <Spinner /> &nbsp;Enregistrement...
                 </>
-              ) : isStudent ? (
+              ) : isOnMainRegistration ? "S'inscrire" : isStudent ? (
                 "Inscrire l'élève"
               ) : (
                 "Inscrire l'enseignant"

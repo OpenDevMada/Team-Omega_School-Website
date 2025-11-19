@@ -53,7 +53,7 @@ export function FilterBar({
             {["Tous", "Masculin", "Féminin"].map((option) => (
               <DropdownMenuItem
                 key={option}
-                onClick={() => setGenderFilter(option as "Tous" | "Masculin" | "Féminin")}
+                onClick={() => setGenderFilter(option as "MASCULIN" | "FEMININ" | "Tous")}
                 className="flex items-center justify-between"
               >
                 <span>{option}</span>
