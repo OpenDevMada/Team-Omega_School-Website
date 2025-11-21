@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.omega.school.service.MailService;
 
 import com.omega.school.dto.TeacherPartialUpdateDto;
 import com.omega.school.dto.TeacherRequestDto;
@@ -34,6 +35,7 @@ public class TeacherServiceImpl implements TeacherService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final GenerateId generateId;
+    private final MailService mailService;
 
     @Override
     public Teacher createTeacher(TeacherRequestDto dto) {
@@ -49,6 +51,8 @@ public class TeacherServiceImpl implements TeacherService {
 
         String temporaryPassword = TemporaryPassword.generateTemporaryPassword();
 
+        mailService.sendTemporaryPassword(dto.getEmail(), temporaryPassword);
+
         teacher.setPasswordHash(passwordEncoder.encode(temporaryPassword));
 
         teacher.setMustChangePassword(true);
@@ -56,9 +60,6 @@ public class TeacherServiceImpl implements TeacherService {
         teacher.setUpdatedAt(LocalDateTime.now());
 
         System.out.println("This is the temporary password: " + temporaryPassword);
-
-        // TODO: envoyer l'email au user contenant le mot de passe temporaire
-        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
 
         return teacherRepository.save(teacher);
     }

@@ -21,6 +21,7 @@ import com.omega.school.repository.GroupRepository;
 import com.omega.school.repository.LevelRepository;
 import com.omega.school.repository.StudentRepository;
 import com.omega.school.repository.UserRepository;
+import com.omega.school.service.MailService;
 import com.omega.school.service.StudentService;
 import com.omega.school.utils.GenerateId;
 import com.omega.school.utils.TemporaryPassword;
@@ -40,6 +41,7 @@ public class StudentServiceImpl implements StudentService {
     private final GroupRepository groupRepository;
     private final GenerateId generateId;
     private final UserRepository userRepository;
+    private final MailService mailService;
 
     @Override
     public Student createStudent(StudentRequestDto dto) {
@@ -63,11 +65,11 @@ public class StudentServiceImpl implements StudentService {
         System.out.println("This is the temporary password: " + temporaryPassword);
 
         student.setMustChangePassword(true);
+
+        mailService.sendTemporaryPassword(dto.getEmail(), temporaryPassword);
+
         student.setCreatedAt(LocalDateTime.now());
         student.setUpdatedAt(LocalDateTime.now());
-
-        // TODO: envoyer l'email au user contenant le mot de passe temporaire
-        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
 
         return studentRepository.save(student);
     }

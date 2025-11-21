@@ -16,6 +16,7 @@ import com.omega.school.model.Admin;
 import com.omega.school.repository.AdminRepository;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.AdminService;
+import com.omega.school.service.MailService;
 import com.omega.school.utils.GenerateId;
 import com.omega.school.utils.TemporaryPassword;
 
@@ -32,6 +33,7 @@ public class AdminServiceImpl implements AdminService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final GenerateId generateId;
+    private final MailService mailService;
 
     @Override
     public Admin createAdmin(UserRequestDto dto) {
@@ -49,8 +51,7 @@ public class AdminServiceImpl implements AdminService {
         String adminId = generateId.generateAdminId();
         admin.setAdminId(adminId);
 
-        // TODO: envoyer l'email au user contenant le mot de passe temporaire
-        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
+        mailService.sendTemporaryPassword(dto.getEmail(), temporaryPassword);
 
         System.out.println("This is the temporary password: " + temporaryPassword);
 
