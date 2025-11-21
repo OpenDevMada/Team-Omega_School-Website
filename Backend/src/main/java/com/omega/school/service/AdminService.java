@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
@@ -19,6 +20,8 @@ public interface AdminService {
     Page<Admin> getAllAdmins(int page, int size);
 
     Admin updateAdmin(UUID userId, UserUpdateDto updatedAdmin);
+
+    Admin partialUpdateAdmin(UUID userId, UserPartialUpdateDto dto);
 
     void deleteAdmin(UUID userId);
 }

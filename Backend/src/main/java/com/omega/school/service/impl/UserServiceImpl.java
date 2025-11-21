@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.mapper.UserMapper;
@@ -88,6 +89,30 @@ public class UserServiceImpl implements UserService {
                     return userRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+    }
+
+    @Override
+    public User partialUpdateUser(UUID id, UserPartialUpdateDto dto) {
+
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+
+        if (dto.getEmail() != null &&
+                !existingUser.getEmail().equals(dto.getEmail()) &&
+                userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email déjà utilisé");
+        }
+
+        UserMapper.partialUpdate(dto, existingUser);
+
+        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
+            existingUser.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+            existingUser.setMustChangePassword(false);
+        }
+
+        existingUser.setUpdatedAt(LocalDateTime.now());
+
+        return userRepository.save(existingUser);
     }
 
     @Override

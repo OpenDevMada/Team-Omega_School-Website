@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.omega.school.dto.TeacherPartialUpdateDto;
 import com.omega.school.dto.TeacherRequestDto;
 import com.omega.school.dto.TeacherUpdateDto;
 import com.omega.school.mapper.TeacherMapper;
@@ -94,6 +95,30 @@ public class TeacherServiceImpl implements TeacherService {
                     return teacherRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
+    }
+
+    @Override
+    public Teacher partialUpdateTeacher(UUID userId, TeacherPartialUpdateDto dto) {
+
+        Teacher teacher = teacherRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
+
+        if (dto.getEmail() != null &&
+                !teacher.getEmail().equals(dto.getEmail()) &&
+                userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email déjà utilisé");
+        }
+
+        TeacherMapper.partialUpdate(dto, teacher);
+
+        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
+            teacher.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+            teacher.setMustChangePassword(false);
+        }
+
+        teacher.setUpdatedAt(LocalDateTime.now());
+
+        return teacherRepository.save(teacher);
     }
 
     @Override

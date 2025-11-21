@@ -1,5 +1,6 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
@@ -52,6 +53,15 @@ public class AdminController {
     @PutMapping("/{userId}")
     public ResponseEntity<Admin> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdateDto admin) {
         Admin updated = adminService.updateAdmin(userId, admin);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Admin> partialUpdateAdmin(
+            @PathVariable UUID userId,
+            @RequestBody UserPartialUpdateDto dto) {
+
+        Admin updated = adminService.partialUpdateAdmin(userId, dto);
         return ResponseEntity.ok(updated);
     }
 

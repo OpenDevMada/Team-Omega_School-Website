@@ -3,6 +3,7 @@ package com.omega.school.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Role;
@@ -22,6 +23,8 @@ public interface UserService {
     Page<User> getUsersByRole(Role role, Pageable pageable);
 
     User updateUser(UUID id, UserUpdateDto updatedUser);
+
+    User partialUpdateUser(UUID id, UserPartialUpdateDto dto);
 
     void deleteUser(UUID id);
 }

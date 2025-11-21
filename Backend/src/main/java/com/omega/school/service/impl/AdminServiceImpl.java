@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.mapper.AdminMapper;
@@ -80,6 +81,26 @@ public class AdminServiceImpl implements AdminService {
                     return adminRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Admin non trouvé"));
+    }
+
+    @Override
+    public Admin partialUpdateAdmin(UUID userId, UserPartialUpdateDto dto) {
+        Admin existingAdmin = adminRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Admin non trouvé"));
+
+        if (dto.getEmail() != null &&
+                !existingAdmin.getEmail().equals(dto.getEmail()) &&
+                userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email déjà utilisé");
+        }
+
+        AdminMapper.partialUpdate(existingAdmin, dto);
+
+        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
+            existingAdmin.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+            existingAdmin.setMustChangePassword(false);
+        }
+        return adminRepository.save(existingAdmin);
     }
 
     @Override

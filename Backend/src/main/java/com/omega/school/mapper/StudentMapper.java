@@ -1,5 +1,6 @@
 package com.omega.school.mapper;
 
+import com.omega.school.dto.StudentPartialUpdateDto;
 import com.omega.school.dto.StudentRequestDto;
 import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Group;
@@ -48,4 +49,24 @@ public class StudentMapper {
                 ? dto.getPhoneNumber()
                 : dto.getEmergencyContact());
     }
+
+    public static void partialUpdate(StudentPartialUpdateDto dto, Student student, Level level, Group group) {
+
+        // Mise à jour des champs hérités de User
+        UserMapper.partialUpdate(dto, student);
+
+        if (dto.getLevel() != null) {
+            student.setLevel(level);
+        }
+
+        if (dto.getGroup() != null) {
+            student.setGroup(group);
+        }
+
+        if (dto.getEmergencyContact() != null) {
+            student.setEmergencyContact(
+                    dto.getEmergencyContact().isBlank() ? student.getPhoneNumber() : dto.getEmergencyContact());
+        }
+    }
+
 }

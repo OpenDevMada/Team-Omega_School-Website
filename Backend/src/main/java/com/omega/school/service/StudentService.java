@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 
+import com.omega.school.dto.StudentPartialUpdateDto;
 import com.omega.school.dto.StudentRequestDto;
 import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Student;
@@ -24,6 +25,8 @@ public interface StudentService {
     List<Student> getByGroup(String groupName);
 
     Student updateStudent(UUID userId, StudentUpdateDto updatedStudent);
+
+    Student partialUpdateStudent(UUID userId, StudentPartialUpdateDto dto);
 
     void deleteStudent(UUID userId);
 }

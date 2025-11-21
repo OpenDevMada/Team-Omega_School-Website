@@ -1,5 +1,6 @@
 package com.omega.school.mapper;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.User;
@@ -51,5 +52,25 @@ public class UserMapper {
         user.setPhoneNumber(dto.getPhoneNumber());
         user.setAvatarUrl(dto.getAvatarUrl());
 
+    }
+
+    public static void partialUpdate(UserPartialUpdateDto dto, User user) {
+
+        if (dto.getAvatarUrl() != null)
+            user.setAvatarUrl(dto.getAvatarUrl());
+        if (dto.getFirstName() != null)
+            user.setFirstName(dto.getFirstName());
+        if (dto.getLastName() != null)
+            user.setLastName(dto.getLastName());
+        if (dto.getEmail() != null)
+            user.setEmail(dto.getEmail());
+        if (dto.getBirthDate() != null)
+            user.setBirthDate(dto.getBirthDate());
+        if (dto.getSex() != null)
+            user.setSex(dto.getSex());
+        if (dto.getAddress() != null)
+            user.setAddress(dto.getAddress());
+        if (dto.getPhoneNumber() != null)
+            user.setPhoneNumber(dto.getPhoneNumber());
     }
 }

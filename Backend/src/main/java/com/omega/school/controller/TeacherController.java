@@ -1,5 +1,6 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.TeacherPartialUpdateDto;
 import com.omega.school.dto.TeacherRequestDto;
 import com.omega.school.dto.TeacherUpdateDto;
 import com.omega.school.model.Teacher;
@@ -57,6 +58,15 @@ public class TeacherController {
     @PutMapping("/{userId}")
     public ResponseEntity<Teacher> update(@PathVariable UUID userId, @Valid @RequestBody TeacherUpdateDto teacher) {
         Teacher updated = teacherService.updateTeacher(userId, teacher);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Teacher> partialUpdate(
+            @PathVariable UUID userId,
+            @RequestBody TeacherPartialUpdateDto dto) {
+
+        Teacher updated = teacherService.partialUpdateTeacher(userId, dto);
         return ResponseEntity.ok(updated);
     }
 

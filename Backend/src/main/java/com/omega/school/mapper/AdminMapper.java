@@ -2,6 +2,7 @@ package com.omega.school.mapper;
 
 import java.time.LocalDateTime;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
@@ -42,5 +43,30 @@ public class AdminMapper {
         existing.setUpdatedAt(LocalDateTime.now());
 
         return existing;
+    }
+
+    public static Admin partialUpdate(Admin admin, UserPartialUpdateDto dto) {
+        if (dto == null || admin == null)
+            return admin;
+
+        if (dto.getFirstName() != null)
+            admin.setFirstName(dto.getFirstName());
+        if (dto.getLastName() != null)
+            admin.setLastName(dto.getLastName());
+        if (dto.getEmail() != null)
+            admin.setEmail(dto.getEmail());
+        if (dto.getAddress() != null)
+            admin.setAddress(dto.getAddress());
+        if (dto.getBirthDate() != null)
+            admin.setBirthDate(dto.getBirthDate());
+        if (dto.getPhoneNumber() != null)
+            admin.setPhoneNumber(dto.getPhoneNumber());
+        if (dto.getSex() != null)
+            admin.setSex(dto.getSex());
+        if (dto.getAvatarUrl() != null)
+            admin.setAvatarUrl(dto.getAvatarUrl());
+
+        admin.setUpdatedAt(LocalDateTime.now());
+        return admin;
     }
 }

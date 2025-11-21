@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.omega.school.dto.StudentPartialUpdateDto;
 import com.omega.school.dto.StudentRequestDto;
 import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.mapper.StudentMapper;
@@ -112,6 +113,44 @@ public class StudentServiceImpl implements StudentService {
                     return studentRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+    }
+
+    @Override
+    public Student partialUpdateStudent(UUID userId, StudentPartialUpdateDto dto) {
+
+        Student student = studentRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+
+        if (dto.getEmail() != null &&
+                !dto.getEmail().equals(student.getEmail()) &&
+                userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email déjà utilisé");
+        }
+
+        Level level = null;
+        if (dto.getLevel() != null) {
+            level = levelRepository.findByName(dto.getLevel())
+                    .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé : " + dto.getLevel()));
+        }
+
+        Group group = null;
+        if (dto.getGroup() != null) {
+            group = groupRepository.findByName(dto.getGroup())
+                    .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé : " + dto.getGroup()));
+        }
+
+        StudentMapper.partialUpdate(dto, student, level, group);
+
+        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
+            student.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+            student.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+            student.setMustChangePassword(false);
+            System.out.println("This is the new password: " + dto.getNewPassword());
+        }
+
+        student.setUpdatedAt(LocalDateTime.now());
+
+        return studentRepository.save(student);
     }
 
     @Override
