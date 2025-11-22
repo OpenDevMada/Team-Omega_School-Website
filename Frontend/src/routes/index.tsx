@@ -23,6 +23,7 @@ import AppCoursesPage from "@/app/app-courses";
 import DashboardPage from "@/app/dashboard";
 import GroupsAndLevelsPage from "@/app/groupsAndLevels";
 import SiteAnnouncementsPage from "@/app/site-announcement";
+import SettingsPage from "@/app/advanced";
 
 const routes = createRoutesFromElements(
   <>
@@ -33,7 +34,7 @@ const routes = createRoutesFromElements(
       <Route path="/all-courses" element={<CoursesPage />} />
       <Route path="/announcements" element={<SiteAnnouncementsPage />} />
     </Route>
-    {/* <Route element={<ProtectedRoute />}> */}{" "}
+    {/* <Route element={<ProtectedRoute />}> */}
     {/* Reactive it when you finish to setup all UI */}
     <Route element={<AppLayout />}>
       <Route path="/dashboard" element={<DashboardPage />} />
@@ -43,6 +44,7 @@ const routes = createRoutesFromElements(
       <Route path="/courses" element={<AppCoursesPage />} />
       <Route path="/announcement" element={<AnnouncementsPage />} />
       <Route path="/levels" element={<GroupsAndLevelsPage />} />
+      <Route path="/settings" element={<SettingsPage />} />
     </Route>
     {/* </Route> */}
     <Route path="/*" element={<NotFound />} />
