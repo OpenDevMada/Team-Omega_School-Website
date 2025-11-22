@@ -1,6 +1,19 @@
-import type { Group } from "./group";
-import type { Level } from "./level";
 import type { User } from "./user";
+
+export interface Level {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 
 export interface Student extends User {
   registrationNumber: string;

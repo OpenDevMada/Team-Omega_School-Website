@@ -1,14 +1,14 @@
-import { Avatar, mockStudents } from "@/app/page";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Users } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 
 export default function StudentsListOnTeacherBoard() {
   const [q, setQ] = useState("");
-  const filtered = mockStudents.filter((s) => `${s.firstName} ${s.lastName ?? ""}`.toLowerCase().includes(q.toLowerCase()) || s.email.toLowerCase().includes(q.toLowerCase()));
+  // const filtered = mockStudents.filter((s) => `${s.firstName} ${s.lastName ?? ""}`.toLowerCase().includes(q.toLowerCase()) || s.email.toLowerCase().includes(q.toLowerCase()));
 
   return (
     <div className="p-6">
@@ -22,7 +22,6 @@ export default function StudentsListOnTeacherBoard() {
             <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
             <Input value={q} onChange={(e) => setQ(e.target.value)} className="pl-9" placeholder="Rechercher un étudiant..." />
           </div>
-          <Button variant="outline"><Users className="w-4 h-4" /> Filtrer</Button>
         </div>
       </div>
 
@@ -42,10 +41,13 @@ export default function StudentsListOnTeacherBoard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((s) => (
+                {/* {filtered.map((s) => (
                   <TableRow key={s.id}>
                     <TableCell className="flex items-center gap-3">
-                      <Avatar name={s.firstName} src={s.avatar || null} />
+                      <Avatar>
+                        <AvatarImage src={s.avatar} alt={s.firstName}/>
+                        <AvatarFallback>{s.firstName[0].toUpperCase()}</AvatarFallback>
+                      </Avatar>
                       <div>
                         <div className="font-medium">{s.firstName} {s.lastName}</div>
                         <div className="text-sm text-muted-foreground">{s.id}</div>
@@ -60,7 +62,7 @@ export default function StudentsListOnTeacherBoard() {
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))} */}
               </TableBody>
             </Table>
           </div>

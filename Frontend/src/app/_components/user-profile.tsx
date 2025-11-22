@@ -18,8 +18,11 @@ import { UserData } from "../../components/user-data";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Separator } from "@/components/ui/separator";
-import type { Teacher } from "@/types/teacher";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Lock } from "lucide-react"
+import { PasswordChangeTab } from "./password-change-tab"
 import type { Student } from "@/types/student";
+import type { Teacher } from "@/types/teacher";
 
 type UserProfileProps = {
   user: Teacher | Student;
@@ -45,8 +48,8 @@ export function UserProfile({
         <InfoItem
           icon={<Phone />}
           label="Phone"
-          value={user.phone}
-          key={user.phone}
+          value={user.phoneNumber}
+          key={user.phoneNumber}
         />,
         <InfoItem
           icon={<MapPin />}
@@ -60,39 +63,39 @@ export function UserProfile({
       label: "Informations scolaires",
       data: isTeacher
         ? [
-            <InfoItem
-              icon={<Calendar />}
-              label="Date d'entree chez Omega school"
-              value={user.createdAt}
-              key={format(user.createdAt, "PPPp")}
-            />,
-            <InfoItem
-              icon={<UserCheck />}
-              label="Role dans l'etablissement"
-              value={
-                user.role === "ADMIN"
-                  ? "Admin"
-                  : user.role === "STUDENT"
+          <InfoItem
+            icon={<Calendar />}
+            label="Date d'entree chez Omega school"
+            value={user.createdAt}
+            key={format(user.createdAt, "PPPp")}
+          />,
+          <InfoItem
+            icon={<UserCheck />}
+            label="Role dans l'etablissement"
+            value={
+              user.role === "ADMIN"
+                ? "Admin"
+                : user.role === "STUDENT"
                   ? "Etudiant"
-                  : user.gender === "Féminin"
-                  ? "Enseignante"
-                  : "Enseignant"
-              }
-              key={user.role}
-            />,
-            <InfoItem
-              icon={<BookOpen />}
-              label="Cours"
-              value={(user as Teacher).courses}
-              key={(user as Teacher).courses.length}
-            />,
-          ]
+                  : user.sex === "FEMININ"
+                    ? "Enseignante"
+                    : "Enseignant"
+            }
+            key={user.role}
+          />,
+          <InfoItem
+            icon={<BookOpen />}
+            label="Cours"
+            value={(user as Teacher).courses}
+            key={(user as Teacher).courses.length}
+          />,
+        ]
         : user && "level" in user && "group" in user
-        ? [
+          ? [
             <InfoItem
               icon={<Users />}
               label="Group"
-              value={(user as Student).group?.groupName}
+              value={(user as Student).group?.name}
             />,
             <InfoItem
               icon={<Calendar />}
@@ -105,7 +108,7 @@ export function UserProfile({
               value={user.role}
             />,
           ]
-        : [],
+          : [],
     },
     {
       label: "Informations personnelles",
@@ -113,8 +116,8 @@ export function UserProfile({
         <InfoItem
           icon={<User />}
           label="Sexe"
-          value={user.gender}
-          key={user.gender}
+          value={user.sex}
+          key={user.sex}
         />,
         <InfoItem
           icon={<Cake />}
@@ -147,14 +150,14 @@ export function UserProfile({
                 src={user.avatar}
                 alt={`${user.firstName} ${user.lastName}`}
                 loading="lazy"
-                className="lg:w-44 md:w-44 w-32 aspect-square rounded-full border-4 border-green-300 shadow-xl object-cover"
+                className="lg:w-44 md:w-44 w-32 aspect-square rounded-full border-4 border-yellow-200 shadow-xl object-cover"
               />
             )}
           </div>
 
-          <div className="lg:ml-48 md:ml-48 mt-4 lg:-mt-6 md:mt-0 flex flex-col lg:flex-row md:flex-col lg:items-center justify-between gap-4">
+          <div className="lg:ml-48 md:ml-48 mt-4 p-0 lg:-mt-6 md:mt-0 flex flex-col lg:flex-row md:flex-col lg:items-center justify-between gap-4">
             <div className="flex flex-col gap-4">
-              <CardTitle className="text-3xl font-extrabold text-[#1E3A8A] tracking-tight">
+              <CardTitle className="text-3xl font-extrabold text-(--blue) tracking-tight">
                 {user.firstName} {user.lastName}
               </CardTitle>
               <span className="flex items-center gap-2">
@@ -168,7 +171,7 @@ export function UserProfile({
                       {(user as Student).registrationNumber}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {(user as Student).level.levelName}
+                      {(user as Student).level.name}
                     </p>
                   </>
                 )}
@@ -184,13 +187,35 @@ export function UserProfile({
               </Link>
             </div>
           </div>
-          <Separator className="my-6" />
+
+          <Separator className="mb-2 mt-4" />
         </CardHeader>
 
-        <CardContent className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 h-auto gap-4 mb-6">
-          {infos.map((info, idx) => (
-            <UserData key={idx} label={info.label} data={info.data} />
-          ))}
+        <CardContent className="p-0">
+          <Tabs defaultValue="profile" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mx-6 max-w-sm mb-6">
+              <TabsTrigger value="profile" className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                <span>Informations generales</span>
+              </TabsTrigger>
+              <TabsTrigger value="password" className="flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                <span>Mot de passe</span>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="profile" className="space-y-4">
+              <CardContent className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 h-auto gap-4 mb-6">
+                {infos.map((info, idx) => (
+                  <UserData key={idx} label={info.label} data={info.data} />
+                ))}
+              </CardContent>
+            </TabsContent>
+
+            <TabsContent value="password" className="space-y-4">
+              <PasswordChangeTab />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </div>
     </div>

@@ -1,41 +1,57 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Link, useLocation } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useRef,
+  useTransition,
+} from "react";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
+import z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Separator } from "./ui/separator";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const location = useLocation();
   const shown = useRef(false);
   const params = new URLSearchParams(location.search);
   const error = params.get("err");
+  const [pending, startTransition] = useTransition();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
+  const signInSchema = z.object({
+    email: z.email("Email invalide").nonempty("Email requis"),
+    password: z.string().nonempty("Mot de passe requis"),
+  });
 
-    await new Promise((res) => setTimeout(res, 2000)); // for UX, improve loader
-    try {
-      console.log(`Data: \nEmail: ${email}\nPassword: ${password}`)
-      toast.success("Authentified dude XD");
-    } catch (error: any) {
-      alert(error?.message || "Unexpected error occured !");
-    } finally {
-      setLoading(false);
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: "",
+      password: ""
     }
+  });
+
+  const onSubmit = async (values: z.infer<typeof signInSchema>) => {
+    startTransition(async () => {
+      await new Promise((res) => setTimeout(res, 2000));
+      try {
+        console.log(`Data: \nEmail: ${values.email}\nPassword: ${values.password}`);
+        toast.success("Connection réussie");
+        setTimeout(() => {
+          navigate("/profile");
+        }, 2000);
+      } catch (error: any) {
+        alert(error?.message || "Unexpected error occured !");
+      }
+    });
   };
 
   useEffect(() => {
@@ -46,55 +62,59 @@ export function LoginForm({
   }, [params]);
 
   return (
-    <form
-      className={cn("flex flex-col gap-6", className)}
-      {...props}
-      onSubmit={handleSubmit}
-    >
-      <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Connecte toi a ton compte</h1>
-          <p className="text-muted-foreground text-sm text-balance">
-            Entrer vos identifiants afin de vous connecter.
-          </p>
-        </div>
-        <Field>
-          <FieldLabel htmlFor="email">Email</FieldLabel>
-          <Input
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-            placeholder="nom@example.com"
-            required
-          />
-        </Field>
-        <Field>
-          <div className="flex items-center">
-            <FieldLabel htmlFor="password">Mot de passe</FieldLabel>
-            <Link
-              to="/forgot-password"
-              className="ml-auto text-sm underline-offset-4 hover:underline"
-            >
-              Mot de passe oublié?
-            </Link>
-          </div>
-          <Input
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            required
-          />
-        </Field>
-        <Field>
-          <Button type="submit" className="bg-(--blue) hover:bg-blue-900" onClick={handleSubmit} disabled={loading}>
-            {loading ? <>
+    <Form {...form}>
+      <div className="flex flex-col gap-0.5">
+        <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0">
+          Connecte toi a ton compte
+        </h2>
+        <p className="text-muted-foreground text-sm">Entrez vous identifiants pour pouvoir continuer</p>
+      </div>
+      <Separator className="my-4" />
+      <form
+        className={cn("flex flex-col gap-6", className)}
+        onSubmit={form.handleSubmit(onSubmit)}
+        {...props}
+      >
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="benja@gmail.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mot de passe</FormLabel>
+              <FormControl>
+                <Input type="password" placeholder="......." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          className="bg-(--blue) hover:bg-blue-900"
+          disabled={pending}
+        >
+          {pending ? (
+            <>
               <Spinner /> Connection...
-            </> : "Se connecter"}
-          </Button>
-        </Field>
-      </FieldGroup>
-    </form>
+            </>
+          ) : (
+            "Se connecter"
+          )}
+        </Button>
+      </form>
+    </Form>
   );
 }

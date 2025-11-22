@@ -18,7 +18,7 @@ export function StudentsHeader() {
   return (
     <div className="flex justify-between items-center">
       <div>
-        <h1 className="text-2xl font-bold text-(--blue) dark:text-(--dark-blue)">
+        <h1 className="scroll-m-20 pb-1 text-3xl font-semibold tracking-tight first:mt-0 text-(--blue)">
           Liste des étudiants
         </h1>
         <p className="text-sm text-muted-foreground">Gérez les élèves inscrits</p>

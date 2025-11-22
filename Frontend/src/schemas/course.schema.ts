@@ -5,6 +5,6 @@ export const courseSchema = z.object({
     .string()
     .max(50, "Titre de cours trop longue.")
     .min(3, "Titre trop courte."),
-  description: z.string().optional(),
-  teacherMatricule: z.string(),
+  description: z.string(),
+  teacherMatricule: z.string().min(1, "Matricule de l'enseignant requis"),
 });
