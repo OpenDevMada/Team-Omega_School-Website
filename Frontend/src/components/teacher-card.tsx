@@ -22,7 +22,7 @@ export function TeacherCard({
   teacher: Teacher;
 }) {
   return (
-    <Card className="max-w-sm py-4 hover:shadow-lg transition duration-100">
+    <Card className="md:max-w-sm w-full py-4 hover:shadow-lg transition duration-100">
       <CardContent className="flex items-center gap-2 overflow-hidden">
         {teacher.avatar ? (
           <img
@@ -31,7 +31,7 @@ export function TeacherCard({
             className="rounded-full w-18 aspect-square cursor-pointer"
           />
         ) : (
-          <div className="w-18 flex items-center transition duration-75 hover:brightness-110 justify-center rounded-full font-semibold text-white text-2xl aspect-square uppercase bg-(--green) dark:text-white">
+          <div className="w-18 min-w-14 flex items-center transition duration-75 hover:brightness-110 justify-center rounded-full font-semibold text-white text-2xl aspect-square uppercase bg-(--green) dark:text-white">
             {teacher.firstName[0]}
           </div>
         )}
@@ -42,7 +42,7 @@ export function TeacherCard({
               ? `Mme ${teacher.firstName}`
               : `Mr ${teacher.firstName}`}
           </h4>
-          <p className="text-sm text-muted-foreground hover:underline">
+          <p className="text-sm text-muted-foreground hover:underline whitespace-break-spaces line-clamp-1">
             {teacher.email}
           </p>
 

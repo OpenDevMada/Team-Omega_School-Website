@@ -1,12 +1,19 @@
-import { z } from "zod";
-import { levelSchema } from "@/schemas/level.schema";
-import { groupSchema } from "@/schemas/group.schema";
+import z from "zod";
 import { userSchema } from "./user.schema";
 
 export const studentSchema = userSchema.extend({
-  registrationNumber: z.string(),
-  level: levelSchema,
-  group: groupSchema,
+  registrationNumber: z.string().optional(),
+  group: z.object({
+    groupName: z
+      .string()
+      .min(1, "Le nom du groupe est requis")
+      .max(50, "Nom du groupe trop long"),
+  }),
+  level: z
+    .object({
+      levelName: z.string().optional(),
+    })
+    .optional(),
 });
 
 export const studentPostDataSchema = studentSchema.omit({
@@ -14,6 +21,6 @@ export const studentPostDataSchema = studentSchema.omit({
   createdAt: true,
   updatedAt: true,
   avatar: true,
+  registrationNumber: true,
   level: true,
-  registrationNumber: true
 });

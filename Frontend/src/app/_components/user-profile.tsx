@@ -140,14 +140,14 @@ export function UserProfile({
           <div className="absolute inset-0" />
         </div>
 
-        <CardHeader className="relative bg-white/80 backdrop-blur-md px-8 pt-10 pb-2">
+        <CardHeader className="relative backdrop-blur-md px-8 pt-10 pb-2">
           <div className="absolute -top-22 left-8">
             {user.avatar && (
               <img
                 src={user.avatar}
                 alt={`${user.firstName} ${user.lastName}`}
                 loading="lazy"
-                className="lg:w-44 md:w-44 w-32 aspect-square rounded-full border-4 border-white shadow-xl object-cover"
+                className="lg:w-44 md:w-44 w-32 aspect-square rounded-full border-4 border-green-300 shadow-xl object-cover"
               />
             )}
           </div>
@@ -187,7 +187,7 @@ export function UserProfile({
           <Separator className="my-6" />
         </CardHeader>
 
-        <CardContent className="bg-white grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 h-auto gap-4 mb-6">
+        <CardContent className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 h-auto gap-4 mb-6">
           {infos.map((info, idx) => (
             <UserData key={idx} label={info.label} data={info.data} />
           ))}
