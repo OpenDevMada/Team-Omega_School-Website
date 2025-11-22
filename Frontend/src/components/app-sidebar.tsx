@@ -13,17 +13,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import { sidebarLinks } from "@/config/sidebar-links";
+import { getLinksForRole } from "@/config/sidebar-links";
 import { SidebarOptInForm } from "@/components/sidebar-opt-in-form";
+import { useMemo } from "react";
+import type { Role } from "@/types/user";
 
-export function AppSidebar({ userRole }: { userRole: string }) {
+export function AppSidebar({ userRole }: { userRole: Role }) {
   const location = useLocation();
 
-  const filteredLinks = sidebarLinks.filter((link) => {
-    if (userRole === "STUDENT" && ["students", "levels"].includes(link.id)) return false;
-    if (userRole === "TEACHER" && ["teachers", "levels"].includes(link.id)) return false;
-    return true;
-  });
+  const filteredLinks = useMemo(
+    () => getLinksForRole(userRole),
+    [userRole]
+  );
 
   return (
     <Sidebar className="w-64 text-black dark:text-white">
@@ -54,9 +55,8 @@ export function AppSidebar({ userRole }: { userRole: string }) {
               {filteredLinks.map((link) => (
                 <SidebarMenuButton
                   key={link.id}
-                  className={`py-2 mb-2 h-10 ${
-                    location.pathname === link.href ? "bg-(--blue) text-white" : ""
-                  } hover:bg-[#3f67ec] hover:text-white dark:text-white transition`}
+                  className={`py-2 mb-2 h-10 ${location.pathname === link.href ? "bg-(--blue) text-white" : ""
+                    } hover:bg-[#3f67ec] hover:text-white dark:text-white transition`}
                   size="lg"
                   asChild
                 >

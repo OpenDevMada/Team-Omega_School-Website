@@ -15,6 +15,7 @@ type Props = {
 export function CoursesHeader({ query, setQuery }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [pending, startTransition] = useTransition();
+  
   const onSubmit = async (values: z.infer<typeof courseSchema>) => {
     startTransition(async () => {
       await new Promise(res => setTimeout(res, 1500));
@@ -25,9 +26,10 @@ export function CoursesHeader({ query, setQuery }: Props) {
       }
     });
   };
+
   return (
-    <div className="flex justify-between items-center">
-      <div>
+    <div className="flex flex-col md:flex-row justify-between items-center">
+      <div className="sm:text-left md:mb-0 mb-8 w-full">
         <h1 className="scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-(--blue)">
           Les cours
         </h1>

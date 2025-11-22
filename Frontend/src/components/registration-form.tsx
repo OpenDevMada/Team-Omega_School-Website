@@ -76,7 +76,7 @@ export function RegistrationForm({
 
     startTransition(async () => {
       try {
-        // @ts-ignore
+        // @ts-expect-error
         const user = await service.create(values);
         const fullName = `${user.firstName} ${user.lastName}`;
         toast.success(`${fullName} inscrit avec succès.`);

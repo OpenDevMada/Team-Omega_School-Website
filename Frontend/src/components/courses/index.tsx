@@ -27,8 +27,8 @@ export function MainCourses() {
   const handleUpdate = async (data: z.infer<typeof courseSchema>) => {
     const updated = await courseService.update(data.title, data);
     if (updated) {
+      courseService.getAll().then(setCourses);
       toast.success(`Cours mis a jour avec succes`);
-      setCourses((prev) => prev.filter((course) => course.id !== updated.id));
     } else {
       toast.error(`Une erreur inattendue est survenue. Réessayer plus tard.`);
     }
@@ -37,6 +37,7 @@ export function MainCourses() {
   const handleDelete = async (title: string) => {
     await courseService.delete(`/${title}`);
     toast.success(`Le cours ${title} a été supprimé avec succes`);
+    courses.filter(course => course.title.trim() == title.trim());
   };
 
   return (

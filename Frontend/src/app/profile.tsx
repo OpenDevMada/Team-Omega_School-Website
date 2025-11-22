@@ -1,10 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { mockTeacher } from "@/seeders/user";
+import { mockStudent, mockTeacher } from "@/seeders/user";
 import { Suspense } from "react";
 import { UserProfile } from "./_components/user-profile";
 
 // const StudentProfile = () => <UserProfile user={mockStudent} />
-const TeacherProfile = () => <UserProfile user={mockTeacher} isTeacher={true} />
+const Profile = () => <UserProfile user={mockStudent} isTeacher={false} />
 
 export default function ProfilePage() {
   return (
@@ -12,7 +12,7 @@ export default function ProfilePage() {
       <Suspense fallback={<Skeleton />}>
         {/* Fetch user and add condition */}
         {/* <StudentProfile /> */}
-        <TeacherProfile />
+        <Profile />
       </Suspense>
     </div>
   );

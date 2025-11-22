@@ -9,7 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ToggleThemeButton2, ThemeProvider } from "@/context/theme";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -18,13 +18,17 @@ import { Toaster } from "sonner";
 import { AppSidebar } from "@/components/app-sidebar";
 import { getFrenchLabel, getRouteData } from "@/utils/breadcrumb";
 import { Home } from "lucide-react";
+import { mockStudent } from "@/seeders/user";
+import type { Role } from "@/types/user";
 
 export default function AppLayout() {
   const location = useLocation();
   const pathname = location.pathname.slice(1);
 
   const route = getRouteData(pathname);
-  const userRole = "ADMIN";
+  const userRole: Role = "ADMIN";
+
+  const user = mockStudent;
 
   return (
     <ThemeProvider>
@@ -68,10 +72,11 @@ export default function AppLayout() {
                 <div className="flex items-center gap-2 hover:bg-gray-100 hover:dark:bg-gray-800 py-2 px-3 rounded">
                   <Avatar>
                     <Suspense fallback={<Skeleton />}>
-                      <AvatarImage src="https://randomuser.me/api/portraits/men/1.jpg" />
+                      {user.avatar && <AvatarImage src={user.avatar} alt={user.firstName} />}
+                      <AvatarFallback>{user.firstName[0].toUpperCase()}</AvatarFallback>
                     </Suspense>
                   </Avatar>
-                  <p className="text-sm">Mateo</p>
+                  <p className="text-sm">{user.firstName}</p>
                 </div>
               </div>
             </header>
