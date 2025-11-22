@@ -1,6 +1,7 @@
 package com.omega.school.controller;
 
-import com.omega.school.dto.AdminRequestDto;
+import com.omega.school.dto.UserPartialUpdateDto;
+import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
 import com.omega.school.service.AdminService;
@@ -8,6 +9,8 @@ import com.omega.school.service.AdminService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -20,7 +23,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping
-    public ResponseEntity<Admin> create(@Valid @RequestBody AdminRequestDto admin) {
+    public ResponseEntity<Admin> create(@Valid @RequestBody UserRequestDto admin) {
         Admin created = adminService.createAdmin(admin);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -40,14 +43,25 @@ public class AdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Admin>> getAll() {
-        List<Admin> admins = adminService.getAllAdmins();
+    public ResponseEntity<Page<Admin>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Admin> admins = adminService.getAllAdmins(page, size);
         return ResponseEntity.ok(admins);
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<Admin> update(@PathVariable UUID userId, @Valid @RequestBody UserUpdateDto admin) {
         Admin updated = adminService.updateAdmin(userId, admin);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Admin> partialUpdateAdmin(
+            @PathVariable UUID userId,
+            @RequestBody UserPartialUpdateDto dto) {
+
+        Admin updated = adminService.partialUpdateAdmin(userId, dto);
         return ResponseEntity.ok(updated);
     }
 

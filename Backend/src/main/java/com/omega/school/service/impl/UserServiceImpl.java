@@ -3,10 +3,14 @@ package com.omega.school.service.impl;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.mapper.UserMapper;
@@ -14,6 +18,7 @@ import com.omega.school.model.Role;
 import com.omega.school.model.User;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.UserService;
+import com.omega.school.utils.TemporaryPassword;
 
 import lombok.RequiredArgsConstructor;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,9 +38,17 @@ public class UserServiceImpl implements UserService {
         }
 
         User newUser = UserMapper.toEntity(userDto);
-        newUser.setPasswordHash(passwordEncoder.encode(userDto.getPassword()));
+
+        String tempPassword = TemporaryPassword.generateTemporaryPassword();
+
+        newUser.setPasswordHash(passwordEncoder.encode(tempPassword));
+
+        newUser.setMustChangePassword(true);
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
+
+        // TODO: envoyer l'email au user contenant le mot de passe temporaire
+        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
 
         return userRepository.save(newUser);
     }
@@ -51,13 +64,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
 
     @Override
-    public List<User> getUsersByRole(Role role) {
-        return userRepository.findByRole(role);
+    public Page<User> getUsersByRole(Role role, Pageable pageable) {
+        return userRepository.findByRole(role, pageable);
     }
 
     @Override
@@ -76,6 +89,30 @@ public class UserServiceImpl implements UserService {
                     return userRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+    }
+
+    @Override
+    public User partialUpdateUser(UUID id, UserPartialUpdateDto dto) {
+
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
+
+        if (dto.getEmail() != null &&
+                !existingUser.getEmail().equals(dto.getEmail()) &&
+                userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email déjà utilisé");
+        }
+
+        UserMapper.partialUpdate(dto, existingUser);
+
+        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
+            existingUser.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+            existingUser.setMustChangePassword(false);
+        }
+
+        existingUser.setUpdatedAt(LocalDateTime.now());
+
+        return userRepository.save(existingUser);
     }
 
     @Override

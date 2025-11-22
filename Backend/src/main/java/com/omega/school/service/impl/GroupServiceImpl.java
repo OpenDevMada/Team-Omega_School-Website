@@ -1,11 +1,14 @@
 package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
+
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import com.omega.school.dto.GroupRequestDto;
 import com.omega.school.model.Group;
@@ -44,8 +47,9 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Group> getAllGroups() {
-        return groupRepository.findAll();
+    public Page<Group> getAllGroups(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return groupRepository.findAll(pageable);
     }
 
     @Override

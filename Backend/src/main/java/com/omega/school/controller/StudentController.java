@@ -1,5 +1,6 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.StudentPartialUpdateDto;
 import com.omega.school.dto.StudentRequestDto;
 import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Student;
@@ -7,6 +8,8 @@ import com.omega.school.service.StudentService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -39,11 +42,12 @@ public class StudentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getAll() {
-        List<Student> students = studentService.getAllStudents();
-        if (students.isEmpty()) {
+    public ResponseEntity<Page<Student>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Student> students = studentService.getAllStudents(page, size);
+        if (students.isEmpty())
             return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(students);
     }
 
@@ -68,6 +72,15 @@ public class StudentController {
     @PutMapping("/{userId}")
     public ResponseEntity<Student> update(@PathVariable UUID userId, @RequestBody StudentUpdateDto student) {
         Student updated = studentService.updateStudent(userId, student);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Student> partialUpdate(
+            @PathVariable UUID userId,
+            @RequestBody StudentPartialUpdateDto dto) {
+
+        Student updated = studentService.partialUpdateStudent(userId, dto);
         return ResponseEntity.ok(updated);
     }
 

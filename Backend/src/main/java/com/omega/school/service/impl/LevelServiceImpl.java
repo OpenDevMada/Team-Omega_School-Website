@@ -1,9 +1,11 @@
 package com.omega.school.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.LevelRequestDto;
@@ -41,8 +43,9 @@ public class LevelServiceImpl implements LevelService {
     }
 
     @Override
-    public List<Level> getAllLevels() {
-        return levelRepository.findAll();
+    public Page<Level> getAllLevels(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return levelRepository.findAll(pageable);
     }
 
     @Override

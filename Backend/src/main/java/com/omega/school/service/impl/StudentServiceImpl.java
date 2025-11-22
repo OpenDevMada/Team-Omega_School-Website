@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.omega.school.dto.StudentPartialUpdateDto;
 import com.omega.school.dto.StudentRequestDto;
 import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.mapper.StudentMapper;
@@ -17,7 +20,11 @@ import com.omega.school.model.Student;
 import com.omega.school.repository.GroupRepository;
 import com.omega.school.repository.LevelRepository;
 import com.omega.school.repository.StudentRepository;
+import com.omega.school.repository.UserRepository;
+import com.omega.school.service.MailService;
 import com.omega.school.service.StudentService;
+import com.omega.school.utils.GenerateId;
+import com.omega.school.utils.TemporaryPassword;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -32,11 +39,14 @@ public class StudentServiceImpl implements StudentService {
     private final PasswordEncoder passwordEncoder;
     private final LevelRepository levelRepository;
     private final GroupRepository groupRepository;
+    private final GenerateId generateId;
+    private final UserRepository userRepository;
+    private final MailService mailService;
 
     @Override
     public Student createStudent(StudentRequestDto dto) {
-        if (studentRepository.existsByRegistrationNumber(dto.getRegistrationNumber())) {
-            throw new IllegalArgumentException("Numéro d'enregistrement déjà utilisé");
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email déjà utilisé");
         }
 
         Level level = levelRepository.findByName(dto.getLevel())
@@ -46,7 +56,21 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé : " + dto.getGroup()));
 
         Student student = StudentMapper.toEntity(dto, level, group);
-        student.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+
+        student.setRegistrationNumber(generateId.generateRegistrationNumber());
+
+        String temporaryPassword = TemporaryPassword.generateTemporaryPassword();
+
+        student.setPasswordHash(passwordEncoder.encode(temporaryPassword));
+        System.out.println("This is the temporary password: " + temporaryPassword);
+
+        student.setMustChangePassword(true);
+
+        mailService.sendTemporaryPassword(dto.getEmail(), temporaryPassword);
+
+        student.setCreatedAt(LocalDateTime.now());
+        student.setUpdatedAt(LocalDateTime.now());
+
         return studentRepository.save(student);
     }
 
@@ -61,8 +85,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public Page<Student> getAllStudents(int page, int size) {
+        return studentRepository.findAll(PageRequest.of(page, size));
     }
 
     @Override
@@ -91,6 +115,44 @@ public class StudentServiceImpl implements StudentService {
                     return studentRepository.save(existing);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+    }
+
+    @Override
+    public Student partialUpdateStudent(UUID userId, StudentPartialUpdateDto dto) {
+
+        Student student = studentRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+
+        if (dto.getEmail() != null &&
+                !dto.getEmail().equals(student.getEmail()) &&
+                userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email déjà utilisé");
+        }
+
+        Level level = null;
+        if (dto.getLevel() != null) {
+            level = levelRepository.findByName(dto.getLevel())
+                    .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé : " + dto.getLevel()));
+        }
+
+        Group group = null;
+        if (dto.getGroup() != null) {
+            group = groupRepository.findByName(dto.getGroup())
+                    .orElseThrow(() -> new EntityNotFoundException("Groupe non trouvé : " + dto.getGroup()));
+        }
+
+        StudentMapper.partialUpdate(dto, student, level, group);
+
+        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
+            student.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+            student.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
+            student.setMustChangePassword(false);
+            System.out.println("This is the new password: " + dto.getNewPassword());
+        }
+
+        student.setUpdatedAt(LocalDateTime.now());
+
+        return studentRepository.save(student);
     }
 
     @Override

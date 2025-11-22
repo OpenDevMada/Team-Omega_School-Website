@@ -1,5 +1,6 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.TeacherPartialUpdateDto;
 import com.omega.school.dto.TeacherRequestDto;
 import com.omega.school.dto.TeacherUpdateDto;
 import com.omega.school.model.Teacher;
@@ -8,6 +9,8 @@ import com.omega.school.service.TeacherService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -40,17 +43,30 @@ public class TeacherController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Teacher>> getAll() {
-        List<Teacher> teachers = teacherService.getAllTeachers();
+    public ResponseEntity<Page<Teacher>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Teacher> teachers = teacherService.getAllTeachers(page, size);
+
         if (teachers.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+
         return ResponseEntity.ok(teachers);
     }
 
     @PutMapping("/{userId}")
     public ResponseEntity<Teacher> update(@PathVariable UUID userId, @Valid @RequestBody TeacherUpdateDto teacher) {
         Teacher updated = teacherService.updateTeacher(userId, teacher);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Teacher> partialUpdate(
+            @PathVariable UUID userId,
+            @RequestBody TeacherPartialUpdateDto dto) {
+
+        Teacher updated = teacherService.partialUpdateTeacher(userId, dto);
         return ResponseEntity.ok(updated);
     }
 

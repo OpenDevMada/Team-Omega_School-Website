@@ -1,6 +1,7 @@
 package com.omega.school.service;
 
-import java.util.List;
+import java.util.Map;
+
 import com.omega.school.dto.*;
 
 public interface CourseService {
@@ -10,9 +11,9 @@ public interface CourseService {
 
     CourseResponseDto getCourseByTitle(String title);
 
-    List<CourseResponseDto> getAllCourses();
+    Map<String, Object> getAllCourses(int page, int size);
 
-    List<CourseResponseDto> getCoursesByTeacherMatricule(String matricule);
+    Map<String, Object> getCoursesByTeacherMatricule(String matricule, int page, int size);
 
     void deleteCourse(String title);
 }

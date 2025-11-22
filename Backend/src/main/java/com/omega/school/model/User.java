@@ -37,13 +37,16 @@ public class User {
     @Column(name = "id")
     private UUID userId;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "birthdate")
@@ -65,6 +68,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(name = "must_change_password", nullable = false)
+    private boolean mustChangePassword;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

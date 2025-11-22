@@ -1,6 +1,6 @@
 package com.omega.school.service;
 
-import java.util.List;
+import java.util.Map;
 
 import com.omega.school.dto.EnrollmentRequestDto;
 import com.omega.school.dto.EnrollmentResponseDto;
@@ -8,9 +8,9 @@ import com.omega.school.dto.EnrollmentResponseDto;
 public interface EnrollmentService {
     EnrollmentResponseDto enrollStudent(EnrollmentRequestDto dto);
 
-    List<EnrollmentResponseDto> getEnrollmentsByStudent(String registrationNumber);
+    Map<String, Object> getEnrollmentsByStudent(String registrationNumber, int page, int size);
 
-    List<EnrollmentResponseDto> getEnrollmentsByCourse(String title);
+    Map<String, Object> getEnrollmentsByCourse(String title, int page, int size);
 
     void deleteEnrollment(String registrationNumber, String title);
 }

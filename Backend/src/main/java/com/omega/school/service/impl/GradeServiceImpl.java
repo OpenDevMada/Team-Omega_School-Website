@@ -1,10 +1,15 @@
 package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
 import com.omega.school.dto.*;
 import com.omega.school.mapper.GradeMapper;
@@ -39,17 +44,43 @@ public class GradeServiceImpl implements GradeService {
         }
 
         @Override
-        public List<GradeResponseDto> getGradesByStudentRegistration(String registration) {
-                return gradeRepository.findByStudentRegistrationNumber(registration)
-                                .stream().map(GradeMapper::toDto)
+        public Map<String, Object> getGradesByStudentRegistration(String registration, int page, int size) {
+                Pageable pageable = PageRequest.of(page, size);
+
+                Page<Grade> gradePage = gradeRepository.findByStudentRegistrationNumber(registration, pageable);
+
+                List<GradeResponseDto> content = gradePage.getContent()
+                                .stream()
+                                .map(GradeMapper::toDto)
                                 .collect(Collectors.toList());
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("content", content);
+                response.put("currentPage", gradePage.getNumber());
+                response.put("totalItems", gradePage.getTotalElements());
+                response.put("totalPages", gradePage.getTotalPages());
+
+                return response;
         }
 
         @Override
-        public List<GradeResponseDto> getGradesByCourseTitle(String title) {
-                return gradeRepository.findByCourseTitle(title)
-                                .stream().map(GradeMapper::toDto)
+        public Map<String, Object> getGradesByCourseTitle(String title, int page, int size) {
+                Pageable pageable = PageRequest.of(page, size);
+
+                Page<Grade> gradePage = gradeRepository.findByCourseTitle(title, pageable);
+
+                List<GradeResponseDto> content = gradePage.getContent()
+                                .stream()
+                                .map(GradeMapper::toDto)
                                 .collect(Collectors.toList());
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("content", content);
+                response.put("currentPage", gradePage.getNumber());
+                response.put("totalItems", gradePage.getTotalElements());
+                response.put("totalPages", gradePage.getTotalPages());
+
+                return response;
         }
 
         @Override

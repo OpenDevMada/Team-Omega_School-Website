@@ -16,4 +16,6 @@ public class StudentUpdateDto extends UserUpdateDto {
 
     @NotBlank
     private String group;
+
+    private String emergencyContact;
 }

@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class StudentRequestDto extends UserRequestDto {
-    @NotBlank
-    private String registrationNumber;
 
     @NotBlank
     private String level;
 
     @NotBlank
     private String group;
+
+    private String emergencyContact;
 }

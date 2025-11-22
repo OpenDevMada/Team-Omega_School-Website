@@ -1,11 +1,15 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Role;
 import com.omega.school.model.User;
 import com.omega.school.service.UserService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,19 +45,16 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        if (users.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(users);
+    public ResponseEntity<Page<User>> getAllUsers(Pageable pageable) {
+        Page<User> users = userService.getAllUsers(pageable);
+        return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
     }
 
     @GetMapping("/role/{role}")
-    public ResponseEntity<List<User>> getByRole(@PathVariable Role role) {
-        List<User> users = userService.getUsersByRole(role);
+    public ResponseEntity<Page<User>> getByRole(@PathVariable Role role, Pageable pageable) {
+        Page<User> users = userService.getUsersByRole(role, pageable);
         if (users.isEmpty()) {
-            throw new EntityNotFoundException("Aucun utilisateur trouvé avec le rôle " + role);
+            throw new EntityNotFoundException("Aucun utilisateur trouvé pour le rôle " + role);
         }
         return ResponseEntity.ok(users);
     }
@@ -62,6 +63,15 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @Valid @RequestBody UserUpdateDto updatedUser) {
         User updated = userService.updateUser(id, updatedUser);
         return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<User> partialUpdateUser(
+            @PathVariable UUID id,
+            @RequestBody UserPartialUpdateDto dto) {
+
+        User updatedUser = userService.partialUpdateUser(id, dto);
+        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")

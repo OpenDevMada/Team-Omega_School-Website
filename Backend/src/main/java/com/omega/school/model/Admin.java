@@ -27,8 +27,10 @@ public class Admin extends User {
 
     public Admin(UUID userId, String adminId, String firstName, String lastName,
             String email, LocalDate birthDate, Sex sex, String passwordHash, String address, String phoneNumber,
-            Role role) {
-        super(userId, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role, null, null);
+            Role role, String avatarUrl, boolean mustChangePassword) {
+        super(userId, avatarUrl, firstName, lastName, email, birthDate, sex, passwordHash, address, phoneNumber, role,
+                mustChangePassword,
+                null, null);
         this.adminId = adminId;
     }
 }

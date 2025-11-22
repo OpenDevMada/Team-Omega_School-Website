@@ -2,7 +2,6 @@ package com.omega.school.model;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -13,11 +12,8 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 public class Level {
-
-    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

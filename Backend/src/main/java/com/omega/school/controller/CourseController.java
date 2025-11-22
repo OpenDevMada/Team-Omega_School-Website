@@ -28,15 +28,20 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseResponseDto>> getAll() {
-        List<CourseResponseDto> courses = courseService.getAllCourses();
-        return ResponseEntity.ok(courses);
+    public ResponseEntity<Map<String, Object>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = courseService.getAllCourses(page, size);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/teacher/{matricule}")
-    public ResponseEntity<List<CourseResponseDto>> getByTeacher(@PathVariable String matricule) {
-        List<CourseResponseDto> courses = courseService.getCoursesByTeacherMatricule(matricule);
-        return ResponseEntity.ok(courses);
+    public ResponseEntity<Map<String, Object>> getByTeacher(
+            @PathVariable String matricule,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> response = courseService.getCoursesByTeacherMatricule(matricule, page, size);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{title}")

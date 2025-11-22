@@ -1,14 +1,14 @@
 package com.omega.school.service;
 
 import com.omega.school.dto.*;
-import java.util.List;
+import java.util.Map;
 
 public interface GradeService {
     GradeResponseDto createGrade(GradeRequestDto dto);
 
-    List<GradeResponseDto> getGradesByStudentRegistration(String registration);
+    Map<String, Object> getGradesByStudentRegistration(String registration, int page, int size);
 
-    List<GradeResponseDto> getGradesByCourseTitle(String title);
+    Map<String, Object> getGradesByCourseTitle(String title, int page, int size);
 
     GradeResponseDto updateGrade(GradeRequestDto dto);
 
