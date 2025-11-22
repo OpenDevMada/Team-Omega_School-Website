@@ -1,3 +1,4 @@
+import type { Role } from "@/types/user";
 import {
   LayoutDashboard,
   User2,
@@ -7,6 +8,7 @@ import {
   Megaphone,
   Layers,
   Cog,
+  BookCheck,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -17,5 +19,42 @@ export const sidebarLinks = [
   { id: "teachers", title: "Professeurs", href: "/teachers", icon: UserCircle2 },
   { id: "announcement", title: "Annonces", href: "/announcement", icon: Megaphone },
   { id: "levels", title: "Groupe et niveau", href: "/levels", icon: Layers },
-  { id: "advanced", title: "Parametre avancée", href: "/advanced", icon: Cog },
+  { id: "settings", title: "Parametre", href: "/settings", icon: Cog },
 ];
+
+const roleRules = {
+  ADMIN: {
+    hide: [],
+    add: [],
+  },
+  STUDENT: {
+    hide: ["dashboard", "levels", "settings"],
+    add: [
+      {
+        id: "grades",
+        title: "Notes",
+        href: "/grades",
+        icon: BookCheck,
+      },
+    ],
+  },
+  TEACHER: {
+    hide: ["dashboard", "levels", "settings", "teachers"],
+    add: [],
+  },
+} as const;
+
+export function getLinksForRole(role: Role) {
+  const rules = roleRules[role] ?? roleRules["STUDENT"];
+
+  let baseLinks = sidebarLinks.filter(
+    // @ts-expect-error
+    (link) => !rules.hide.includes(link.id)
+  );
+
+  if (rules.add.length > 0) {
+    baseLinks = [...baseLinks, ...rules.add];
+  }
+
+  return baseLinks;
+}
