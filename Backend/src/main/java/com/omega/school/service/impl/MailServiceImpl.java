@@ -1,41 +1,52 @@
 package com.omega.school.service.impl;
 
+import com.omega.school.service.MailService;
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.omega.school.service.MailService;
-import com.resend.Resend;
-import com.resend.services.emails.model.SendEmailRequest;
-import com.resend.services.emails.model.SendEmailResponse;
 
 @Service
 public class MailServiceImpl implements MailService {
 
-    @Value("${resend.api.key}")
-    private String apiKey;
+    private final SendGrid sendGrid;
+
+    @Value("${app.mail.from}")
+    private String sender;
+
+    public MailServiceImpl(SendGrid sendGrid) {
+        this.sendGrid = sendGrid;
+    }
 
     @Override
-    public void sendTemporaryPassword(String to, String temporaryPassword) {
-        // Initialise le client Resend
-        Resend resend = new Resend(apiKey);
+    public void sendTemporaryPassword(String to, String tempPassword) {
+        Email fromEmail = new Email(sender);
+        Email toEmail = new Email(to);
+        String subject = "Votre mot de passe temporaire – Omega School";
 
-        String htmlContent = "<p>Bonjour,</p>" +
-                "<p>Voici votre mot de passe temporaire pour votre première connexion : <b>" + temporaryPassword
-                + "</b></p>" +
-                "<p>Veuillez le changer après votre première connexion.</p>" +
-                "<p>Cordialement,<br>L'équipe Alpha School</p>";
+        String message = "Bonjour,\n\nVoici votre mot de passe temporaire : "
+                + tempPassword +
+                "\n\nVeuillez le changer à votre première connexion. \n\nCordialement,\nL'équipe Omega School";
 
-        // Construire la requête
-        SendEmailRequest request = SendEmailRequest.builder()
-                .from("onboarding@resend.dev")
-                .to(to)
-                .subject("Votre mot de passe temporaire")
-                .html(htmlContent)
-                .build();
+        Content content = new Content("text/plain", message);
+        Mail mail = new Mail(fromEmail, subject, toEmail, content);
 
-        // Envoyer l'email
-        SendEmailResponse response = resend.emails().send(request);
+        Request request = new Request();
 
-        System.out.println("Email envoyé avec l’ID : " + response.getId());
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+
+            Response response = sendGrid.api(request);
+            System.out.println("SendGrid status : " + response.getStatusCode());
+            System.out.println("SendGrid body : " + response.getBody());
+
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l’envoi d’email SendGrid : " + e.getMessage());
+        }
     }
 }
