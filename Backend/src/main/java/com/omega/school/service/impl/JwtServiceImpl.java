@@ -51,4 +51,14 @@ public class JwtServiceImpl implements JwtService {
                 .getBody()
                 .get("email");
     }
+
+    @Override
+    public String extractRole(String token) {
+        return (String) Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role");
+    }
+
 }
