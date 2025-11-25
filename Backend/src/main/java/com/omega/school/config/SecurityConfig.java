@@ -23,27 +23,28 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
-    /*@Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/auth/login", "/auth/register").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-
-    */
+    /*
+     * @Bean
+     * public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+     * http
+     * .csrf().disable()
+     * .authorizeHttpRequests()
+     * .requestMatchers("/auth/login", "/auth/register").permitAll()
+     * .anyRequest().authenticated()
+     * .and()
+     * .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+     * 
+     * return http.build();
+     * }
+     * 
+     */
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()        // désactive CSRF
-            .authorizeHttpRequests()
-            .anyRequest().permitAll(); // permet toutes les requêtes
+                .csrf().disable() // désactive CSRF
+                .authorizeHttpRequests()
+                .anyRequest().permitAll(); // permet toutes les requêtes
 
         return http.build();
     }
