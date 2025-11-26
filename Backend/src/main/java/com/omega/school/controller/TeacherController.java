@@ -4,6 +4,7 @@ import com.omega.school.dto.TeacherPartialUpdateDto;
 import com.omega.school.dto.TeacherRequestDto;
 import com.omega.school.dto.TeacherUpdateDto;
 import com.omega.school.model.Teacher;
+import com.omega.school.model.User;
 import com.omega.school.service.TeacherService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -88,12 +89,15 @@ public class TeacherController {
     @PreAuthorize("hasAuthority('TEACHER')")
     @GetMapping("/me")
     public ResponseEntity<Teacher> getMyProfile() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (principal instanceof User user) {
+            return teacherService.getByEmail(user.getEmail())
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        }
 
-        return teacherService.getByEmail(email)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 }
