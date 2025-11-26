@@ -15,8 +15,6 @@ public class UserPartialUpdateDto {
 
     private String lastName;
 
-    private String email;
-
     private LocalDate birthDate;
 
     private Sex sex;
@@ -24,7 +22,5 @@ public class UserPartialUpdateDto {
     private String address;
 
     private String phoneNumber;
-
-    private String newPassword;
 
 }

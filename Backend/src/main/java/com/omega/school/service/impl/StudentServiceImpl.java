@@ -123,12 +123,6 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
 
-        if (dto.getEmail() != null &&
-                !dto.getEmail().equals(student.getEmail()) &&
-                userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email déjà utilisé");
-        }
-
         Level level = null;
         if (dto.getLevel() != null) {
             level = levelRepository.findByName(dto.getLevel())
@@ -143,13 +137,6 @@ public class StudentServiceImpl implements StudentService {
 
         StudentMapper.partialUpdate(dto, student, level, group);
 
-        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
-            student.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
-            student.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
-            student.setMustChangePassword(false);
-            System.out.println("This is the new password: " + dto.getNewPassword());
-        }
-
         student.setUpdatedAt(LocalDateTime.now());
 
         return studentRepository.save(student);
@@ -162,4 +149,10 @@ public class StudentServiceImpl implements StudentService {
         }
         studentRepository.deleteById(userId);
     }
+
+    @Override
+    public Optional<Student> getByEmail(String email) {
+        return studentRepository.findByEmail(email);
+    }
+
 }

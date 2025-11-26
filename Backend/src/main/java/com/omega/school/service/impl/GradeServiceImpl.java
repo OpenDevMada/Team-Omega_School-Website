@@ -115,4 +115,47 @@ public class GradeServiceImpl implements GradeService {
                 }
                 gradeRepository.deleteById(id);
         }
+
+        @Override
+        public Map<String, Object> getGradesByStudentForTeacher(String studentRegistration, String teacherId, int page,
+                        int size) {
+                Pageable pageable = PageRequest.of(page, size);
+                Page<Grade> gradePage = gradeRepository.findByStudentRegistrationAndTeacherId(studentRegistration,
+                                teacherId, pageable);
+                List<GradeResponseDto> content = gradePage.getContent().stream().map(GradeMapper::toDto)
+                                .collect(Collectors.toList());
+                Map<String, Object> response = new HashMap<>();
+                response.put("content", content);
+                response.put("currentPage", gradePage.getNumber());
+                response.put("totalItems", gradePage.getTotalElements());
+                response.put("totalPages", gradePage.getTotalPages());
+                return response;
+        }
+
+        @Override
+        public Map<String, Object> getGradesForStudent(String registration, User currentUser, int page, int size) {
+
+                switch (currentUser.getRole()) {
+                        case TEACHER -> {
+                                return getGradesByStudentForTeacher(registration, currentUser.getUserId().toString(),
+                                                page, size);
+                        }
+                        case STUDENT -> {
+                                Student student = studentRepository.findById(currentUser.getUserId())
+                                                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+
+                                if (!registration.equals(student.getRegistrationNumber())) {
+                                        throw new SecurityException(
+                                                        "Accès interdit : vous ne pouvez voir que vos propres notes.");
+                                }
+
+                                return getGradesByStudentRegistration(registration, page, size);
+                        }
+                        default -> {
+
+                                return getGradesByStudentRegistration(registration, page, size);
+                        }
+                }
+        }
+
 }

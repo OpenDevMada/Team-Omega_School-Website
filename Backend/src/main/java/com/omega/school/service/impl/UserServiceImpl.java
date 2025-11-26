@@ -47,9 +47,6 @@ public class UserServiceImpl implements UserService {
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setUpdatedAt(LocalDateTime.now());
 
-        // TODO: envoyer l'email au user contenant le mot de passe temporaire
-        // mailService.sendTemporaryPassword(dto.getEmail(), tempPassword);
-
         return userRepository.save(newUser);
     }
 
@@ -97,18 +94,7 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
 
-        if (dto.getEmail() != null &&
-                !existingUser.getEmail().equals(dto.getEmail()) &&
-                userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email déjà utilisé");
-        }
-
         UserMapper.partialUpdate(dto, existingUser);
-
-        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
-            existingUser.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
-            existingUser.setMustChangePassword(false);
-        }
 
         existingUser.setUpdatedAt(LocalDateTime.now());
 

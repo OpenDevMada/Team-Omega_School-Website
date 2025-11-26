@@ -26,4 +26,6 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
     @Query("SELECT s.registrationNumber FROM Student s WHERE s.registrationNumber LIKE CONCAT(:prefix, '%') ORDER BY s.registrationNumber DESC")
     List<String> findLastRegistrationNumberOfYear(@Param("prefix") String prefix, Pageable pageable);
 
+    Optional<Student> findByEmail(String email);
+
 }

@@ -29,4 +29,6 @@ public interface StudentService {
     Student partialUpdateStudent(UUID userId, StudentPartialUpdateDto dto);
 
     void deleteStudent(UUID userId);
+
+    Optional<Student> getByEmail(String email);
 }

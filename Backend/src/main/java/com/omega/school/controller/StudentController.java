@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
@@ -21,12 +23,14 @@ public class StudentController {
 
     private final StudentService studentService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody StudentRequestDto student) {
         Student created = studentService.createStudent(student);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{userId}")
     public ResponseEntity<Student> getById(@PathVariable UUID userId) {
         return studentService.getStudentById(userId)
@@ -34,6 +38,7 @@ public class StudentController {
                 .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/registration/{regNumber}")
     public ResponseEntity<Student> getByRegistrationNumber(@PathVariable String regNumber) {
         return studentService.getByRegistrationNumber(regNumber)
@@ -41,6 +46,7 @@ public class StudentController {
                 .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public ResponseEntity<Page<Student>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -51,6 +57,7 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/level/{level}")
     public ResponseEntity<List<Student>> getByLevel(@PathVariable String level) {
         List<Student> students = studentService.getByLevel(level);
@@ -60,6 +67,7 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/group/{group}")
     public ResponseEntity<List<Student>> getByGroup(@PathVariable String group) {
         List<Student> students = studentService.getByGroup(group);
@@ -69,12 +77,14 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{userId}")
     public ResponseEntity<Student> update(@PathVariable UUID userId, @RequestBody StudentUpdateDto student) {
         Student updated = studentService.updateStudent(userId, student);
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/{userId}")
     public ResponseEntity<Student> partialUpdate(
             @PathVariable UUID userId,
@@ -84,9 +94,22 @@ public class StudentController {
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> delete(@PathVariable UUID userId) {
         studentService.deleteStudent(userId);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasAuthority('STUDENT')")
+    @GetMapping("/me")
+    public ResponseEntity<Student> getMyProfile() {
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return studentService.getByEmail(email)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+    }
+
 }

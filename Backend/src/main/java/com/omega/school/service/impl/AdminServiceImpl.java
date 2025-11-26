@@ -89,18 +89,8 @@ public class AdminServiceImpl implements AdminService {
         Admin existingAdmin = adminRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Admin non trouvé"));
 
-        if (dto.getEmail() != null &&
-                !existingAdmin.getEmail().equals(dto.getEmail()) &&
-                userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email déjà utilisé");
-        }
-
         AdminMapper.partialUpdate(existingAdmin, dto);
 
-        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
-            existingAdmin.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
-            existingAdmin.setMustChangePassword(false);
-        }
         return adminRepository.save(existingAdmin);
     }
 

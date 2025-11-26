@@ -53,8 +53,6 @@ public class AdminMapper {
             admin.setFirstName(dto.getFirstName());
         if (dto.getLastName() != null)
             admin.setLastName(dto.getLastName());
-        if (dto.getEmail() != null)
-            admin.setEmail(dto.getEmail());
         if (dto.getAddress() != null)
             admin.setAddress(dto.getAddress());
         if (dto.getBirthDate() != null)

@@ -9,12 +9,14 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
 @RequestMapping("/groups")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ADMIN')")
 public class GroupController {
 
     private final GroupService groupService;

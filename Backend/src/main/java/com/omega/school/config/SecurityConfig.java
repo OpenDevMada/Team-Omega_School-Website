@@ -23,28 +23,20 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
-    /*
-     * @Bean
-     * public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-     * http
-     * .csrf().disable()
-     * .authorizeHttpRequests()
-     * .requestMatchers("/auth/login", "/auth/register").permitAll()
-     * .anyRequest().authenticated()
-     * .and()
-     * .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-     * 
-     * return http.build();
-     * }
-     * 
-     */
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // désactive CSRF
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests()
-                .anyRequest().permitAll(); // permet toutes les requêtes
+                .requestMatchers(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui.html")
+                .permitAll()
+                .requestMatchers("/auth/login", "/auth/register").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

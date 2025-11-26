@@ -19,4 +19,6 @@ public interface TeacherRepository extends JpaRepository<Teacher, UUID> {
     List<String> findLastMatriculeOfYear(@Param("prefix") String prefix,
             Pageable pageable);
 
+    Optional<Teacher> findByEmail(String email);
+
 }
