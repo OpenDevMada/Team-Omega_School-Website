@@ -24,4 +24,6 @@ public interface TeacherService {
     Teacher partialUpdateTeacher(UUID id, TeacherPartialUpdateDto dto);
 
     void deleteTeacher(UUID userId);
+
+    Optional<Teacher> getByEmail(String email);
 }

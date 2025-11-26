@@ -8,4 +8,5 @@ public interface JwtService {
     String extractEmail(String token);
 
     String extractRole(String token);
+
 }

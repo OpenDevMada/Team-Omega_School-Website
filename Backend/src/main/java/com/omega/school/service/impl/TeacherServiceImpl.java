@@ -104,18 +104,7 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher teacher = teacherRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
 
-        if (dto.getEmail() != null &&
-                !teacher.getEmail().equals(dto.getEmail()) &&
-                userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email déjà utilisé");
-        }
-
         TeacherMapper.partialUpdate(dto, teacher);
-
-        if (dto.getNewPassword() != null && !dto.getNewPassword().isBlank()) {
-            teacher.setPasswordHash(passwordEncoder.encode(dto.getNewPassword()));
-            teacher.setMustChangePassword(false);
-        }
 
         teacher.setUpdatedAt(LocalDateTime.now());
 
@@ -129,4 +118,10 @@ public class TeacherServiceImpl implements TeacherService {
         }
         teacherRepository.deleteById(userId);
     }
+
+    @Override
+    public Optional<Teacher> getByEmail(String email) {
+        return teacherRepository.findByEmail(email);
+    }
+
 }

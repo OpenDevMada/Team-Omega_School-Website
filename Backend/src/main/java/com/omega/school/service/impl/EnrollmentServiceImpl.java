@@ -69,6 +69,22 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         @Override
+        public Map<String, Object> getEnrollmentsByStudentForTeacher(String registrationNumber, String teacherId,
+                        int page, int size) {
+                Pageable pageable = PageRequest.of(page, size);
+                Page<Enrollment> enrollmentPage = enrollmentRepository
+                                .findByStudentRegistrationAndTeacherId(registrationNumber, teacherId, pageable);
+                List<EnrollmentResponseDto> content = enrollmentPage.getContent().stream().map(EnrollmentMapper::toDto)
+                                .collect(Collectors.toList());
+                Map<String, Object> response = new HashMap<>();
+                response.put("content", content);
+                response.put("currentPage", enrollmentPage.getNumber());
+                response.put("totalItems", enrollmentPage.getTotalElements());
+                response.put("totalPages", enrollmentPage.getTotalPages());
+                return response;
+        }
+
+        @Override
         public Map<String, Object> getEnrollmentsByCourse(String title, int page, int size) {
                 Pageable pageable = PageRequest.of(page, size);
 
@@ -89,6 +105,22 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         @Override
+        public Map<String, Object> getEnrollmentsByCourseForTeacher(String title, String teacherId, int page,
+                        int size) {
+                Pageable pageable = PageRequest.of(page, size);
+                Page<Enrollment> enrollmentPage = enrollmentRepository.findByCourseTitleAndTeacherId(title, teacherId,
+                                pageable);
+                List<EnrollmentResponseDto> content = enrollmentPage.getContent().stream().map(EnrollmentMapper::toDto)
+                                .collect(Collectors.toList());
+                Map<String, Object> response = new HashMap<>();
+                response.put("content", content);
+                response.put("currentPage", enrollmentPage.getNumber());
+                response.put("totalItems", enrollmentPage.getTotalElements());
+                response.put("totalPages", enrollmentPage.getTotalPages());
+                return response;
+        }
+
+        @Override
         public void deleteEnrollment(String registrationNumber, String title) {
                 Student student = studentRepository.findByRegistrationNumber(registrationNumber)
                                 .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
@@ -103,4 +135,26 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
                 enrollmentRepository.deleteById(id);
         }
+
+        @Override
+        public Map<String, Object> getEnrollmentsByCourseForStudent(String title, String studentRegistration, int page,
+                        int size) {
+                Pageable pageable = PageRequest.of(page, size);
+
+                Page<Enrollment> enrollmentPage = enrollmentRepository.findByCourseTitleAndStudentRegistration(title,
+                                studentRegistration, pageable);
+
+                List<EnrollmentResponseDto> content = enrollmentPage.getContent().stream()
+                                .map(EnrollmentMapper::toDto)
+                                .collect(Collectors.toList());
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("content", content);
+                response.put("currentPage", enrollmentPage.getNumber());
+                response.put("totalItems", enrollmentPage.getTotalElements());
+                response.put("totalPages", enrollmentPage.getTotalPages());
+
+                return response;
+        }
+
 }

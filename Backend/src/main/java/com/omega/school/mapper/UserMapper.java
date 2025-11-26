@@ -62,8 +62,6 @@ public class UserMapper {
             user.setFirstName(dto.getFirstName());
         if (dto.getLastName() != null)
             user.setLastName(dto.getLastName());
-        if (dto.getEmail() != null)
-            user.setEmail(dto.getEmail());
         if (dto.getBirthDate() != null)
             user.setBirthDate(dto.getBirthDate());
         if (dto.getSex() != null)

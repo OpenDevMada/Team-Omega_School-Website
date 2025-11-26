@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +20,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/users")
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequiredArgsConstructor
 public class UserController {
 
