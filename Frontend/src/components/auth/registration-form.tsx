@@ -13,13 +13,16 @@ import {
 import { Form } from "@/components/ui/form";
 import { userSchema } from "@/validation/user";
 import { z } from "zod";
-import { StudentFormFields } from "./forms/student-form";
-import { TeacherFormFields } from "./forms/teacher-form";
-import { UserFields } from "./forms/user-form";
 import { studentService } from "@/services/students";
-import type { Group, Level } from "@/types/student";
+import { type Group, type Level } from "@/types/student";
 import { BaseService } from "@/services/base";
 import { teacherService } from "@/services/teacher";
+import { api } from "@/lib/api";
+import { ROUTES } from "@/utils/constants";
+import { useNavigate } from "react-router-dom";
+import { UserFields } from "../forms/user-form";
+import { StudentFormFields } from "../forms/student-form";
+import { TeacherFormFields } from "../forms/teacher-form";
 
 interface RegistrationFormProps {
   isStudent: boolean;
@@ -41,6 +44,7 @@ export function RegistrationForm({
     new BaseService<Level, any, any>("/levels"),
     new BaseService<Group, any, any>("/groups"),
   ];
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof userSchema>>({
     defaultValues: isStudent
@@ -53,9 +57,9 @@ export function RegistrationForm({
         email: "",
         phoneNumber: "",
         address: "",
-        registrationNumber: "",
         level: "",
         group: "",
+        emergencyContact: ""
       }
       : {
         role: "TEACHER",
@@ -75,11 +79,21 @@ export function RegistrationForm({
     const service = values.role === "STUDENT" ? studentService : teacherService;
 
     startTransition(async () => {
+      await new Promise(res => setTimeout(res, 1000));
       try {
-        // @ts-expect-error
-        const user = await service.create(values);
-        const fullName = `${user.firstName} ${user.lastName}`;
-        toast.success(`${fullName} inscrit avec succès.`);
+        if (isOnMainRegistration) {
+          const response = await api.post(ROUTES.WEBSITE.AUTH.SIGN_UP, values);
+          if (response.data || response.status in [200, 201, 204]) {
+            toast.success(`${response.data.firstName} inscrit avec succès.`);
+            navigate("/login");
+          }
+        } else {
+          // @ts-expect-error
+          const user = await service.create(values);
+          console.log(user, "user");
+          const fullName = `${user.firstName} ${user.lastName}`;
+          toast.success(`${fullName} inscrit avec succès.`);
+        }
 
         setOpen?.(false);
         onCreated?.();
@@ -87,6 +101,7 @@ export function RegistrationForm({
       } catch (e) {
         console.error("Registration error:", e);
         toast.error("Une erreur est survenue.");
+        throw e;
       }
     });
   };
@@ -110,8 +125,6 @@ export function RegistrationForm({
               form={form}
               groups={groups}
               levels={levels}
-              isEditing={false}
-              isOnMainRegistration={isOnMainRegistration}
             />
           ) : (
             // @ts-expect-error

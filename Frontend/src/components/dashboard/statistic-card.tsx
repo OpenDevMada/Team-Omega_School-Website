@@ -4,7 +4,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { statisticService } from '@/services/statistic'
 import type { Stat } from '@/types/statistic'
 import { BookA, GraduationCap, Users2, UsersRound } from 'lucide-react'
-import { groupService } from '@/app/_components/admin-students/update-dialog'
+import { groupService } from '@/services/students'
 
 export function StatisticsCards() {
   const [stats, setStats] = useState<Stat | null>(null);
@@ -16,7 +16,8 @@ export function StatisticsCards() {
     const fetchStats = async () => {
       try {
         setLoading(true)
-        const data = await statisticService.getCurrent()
+        const data = await statisticService.getCurrent();
+        console.log(data)
         setStats(data)
 
         await new Promise(resolve => setTimeout(resolve, 500))
