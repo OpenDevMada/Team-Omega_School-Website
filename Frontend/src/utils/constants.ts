@@ -1,45 +1,58 @@
 import type { Student } from "@/types/student";
-import type { Teacher } from "@/types/teacher";
-
-// export const API_BASE_URL = process.env.BASE_URL || "http://localhost:5000/api";
 
 export const ROUTES = {
   WEBSITE: {
     AUTH: {
-      SIGN_IN: "/login",
+      SIGN_IN: "/auth/login",
+      SIGN_UP: "/auth/register",
       FORGET_PASSWORD: "/forget-password",
       RESET_PASSWORD: "/reset-password",
     },
     ENROLLMENT: "/register",
     COURSES: "/all-courses",
-    ANNOUNCEMENT: "/announcement",
+    ANNOUNCEMENT: "/announcements",
+    CONTACT: "/contact",
   },
   APP: {
+    DASHBOARD: "/dashboard",
     PROFILE: "/profile",
     TEACHERS: "/teachers",
     STUDENTS: "/students",
     COURSES: "/courses",
     ANNOUNCEMENT: "/announcement",
+    SETTINGS: "/settings",
   },
-};
+} as const;
 
-export const TEACHERS_ENDPOINTS = {
-  ALL: "/teachers",
-  GET_BY_ID: (teacher: Teacher) => `/teachers/${teacher.id}`,
-  UPDATE_TEACHER: (teacher: Teacher) => `/teachers/put/${teacher.id}`,
-  DELETE_TEACHER: (teacher: Teacher) => `/teachers/delete/${teacher.id}`,
-};
-
-export const STUDENTS_ENDPOINTS = {
-  ALL: "/students",
-  GET_BY_REGISTRATION_NUMBER: (student: Student) =>
-    `/students/${student.registrationNumber}`,
-  UPDATE_STUDENT: (student: Student) =>
-    `/students/put/${student.registrationNumber}`,
-  DELETE_STUDENT: (student: Student) =>
-    `/students/delete/${student.registrationNumber}`,
-};
-
-export const ADMIN_ENDPOINTS = {
-  STAT: "/stat",
-};
+export const ENDPOINTS = {
+  TEACHERS: {
+    ALL: "/teachers",
+    GET_BY_ID: (id: string) => `/teachers/${id}`,
+    UPDATE: (id: string) => `/teachers/${id}`,
+    DELETE: (id: string) => `/teachers/${id}`,
+  },
+  STUDENTS: {
+    ALL: "/students",
+    GET_BY_REGISTRATION_NUMBER: (student: Student) =>
+      `/students/${student.registrationNumber}`,
+    UPDATE: (student: Student) =>
+      `/students/put/${student.registrationNumber}`,
+    DELETE: (student: Student) =>
+      `/students/delete/${student.registrationNumber}`,
+  },
+  STATS: {
+    GLOBAL: "/dashboard/stat",
+  },
+  COURSES: {
+    ALL: "/courses",
+    UPDATE: (title: string) => `/courses/${title}`,
+    DELETE: (title: string) => `/courses/${title}`,
+    GET_BY_STUDENT_REGISTRATION: (registrationNumber: string) =>
+      `/courses/${registrationNumber}`,
+  },
+  ANNOUNCEMENTS: {
+    ALL: "/announcements",
+    UPDATE: (title: string) => `/announcements/${title}`,
+    DELETE: (title: string) => `/announcements/${title}`
+  }
+} as const;

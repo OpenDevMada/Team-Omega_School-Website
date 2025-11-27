@@ -1,92 +1,88 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState, useTransition } from "react";
-import { Edit, X } from "lucide-react";
-import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogCancel } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { studentPostDataSchema } from "@/schemas/student.schema";
 import { studentService } from "@/services/students";
+import { toast } from "sonner";
+import * as z from "zod";
 import { UserFields } from "@/components/forms/user-form";
 import { StudentFormFields } from "@/components/forms/student-form";
-import * as z from "zod";
-import type { Group, Level } from "@/types/student";
-import { BaseService } from "@/services/base";
+import { useTransition } from "react";
+import { Spinner } from "@/components/ui/spinner";
+import type { Group, Level, Student } from "@/types/student";
+import { Separator } from "@/components/ui/separator";
 
-interface StudentUpdateDialogProps {
-  studentId: string;
-  student: z.infer<typeof studentPostDataSchema>;
-}
+type Props = {
+  student: Student | null;
+  onClose: () => void;
+  onUpdated: () => void;
+  groups: Group[];
+  levels: Level[];
+};
 
-export const [levelService, groupService] = [new BaseService<Level, any, any>("/levels"), new BaseService<Group, any, any>("/groups")];
-
-export function StudentUpdateDialog({ student, studentId }: StudentUpdateDialogProps) {
-  const [pending, startTransition] = useTransition();
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [levels, setLevels] = useState<Level[]>([]);
-
+export function StudentUpdateDialog({ student, onClose, onUpdated, groups, levels }: Props) {
   const form = useForm<z.infer<typeof studentPostDataSchema>>({
     resolver: zodResolver(studentPostDataSchema),
     defaultValues: {
-      ...student,
+      firstName: "",
+      lastName: "",
+      email: "",
+      birthDate: undefined,
+      sex: "MASCULIN",
+      address: "",
+      phoneNumber: "",
+      level: "",
+      group: ""
     },
   });
 
+  const [pending, startTransition] = useTransition();
+
+  if (!student) return null;
+
   const onSubmit = (values: z.infer<typeof studentPostDataSchema>) => {
     startTransition(async () => {
+      await new Promise(res => setTimeout(res, 2000));
       try {
-        const updated = await studentService.update(studentId, values);
-        toast.success(`${updated.firstName} ${updated.lastName} mis à jour avec succès.`);
+        // @ts-expect-error
+        await studentService.update(student.userId, values);
+        toast.success("Étudiant mis à jour");
+        onUpdated();
+        onClose();
       } catch (e) {
-        console.error(e);
-        toast.error("Une erreur est survenue lors de la mise à jour.");
+        toast.error("Erreur lors de la mise à jour");
+        throw e;
       }
-    });
+    })
   };
 
-  useEffect(() => {
-    levelService.getAll().then(levels => setLevels(levels));
-    groupService.getAll().then(groups => setGroups(groups));
-  }, []);
-
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-(--green) dark:hover:text-green-300">
-          <Edit className="w-4 h-4" />
-        </Button>
-      </AlertDialogTrigger>
+    <Dialog open={!!student} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Modifier l'étudiant</DialogTitle>
+        </DialogHeader>
 
-      <AlertDialogContent className="max-w-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Modifier l'étudiant</h2>
-          <AlertDialogCancel asChild>
-            <Button variant="ghost" size="icon-sm">
-              <X />
-            </Button>
-          </AlertDialogCancel>
-        </div>
+        <Separator />
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-4">
+
             <div className="grid grid-cols-2 gap-4">
+              {/* @ts-expect-error */}
               <UserFields form={form} />
-              <StudentFormFields form={form} groups={groups} levels={levels} />
+              {/* @ts-expect-error */}
+              <StudentFormFields form={form} isEditing groups={groups} levels={levels} />
             </div>
 
-            <div className="flex justify-end gap-3">
-              <AlertDialogCancel asChild>
-                <Button variant="outline">Annuler</Button>
-              </AlertDialogCancel>
-              <Button type="submit" disabled={pending}>
-                {pending ? <><Spinner /> &nbsp;Mise à jour...</> : "Enregistrer"}
-              </Button>
-            </div>
+            <Button type="submit" disabled={pending}>
+              {pending ? <><Spinner /> Enregistrement...</> : "Enregistrer"}
+            </Button>
           </form>
         </Form>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogContent>
+    </Dialog>
   );
 }

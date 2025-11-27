@@ -2,18 +2,10 @@ import z from "zod";
 import { userSchema } from "./user.schema";
 
 export const studentSchema = userSchema.extend({
-  registrationNumber: z.string().optional(),
-  group: z.object({
-    name: z
-      .string()
-      .min(1, "Le nom du groupe est requis")
-      .max(50, "Nom du groupe trop long"),
-  }),
-  level: z
-    .object({
-      name: z.string().optional(),
-    })
-    .optional(),
+  registrationNumber: z.string().min(1, "Le numéro d'inscription est requis").optional(),
+  level: z.string().min(1, "Le niveau est requis"),
+  group: z.string().min(1, "La classe est requise"),
+  emergencyContact: z.string().optional(),
 });
 
 export const studentPostDataSchema = studentSchema.pick({

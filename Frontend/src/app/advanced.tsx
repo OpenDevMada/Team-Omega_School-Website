@@ -5,14 +5,16 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  Card,
 } from "@/components/ui/card";
 import { DeleteAdmin } from "./_components/private/admin-dialog";
+import { Separator } from "@/components/ui/separator";
 
 export default function AdvancedSettingsPage() {
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen w-full py-8">
-      <div className="flex text-left w-full px-12 mb-8 flex-col gap-2">
-        <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight text-(--blue)">
+    <div className="flex flex-col items-center md:items-start justify-start min-h-screen w-full md:py-8 py-2">
+      <div className="flex text-left w-full md:px-12 px-6 mb-8 flex-col gap-2">
+        <h1 className="scroll-m-20 md:text-3xl text-xl font-semibold tracking-tight text-(--blue)">
           Paramètres avancés
         </h1>
         <p className="text-sm text-muted-foreground">
@@ -22,9 +24,9 @@ export default function AdvancedSettingsPage() {
 
       <Tabs
         defaultValue="create-admin"
-        className="flex flex-col px-12 gap-6 w-full"
+        className="flex flex-col md:px-12 px-2 gap-6 items-center md:items-start"
       >
-        <TabsList className="flex h-fit ">
+        <TabsList className="flex h-fit md:flex-row flex-col gap-2 w-full md:w-auto">
           <TabsTrigger value="create-admin">Créer un nouvel admin</TabsTrigger>
           <TabsTrigger value="delete-account">
             Supprimer mon compte admin
@@ -33,19 +35,20 @@ export default function AdvancedSettingsPage() {
 
         <div className="flex-1">
           <TabsContent value="create-admin">
-            <div className="p-6 border rounded-xl">
+            <Card>
               <CardHeader className="mb-1">
-                <CardTitle className="tracking-tight text-3xl text-(--blue)">
+                <CardTitle className="tracking-tight md:text-3xl text-xl text-(--blue)">
                   Créer un nouveau compte administrateur
                 </CardTitle>
                 <CardDescription>
                   Renseigner les informations du nouveau membre admin
                 </CardDescription>
               </CardHeader>
+              <Separator className="my-2 md:hidden" />
               <CardContent>
                 <CreateAdmin />
               </CardContent>
-            </div>
+            </Card>
           </TabsContent>
 
           <TabsContent value="delete-account">

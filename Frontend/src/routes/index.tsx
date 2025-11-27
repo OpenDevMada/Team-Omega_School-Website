@@ -24,6 +24,8 @@ import DashboardPage from "@/app/dashboard";
 import GroupsAndLevelsPage from "@/app/groupsAndLevels";
 import SiteAnnouncementsPage from "@/app/site-announcement";
 import SettingsPage from "@/app/advanced";
+import { Error } from "./error";
+import ForgetPasswordPage from "@/app/forget-password";
 
 const routes = createRoutesFromElements(
   <>
@@ -33,19 +35,19 @@ const routes = createRoutesFromElements(
       <Route path="/register" element={<RegistrationPage />} />
       <Route path="/all-courses" element={<CoursesPage />} />
       <Route path="/announcements" element={<SiteAnnouncementsPage />} />
+      <Route path="/forget-password" element={<ForgetPasswordPage />} />
     </Route>
     {/* <Route element={<ProtectedRoute />}> */}
-    {/* Reactive it when you finish to setup all UI */}
-    <Route element={<AppLayout />}>
-      <Route path="/dashboard" element={<DashboardPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/students" element={<StudentsPage />} />
-      <Route path="/teachers" element={<TeachersPage />} />
-      <Route path="/courses" element={<AppCoursesPage />} />
-      <Route path="/announcement" element={<AnnouncementsPage />} />
-      <Route path="/levels" element={<GroupsAndLevelsPage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-    </Route>
+      <Route element={<AppLayout />} errorElement={<Error />} hasErrorBoundary>
+        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/students" element={<StudentsPage />} />
+        <Route path="/teachers" element={<TeachersPage />} />
+        <Route path="/courses" element={<AppCoursesPage />} />
+        <Route path="/announcement" element={<AnnouncementsPage />} />
+        <Route path="/levels" element={<GroupsAndLevelsPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+      </Route>
     {/* </Route> */}
     <Route path="/*" element={<NotFound />} />
   </>
