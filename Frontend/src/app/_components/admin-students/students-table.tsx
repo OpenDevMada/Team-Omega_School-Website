@@ -15,7 +15,7 @@ import { DeleteUserButton } from "../delete-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Student } from "@/types/student";
 import { ButtonGroup } from "@/components/ui/button-group";
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import {
   Empty,
   EmptyContent,
@@ -41,7 +41,6 @@ export function StudentsTable({
   currentPage,
   onPageChange,
   loading,
-  onDeleted
 }: Props) {
   return (
     <Card className="border-none shadow-sm">
@@ -56,6 +55,7 @@ export function StudentsTable({
             <TableHeader className="bg-gray-50 dark:bg-gray-950">
               <TableRow>
                 <TableHead>Nom et prénoms</TableHead>
+                <TableHead>Email</TableHead>
                 <TableHead>Sexe</TableHead>
                 <TableHead>Adresse</TableHead>
                 <TableHead>Classe</TableHead>
@@ -92,24 +92,20 @@ export function StudentsTable({
                   </TableRow>
                 ))
               ) : students.length > 0 ? (
-                students.map((student) => (
+                students.map((student: Student) => (
                   <TableRow key={student.userId}>
                     <TableCell>
                       <span className="font-medium">
                         {student.firstName} {student.lastName}
                       </span>
                     </TableCell>
-                    <TableCell>{student.sex}</TableCell>
+                    <TableCell className="capitalize">{student.sex.toLowerCase()}</TableCell>
                     <TableCell>{student.address}</TableCell>
-                    <TableCell>{student.group.name}</TableCell>
+                    {/* <TableCell>{student.group.name}</TableCell> */}
                     <TableCell>
                       {format(student.birthDate, "PPP", { locale: fr })}
                     </TableCell>
                     <TableCell>{student.phoneNumber}</TableCell>
-                    <TableCell className="flex justify-center gap-2">
-                      <StudentUpdateDialog student={student} studentId={student.userId} />
-                      <DeleteUserButton user={student} withLabel={false} onSuccess={onDeleted} />
-                    </TableCell>
                   </TableRow>
                 ))
               ) : (

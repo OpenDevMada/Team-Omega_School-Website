@@ -1,73 +1,48 @@
 import { useEffect, useState } from "react";
-import { StudentsHeader } from "./students-header";
-import { FilterBar } from "../filter-bar";
-import type { UserSearchType } from "../user-search.type";
-import { StudentsTable } from "./students-table";
-import type { Student } from "@/types/student";
-import { studentService } from "@/services/students";
+import { StudentUpdateDialog } from "./update-dialog";
+import { groupService, levelService, studentService } from "@/services/students";
+import type { Group, Level, Student } from "@/types/student";
+import { columns } from "./tables/columns";
+import { DataTable } from "./tables/data-table";
 
-export default function StudentsListPageOnAdminBoard() {
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [search, setSearch] = useState<string>("");
-  const [genderFilter, setGenderFilter] = useState<UserSearchType["genderFilter"]>("Tous");
-  const [sortOrder, setSortOrder] = useState<UserSearchType["sort"]>("A-Z");
-  const [loading, setLoading] = useState<boolean>(true);
+export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
-  const refreshList = async () => {
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [levels, setLevels] = useState<Level[]>([]);
+  const [pending, setPending] = useState<boolean>(true);
+
+  const load = async () => {
     const data = await studentService.getAll();
-    setStudents(data as Student[]);
-  }
-
-  const studentsPerPage = 7;
-
-  const filtered = students
-    .filter((s) => {
-      const matchSearch =
-        s.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        s.lastName.toLowerCase().includes(search.toLowerCase());
-      const matchGender =
-        genderFilter === "Tous" || s.sex === genderFilter;
-      return matchSearch && matchGender;
-    })
-    .sort((a, b) =>
-      sortOrder === "A-Z"
-        ? a.lastName.localeCompare(b.lastName)
-        : b.lastName.localeCompare(a.lastName)
-    );
-
-  const totalPages = Math.ceil(filtered.length / studentsPerPage);
-  const startIndex = (currentPage - 1) * studentsPerPage;
-  const currentStudents = filtered.slice(startIndex, startIndex + studentsPerPage);
+    setStudents(data);
+  };
 
   useEffect(() => {
-    studentService.getAll().then(setStudents);
-
-    // Reset pagination if only search or gender filter change
-    setCurrentPage(1);
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 1500);
+    load();
+    groupService.getAll().then(setGroups);
+    levelService.getAll().then(setLevels);
+    const timer = setTimeout(() => setPending(false), 2000);
     return () => clearTimeout(timer);
-  }, [search, genderFilter, currentPage]);
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col gap-6 p-6">
-      <StudentsHeader />
-      <FilterBar
-        search={search}
-        setSearch={setSearch}
-        genderFilter={genderFilter}
-        setGenderFilter={setGenderFilter}
-        sort={sortOrder}
-        setSort={setSortOrder}
-      />
-      <StudentsTable
-        students={currentStudents}
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-        loading={loading}
-        onDeleted={refreshList}
+    <div className="p-6 flex flex-col gap-6">
+      <div className="overflow-x-auto">
+        <DataTable
+          loading={pending}
+          columns={columns(
+            (student: Student) => setSelectedStudent(student),
+          )}
+          data={students}
+        />
+      </div>
+
+      <StudentUpdateDialog
+        student={selectedStudent}
+        onClose={() => setSelectedStudent(null)}
+        onUpdated={load}
+        groups={groups}
+        levels={levels}
       />
     </div>
   );

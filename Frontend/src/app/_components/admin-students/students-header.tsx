@@ -9,7 +9,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { RegistrationForm } from "@/components/registration-form";
+import { RegistrationForm } from "@/components/auth/registration-form";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 

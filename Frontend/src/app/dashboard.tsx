@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-background">
-      <div className="flex items-start justify-between p-2">
+      <div className="flex md:flex-row flex-col items-center md:items-start justify-between p-2">
         <DashboardHeader />
         <PeriodSelector />
       </div>

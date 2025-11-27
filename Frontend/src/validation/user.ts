@@ -18,11 +18,9 @@ const baseUserSchema = z.object({
 
 export const studentSchema = baseUserSchema.extend({
   role: z.literal("STUDENT"),
-  registrationNumber: z
-    .string()
-    .min(1, { message: "Numéro d'inscription requis" }),
   level: z.string().min(1, { message: "Niveau requis" }),
   group: z.string().min(1, { message: "Classe requise" }),
+  emergencyContact: z.string().min(10, { message: "Numéro de téléphone invalide" }),
 });
 
 export const teacherSchema = baseUserSchema.extend({

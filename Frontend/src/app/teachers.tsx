@@ -1,18 +1,14 @@
-import { Separator } from "@/components/ui/separator";
 import { TeachersList } from "./_components/admin-teachers";
 import { TeachersListOnStudentBoard } from "./_components/student-teachers";
+import { getAuthentifiedUser } from "@/services/auth";
 
 export default function TeachersPage() {
-  /**
-   * Fetch user
-   * Check his role
-   * Update view according to this
-   */
+  const user = getAuthentifiedUser();
+
   return (
     <div>
-      <TeachersList />
-      <Separator />
-      <TeachersListOnStudentBoard />
+      {user?.role === "ADMIN" && <TeachersList />}
+      {user?.role === "STUDENT" && <TeachersListOnStudentBoard />}
     </div>
   );
 }

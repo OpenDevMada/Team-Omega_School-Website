@@ -1,12 +1,13 @@
 import { AlertCircle, CheckCircle } from "lucide-react";
 
+export const tips = [
+  "Au moins 8 caractères",
+  "Un caractère majuscule",
+  "Un chiffre",
+  "Un caractère spécial",
+];
+
 export function PasswordTips() {
-  const tips = [
-    "Au moins 8 caractères",
-    "Un caractère majuscule",
-    "Un chiffre",
-    "Un caractère spécial",
-  ];
 
   return (
     <div className="max-w-96 w-full dark:bg-muted/20 p-5 rounded-xl border flex flex-col gap-3">

@@ -71,7 +71,7 @@ export function CoursesFormDialog({
             <BookPlus className="w-4 h-4" /> {withLabel ? "Ajouter un cours" : ""}
           </Button>
         ) : (
-          <Button variant="outline" size={withLabel ? "default" : "icon-sm"} onClick={() => setOpen(true)} className="text-(--yellow)">
+          <Button variant="outline" size={withLabel ? "default" : "icon-sm"} onClick={() => setOpen(true)} className="text-(--yellow) hover:text-yellow-300">
             <Edit className="w-4 h-4" /> {withLabel ? "Modifier" : ""}
           </Button>
         )}

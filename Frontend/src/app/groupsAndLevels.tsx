@@ -18,10 +18,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Trash2, Edit, Plus, Layers, Users } from "lucide-react";
-import {
-  groupService,
-  levelService,
-} from "./_components/admin-students/update-dialog";
 import { Spinner } from "@/components/ui/spinner";
 import type { Group, Level } from "@/types/student";
 import { toast } from "sonner";
@@ -29,6 +25,7 @@ import { SwitchTabs, type View } from "./_components/switch-tabs";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Empty, EmptyContent, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import { groupService, levelService } from "@/services/students";
 
 export default function GroupsAndLevelsPage() {
   const [view, setView] = useState<View>("groups");
@@ -71,11 +68,13 @@ export default function GroupsAndLevelsPage() {
       try {
         if (view === "groups") {
           if (editingItem)
-            await groupService.update(editingItem.id, { name: inputValue });
+            await groupService.update(editingItem.id, { groupName: inputValue });
           else await groupService.create({ groupName: inputValue });
         } else {
-          if (editingItem)
-            await levelService.update(editingItem.id, { name: inputValue });
+          if (editingItem) {
+            console.log(editingItem)
+            await levelService.update(editingItem.id, { levelName: inputValue });
+          }
           else await levelService.create({ levelName: inputValue });
         }
         setDialogOpen(false);
@@ -95,9 +94,10 @@ export default function GroupsAndLevelsPage() {
       try {
         if (view === "groups") await groupService.delete(id);
         else await levelService.delete(id);
+        toast.success("Supprimé avec succès.");
         fetchItems();
-      } catch (error: any) {
-        toast.error(error?.message);
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Erreur lors de la suppression.");
         console.error(error);
       }
     });
@@ -201,7 +201,7 @@ export default function GroupsAndLevelsPage() {
                       ) : (
                         <Layers size={18} />
                       )}
-                      {item.name} {item.id}
+                      {item.name}
                     </CardTitle>
                   </CardHeader>
 
@@ -229,8 +229,8 @@ export default function GroupsAndLevelsPage() {
                       <Edit size={16} />
                     </Button>
 
-                    <Button variant="destructive" size="sm">
-                      <Trash2 size={16} onClick={() => handleDelete(item.id)} />
+                    <Button variant="destructive" size="sm" disabled={pending} onClick={() => handleDelete(item.id)}>
+                      <Trash2 size={16} />
                     </Button>
                   </CardFooter>
                 </Card>

@@ -1,4 +1,4 @@
-import type { Student } from "@/types/student";
+import { type Group, type Level, type Student } from "@/types/student";
 import { BaseService } from "./base";
 import type { StudentPayload } from "@/validation/user";
 import { api } from "@/lib/api";
@@ -32,3 +32,5 @@ class StudentService extends BaseService<
 }
 
 export const studentService = new StudentService();
+export const groupService = new BaseService<Group, any, any>("/groups");
+export const levelService = new BaseService<Level, any, any>("/level");

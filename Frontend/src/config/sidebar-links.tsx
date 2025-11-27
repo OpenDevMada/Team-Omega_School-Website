@@ -28,11 +28,11 @@ const roleRules = {
     add: [],
   },
   STUDENT: {
-    hide: ["dashboard", "levels", "settings"],
+    hide: ["dashboard", "levels", "settings", "students"],
     add: [
       {
         id: "grades",
-        title: "Notes",
+        title: "Mes notes",
         href: "/grades",
         icon: BookCheck,
       },
@@ -40,7 +40,14 @@ const roleRules = {
   },
   TEACHER: {
     hide: ["dashboard", "levels", "settings", "teachers"],
-    add: [],
+    add: [
+      {
+        id: "grades",
+        title: "Attribution de notes",
+        href: "/grades",
+        icon: BookCheck,
+      },
+    ],
   },
 } as const;
 

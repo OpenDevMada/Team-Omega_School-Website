@@ -102,7 +102,7 @@ export const CourseCard: FC<CourseCardProps> = ({
                   title={`Supprimer`}
                   variant={withLabel ? "destructive" : "ghost"}
                   size={withLabel ? "default" : "icon-sm"}
-                  className="flex items-center gap-2"
+                  className={`flex items-center gap-2 ${!withLabel && "border border-border"}`}
                 >
                   {withLabel && "Supprimer"}
                   <Trash2 color={withLabel ? "white" : "red"} />

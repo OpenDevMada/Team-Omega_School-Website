@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { RegistrationForm } from "@/components/registration-form";
+import { RegistrationForm } from "@/components/auth/registration-form";
 
 export default function RegistrationPage() {
   return (

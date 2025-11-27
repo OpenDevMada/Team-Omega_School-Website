@@ -113,7 +113,7 @@ export function UserFields({ form, isOnMainRegistration }: UserFieldsProps) {
             <FormLabel>Sexe</FormLabel>
             <FormControl>
               <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className={`${isOnMainRegistration ? "w-[265px]" : "w-[220px]"}`}>
+                <SelectTrigger className={`w-full`}>
                   <SelectValue placeholder="Sélectionne ton sexe" />
                 </SelectTrigger>
                 <SelectContent>
