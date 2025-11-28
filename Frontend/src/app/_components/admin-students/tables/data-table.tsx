@@ -70,7 +70,7 @@ export function DataTable({ columns, data, loading }: Props) {
         </DropdownMenu>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border max-w-sm md:w-full min-w-full overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((hg) => (

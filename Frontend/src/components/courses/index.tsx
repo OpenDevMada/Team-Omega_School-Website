@@ -8,6 +8,8 @@ import * as z from "zod";
 import type { courseSchema } from "@/schemas/course.schema";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
+import { getAuthentifiedUser } from "@/services/auth";
+import { mockCourses } from "@/seeders/users";
 
 export function MainCourses() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -16,6 +18,7 @@ export function MainCourses() {
   const filtered = courses.filter((c) =>
     c.title.toLowerCase().includes(query.toLowerCase())
   );
+  const user = getAuthentifiedUser();
   useEffect(() => {
     courseService.getAll().then((courses) => {
       setCourses(courses);
@@ -52,7 +55,7 @@ export function MainCourses() {
         ) : filtered.length > 0 ? (
           filtered.map((course) => (
             <CourseCard
-              role="admin"
+              role={user?.role ?? "STUDENT"}
               key={course.title}
               {...course}
               onEdit={handleUpdate}

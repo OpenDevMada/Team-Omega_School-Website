@@ -3,10 +3,9 @@ import type { Student } from "@/types/student";
 export const ROUTES = {
   WEBSITE: {
     AUTH: {
-      SIGN_IN: "/auth/login",
-      SIGN_UP: "/auth/register",
+      SIGN_IN: "/login",
+      SIGN_UP: "/register",
       FORGET_PASSWORD: "/forget-password",
-      RESET_PASSWORD: "/reset-password",
     },
     ENROLLMENT: "/register",
     COURSES: "/all-courses",
@@ -18,13 +17,20 @@ export const ROUTES = {
     PROFILE: "/profile",
     TEACHERS: "/teachers",
     STUDENTS: "/students",
+    GRADES: "/grades",
     COURSES: "/courses",
+    LEVELSANDGROUPS: "/levels",
     ANNOUNCEMENT: "/announcement",
     SETTINGS: "/settings",
   },
 } as const;
 
 export const ENDPOINTS = {
+  AUTH: {
+    SIGN_IN: "/auth/login",
+    SIGN_UP: "/auth/register",
+    SIGN_OUT: "/auth/logout"
+  },
   TEACHERS: {
     ALL: "/teachers",
     GET_BY_ID: (id: string) => `/teachers/${id}`,

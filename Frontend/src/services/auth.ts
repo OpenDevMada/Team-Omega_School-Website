@@ -3,7 +3,7 @@ import { passwordSchema, userSchema } from "@/schemas/user.schema";
 import type { Student } from "@/types/student";
 import type { Teacher } from "@/types/teacher";
 import type { User, UserCredentials } from "@/types/user";
-import { ROUTES } from "@/utils/constants";
+import { ENDPOINTS } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -23,7 +23,7 @@ export const authService = {
   signIn: async (credentials: UserCredentials) => {
     try {
       const response = await api.post(
-        ROUTES.WEBSITE.AUTH.SIGN_IN,
+        ENDPOINTS.AUTH.SIGN_IN,
         credentials,
         {
           withCredentials: true,
