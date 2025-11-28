@@ -7,3 +7,7 @@ export interface Grade {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type GradeRequestDto = Omit<Grade, "id" | "createdAt" | "updatedAt">;
+
+export type GradeResponseDto = Grade;
