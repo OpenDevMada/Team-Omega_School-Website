@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DeleteUserButton } from "../../delete-button";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const columns = (
   onEdit: (student: Student) => void,
@@ -101,9 +102,16 @@ export const columns = (
         const student = row.original;
         return (
           <div className="flex gap-2">
-            <Button variant="ghost" onClick={() => onEdit(student)}>
-              <Edit className="w-4 h-4 text-(--yellow)" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" onClick={() => onEdit(student)}>
+                  <Edit className="w-4 h-4 text-(--yellow)" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Modifier
+              </TooltipContent>
+            </Tooltip>
 
             <DeleteUserButton user={student} withLabel={false} onSuccess={() => toast.info("Etudiant mis a jour")} />
           </div>
