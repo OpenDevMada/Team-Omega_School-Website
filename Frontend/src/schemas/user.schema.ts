@@ -8,7 +8,7 @@ export const userSchema = z.object({
   phoneNumber: z.string().min(10, { message: "Numéro de téléphone invalide" }),
   address: z.string().min(5, { message: "Adresse trop courte" }),
   sex: z
-    .enum(["MASCULIN", "FEMININ"])
+    .enum(["MASCULIN", "FEMININ", "PAS_SPECIFIE"])
     .refine((value) => value !== undefined && value !== null, {
       message: "Sélectionner un genre",
     }),
