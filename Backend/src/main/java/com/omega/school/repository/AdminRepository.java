@@ -20,4 +20,6 @@ public interface AdminRepository extends JpaRepository<Admin, UUID> {
     @Query("SELECT a.adminId FROM Admin a WHERE a.adminId LIKE CONCAT(:prefix, '%') ORDER BY a.adminId DESC")
     List<String> findLastAdminIdOfYear(@Param("prefix") String prefix, Pageable pageable);
 
+    Optional<Admin> findByEmail(String email);
+
 }

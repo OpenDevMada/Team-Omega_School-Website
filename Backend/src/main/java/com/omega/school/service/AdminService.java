@@ -24,4 +24,6 @@ public interface AdminService {
     Admin partialUpdateAdmin(UUID userId, UserPartialUpdateDto dto);
 
     void deleteAdmin(UUID userId);
+
+    Optional<Admin> getByEmail(String email);
 }
