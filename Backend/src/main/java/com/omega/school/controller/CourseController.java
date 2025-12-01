@@ -1,10 +1,14 @@
 package com.omega.school.controller;
 
 import com.omega.school.dto.*;
+import com.omega.school.model.Student;
+import com.omega.school.model.User;
 import com.omega.school.service.CourseService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
@@ -41,6 +45,46 @@ public class CourseController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Map<String, Object> response = courseService.getCoursesByTeacherMatricule(matricule, page, size);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/student/{registration}")
+    @PreAuthorize("hasAuthority('ADMIN') " +
+            "or (hasAuthority('TEACHER')) " +
+            "or (hasAuthority('STUDENT') and #registration == principal.registrationNumber)")
+    public ResponseEntity<Map<String, Object>> getCoursesByStudent(
+            @PathVariable String registration,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @AuthenticationPrincipal User currentUser) {
+
+        Map<String, Object> response;
+
+        switch (currentUser.getRole().name()) {
+
+            case "TEACHER":
+                response = courseService.getCoursesForStudentForTeacher(
+                        registration,
+                        currentUser.getUserId().toString(),
+                        page,
+                        size);
+                break;
+
+            case "STUDENT":
+                Student student = (Student) currentUser;
+                response = courseService.getCoursesForStudent(
+                        student.getRegistrationNumber(),
+                        page,
+                        size);
+                break;
+
+            default:
+                response = courseService.getCoursesForStudent(
+                        registration,
+                        page,
+                        size);
+        }
+
         return ResponseEntity.ok(response);
     }
 
