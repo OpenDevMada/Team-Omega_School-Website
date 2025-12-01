@@ -4,6 +4,7 @@ import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
+
 import com.omega.school.service.AdminService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -72,4 +73,5 @@ public class AdminController {
         adminService.deleteAdmin(userId);
         return ResponseEntity.noContent().build();
     }
+
 }

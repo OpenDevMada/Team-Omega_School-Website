@@ -115,6 +115,44 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Map<String, Object> getCoursesForStudent(
+            String registration, int page, int size) {
+
+        Page<Course> courses = courseRepository.findCoursesByStudent(
+                registration,
+                PageRequest.of(page, size));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("courses", courses.getContent());
+        response.put("currentPage", courses.getNumber());
+        response.put("totalItems", courses.getTotalElements());
+        response.put("totalPages", courses.getTotalPages());
+
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getCoursesForStudentForTeacher(
+            String registration,
+            String teacherId,
+            int page,
+            int size) {
+
+        Page<Course> courses = courseRepository.findCoursesByStudentAndTeacher(
+                registration,
+                teacherId,
+                PageRequest.of(page, size));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("courses", courses.getContent());
+        response.put("currentPage", courses.getNumber());
+        response.put("totalItems", courses.getTotalElements());
+        response.put("totalPages", courses.getTotalPages());
+
+        return response;
+    }
+
+    @Override
     public void deleteCourse(String title) {
         Course course = courseRepository.findByTitle(title)
                 .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));

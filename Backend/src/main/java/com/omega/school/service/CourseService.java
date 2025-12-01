@@ -15,5 +15,13 @@ public interface CourseService {
 
     Map<String, Object> getCoursesByTeacherMatricule(String matricule, int page, int size);
 
+    Map<String, Object> getCoursesForStudent(String registration, int page, int size);
+
+    Map<String, Object> getCoursesForStudentForTeacher(
+            String studentRegistration,
+            String teacherId,
+            int page,
+            int size);
+
     void deleteCourse(String title);
 }
