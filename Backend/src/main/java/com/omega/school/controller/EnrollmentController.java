@@ -42,7 +42,8 @@ public class EnrollmentController {
         if ("TEACHER".equals(currentUser.getRole().name())) {
 
             response = enrollmentService.getEnrollmentsByStudentForTeacher(
-                    registration, currentUser.getUserId().toString(), page, size);
+                    registration, currentUser.getUserId(), page, size);
+
         } else if ("STUDENT".equals(currentUser.getRole().name())) {
 
             response = enrollmentService.getEnrollmentsByStudent(registration, page, size);
@@ -66,7 +67,8 @@ public class EnrollmentController {
 
         if ("TEACHER".equals(currentUser.getRole().name())) {
             response = enrollmentService.getEnrollmentsByCourseForTeacher(
-                    title, currentUser.getUserId().toString(), page, size);
+                    title, currentUser.getUserId(), page, size);
+
         } else if ("STUDENT".equals(currentUser.getRole().name())) {
 
             Student student = (Student) currentUser;

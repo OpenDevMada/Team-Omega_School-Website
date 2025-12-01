@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -69,7 +70,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         @Override
-        public Map<String, Object> getEnrollmentsByStudentForTeacher(String registrationNumber, String teacherId,
+        public Map<String, Object> getEnrollmentsByStudentForTeacher(String registrationNumber,
+                        UUID teacherId,
                         int page, int size) {
                 Pageable pageable = PageRequest.of(page, size);
                 Page<Enrollment> enrollmentPage = enrollmentRepository
@@ -105,7 +107,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
 
         @Override
-        public Map<String, Object> getEnrollmentsByCourseForTeacher(String title, String teacherId, int page,
+        public Map<String, Object> getEnrollmentsByCourseForTeacher(String title,
+                        UUID teacherId, int page,
                         int size) {
                 Pageable pageable = PageRequest.of(page, size);
                 Page<Enrollment> enrollmentPage = enrollmentRepository.findByCourseTitleAndTeacherId(title, teacherId,
