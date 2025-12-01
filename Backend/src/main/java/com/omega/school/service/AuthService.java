@@ -9,4 +9,6 @@ public interface AuthService {
     Student register(RegisterRequestDto request);
 
     AuthResponseDto login(LoginRequestDto request);
+
+    AuthResponseDto refreshToken(String refreshToken);
 }

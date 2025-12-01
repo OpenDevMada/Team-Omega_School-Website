@@ -3,6 +3,7 @@ package com.omega.school.service.impl;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String generateToken(User user) {
+    public String generateAccessToken(User user) {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", user.getEmail());
@@ -38,9 +39,26 @@ public class JwtServiceImpl implements JwtService {
                 .setClaims(claims)
                 .setSubject(user.getUserId().toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24h
+                .setExpiration(new Date(System.currentTimeMillis() + 15 * 60
+                        * 1000))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
+    }
+
+    @Override
+    public String generateRefreshToken(UUID userId) {
+        return Jwts.builder()
+                .setSubject(userId.toString())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 7L * 24 * 60 * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
+    @Override
+    public String extractUserId(String token) {
+        return Jwts.parser().setSigningKey(secret)
+                .parseClaimsJws(token).getBody().getSubject();
     }
 
     @Override
@@ -59,6 +77,16 @@ public class JwtServiceImpl implements JwtService {
                 .parseClaimsJws(token)
                 .getBody()
                 .get("role");
+    }
+
+    @Override
+    public boolean isTokenValid(String token) {
+        try {
+            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
