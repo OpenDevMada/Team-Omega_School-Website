@@ -21,13 +21,10 @@ export function EmailStep({ onNext, isLoading = false }: EmailStepProps) {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    watch,
   } = useForm<EmailInput>({
     resolver: zodResolver(emailSchema),
     mode: "onChange",
   })
-
-  const email = watch("email")
 
   const onSubmit = async (data: EmailInput) => {
     try {

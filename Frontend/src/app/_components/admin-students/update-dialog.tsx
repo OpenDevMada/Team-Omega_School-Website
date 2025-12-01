@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -63,6 +63,7 @@ export function StudentUpdateDialog({ student, onClose, onUpdated, groups, level
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Modifier l'étudiant</DialogTitle>
+          <DialogDescription>Remplissez les entrées suivantes afin de modifier les informations de l'étudiant</DialogDescription>
         </DialogHeader>
 
         <Separator />

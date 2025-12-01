@@ -1,5 +1,5 @@
 import type { UseFormReturn } from "react-hook-form";
-import type { UserFormType } from "@/validation/user";
+import type { StudentFormType, TeacherFormType, UserFormType } from "@/validation/user";
 import {
   FormField,
   FormItem,
@@ -18,11 +18,10 @@ import {
 import { BirthDateField } from "./birth-date-field";
 
 interface UserFieldsProps {
-  form: UseFormReturn<UserFormType>;
-  isOnMainRegistration?: boolean
+  form: UseFormReturn<UserFormType | TeacherFormType | StudentFormType>;
 }
 
-export function UserFields({ form, isOnMainRegistration }: UserFieldsProps) {
+export function UserFields({ form }: UserFieldsProps) {
   return (
     <>
       {/* First name */}

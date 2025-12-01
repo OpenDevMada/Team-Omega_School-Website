@@ -23,7 +23,7 @@ export function StudentFormFields({ form, groups, levels }: StudentFormFieldsPro
         name="level"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Niveau</FormLabel>
+            <FormLabel>Niveau {field.value}</FormLabel>
             <FormControl>
               <Select onValueChange={field.onChange} value={field.value || ""}>
                 <SelectTrigger className="w-full max-w-full">

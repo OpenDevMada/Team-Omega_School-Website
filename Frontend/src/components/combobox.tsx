@@ -27,12 +27,7 @@ type Props = {
 
 export function Combobox({ users, label }: Props) {
   const [open, setOpen] = useState<boolean>(false)
-  const [value, setValue] = useState<string>("")
-
-  const userRole = useMemo(() => {
-    const role = users[0]?.role;
-    return role === "STUDENT" ? "etudiant" : role === "TEACHER" ? "enseignant" : "admin"
-  }, [users])
+  const [value, setValue] = useState<string>("");
 
   const selectedUser = useMemo(
     () => users.find((user) => user.firstName === value),

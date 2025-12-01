@@ -3,10 +3,10 @@ import type { Student } from "@/types/student";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, CheckCircle, Edit, XCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DeleteUserButton } from "../../delete-button";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { DeleteUserButton } from "../delete-button";
 
 export const columns = (
   onEdit: (student: Student) => void,
