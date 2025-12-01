@@ -5,6 +5,7 @@ import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
 
+import com.omega.school.model.User;
 import com.omega.school.service.AdminService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
@@ -72,6 +74,19 @@ public class AdminController {
     public ResponseEntity<Void> delete(@PathVariable UUID userId) {
         adminService.deleteAdmin(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Admin> getMyProfile() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof User user) {
+            return adminService.getByEmail(user.getEmail())
+                    .map(ResponseEntity::ok)
+                    .orElseThrow(() -> new EntityNotFoundException("Admin non trouvé"));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 }
