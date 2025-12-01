@@ -53,13 +53,35 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Email ou mot de passe incorrect");
         }
 
-        // Génération du token JWT
-        String token = jwtService.generateToken(user);
+        // Génération du token d'accès
+        String accessToken = jwtService.generateAccessToken(user);
+
+        // Génération du token de rafraîchissement
+        String refreshToken = jwtService.generateRefreshToken(user.getUserId());
 
         return new AuthResponseDto(
-                token,
+                accessToken,
+                refreshToken,
                 user.getEmail(),
                 user.getRole());
+    }
+
+    public AuthResponseDto refreshToken(String refreshToken) {
+
+        if (!jwtService.isTokenValid(refreshToken)) {
+            throw new RuntimeException("Refresh token invalide");
+        }
+
+        String email = jwtService.extractEmail(refreshToken);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String newAccessToken = jwtService.generateAccessToken(user);
+
+        String newRefreshToken = jwtService.generateRefreshToken(user.getUserId());
+
+        return new AuthResponseDto(newAccessToken, newRefreshToken, user.getEmail(), user.getRole());
     }
 
 }
