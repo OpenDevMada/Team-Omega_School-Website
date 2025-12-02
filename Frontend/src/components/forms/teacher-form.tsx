@@ -1,5 +1,5 @@
 import type { UseFormReturn } from "react-hook-form";
-import type { TeacherFormType, UserFormType } from "@/validation/user";
+import type { TeacherFormType } from "@/validation/user";
 import {
   FormField,
   FormItem,
@@ -9,11 +9,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type z from "zod";
-import type { teacherSchemaDto } from "@/schemas/teacher.schema";
 
 interface TeacherFormFieldsProps {
-  form: UseFormReturn<TeacherFormType | UserFormType | z.infer<typeof teacherSchemaDto>>;
+  form: UseFormReturn<TeacherFormType>;
 }
 
 export function TeacherFormFields({ form }: TeacherFormFieldsProps) {

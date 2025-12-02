@@ -34,7 +34,7 @@ export function ForgetAndResetPassword() {
     { value: "success", title: "Succès", description: "Mot de passe réinitialisé" },
   ]
 
-  const [open, setOpen] = useState(false)
+  const [_, setOpen] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<StepValue>("email")
   const [email, setEmail] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -42,7 +42,8 @@ export function ForgetAndResetPassword() {
   const handleEmailSubmit = async (emailInput: string) => {
     setIsLoading(true)
     try {
-      const res = await authService.sendEmailForResetingPassword({email: emailInput});
+      const res = await authService.sendEmailForResetingPassword({ email: emailInput });
+      console.log("Response", res)
       setEmail(emailInput)
       setCurrentStep("otp")
     } catch (error) {
@@ -56,8 +57,9 @@ export function ForgetAndResetPassword() {
     setIsLoading(true)
     try {
       const res = await authService.verifyEmailOtp(otp);
+      console.log("Response", res)
       if (res.data)
-      setCurrentStep("password")
+        setCurrentStep("password")
     } catch (error) {
       throw error
     } finally {
@@ -68,8 +70,8 @@ export function ForgetAndResetPassword() {
   const handlePasswordSubmit = async (password: string) => {
     setIsLoading(true)
     try {
-      const res = await authService.resetPassword({newPassword: password});
-      console.log("[v0] Password reset with:", password)
+      const res = await authService.resetPassword({ newPassword: password });
+      console.log("Response", res)
       setCurrentStep("success")
     } catch (error) {
       throw error

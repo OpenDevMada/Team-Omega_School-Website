@@ -9,7 +9,6 @@ import type { courseSchema } from "@/schemas/course.schema";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
 import { getAuthentifiedUser } from "@/services/auth";
-import { mockCourses } from "@/seeders/users";
 
 export function MainCourses() {
   const [courses, setCourses] = useState<Course[]>([]);

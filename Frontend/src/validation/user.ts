@@ -28,7 +28,7 @@ export const teacherSchema = baseUserSchema.extend({
   matriculeNumber: z
     .string()
     .min(1, { message: "Numéro de matricule requis" }),
-  bio: z.string().optional().default(""),
+  bio: z.string().default(""),
 });
 
 export const userSchema = z.discriminatedUnion("role", [

@@ -18,7 +18,7 @@ import { type Group, type Level } from "@/types/student";
 import { BaseService } from "@/services/base";
 import { teacherService } from "@/services/teacher";
 import { api } from "@/lib/api";
-import { ROUTES } from "@/utils/constants";
+import { ENDPOINTS, ROUTES } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
 import { UserFields } from "../forms/user-form";
 import { StudentFormFields } from "../forms/student-form";
@@ -82,10 +82,12 @@ export function RegistrationForm({
       await new Promise(res => setTimeout(res, 1000));
       try {
         if (isOnMainRegistration) {
-          const response = await api.post(ROUTES.WEBSITE.AUTH.SIGN_UP, values);
+          console.log(values)
+          const response = await api.post(ENDPOINTS.AUTH.SIGN_UP, values);
+          console.log(response, "response")
           if (response.data || response.status in [200, 201, 204]) {
             toast.success(`${response.data.firstName} inscrit avec succès.`);
-            navigate("/login");
+            navigate(ROUTES.WEBSITE.AUTH.SIGN_IN);
           }
         } else {
           // @ts-expect-error
@@ -101,7 +103,7 @@ export function RegistrationForm({
       } catch (e) {
         console.error("Registration error:", e);
         toast.error("Une erreur est survenue.");
-        throw e;
+        // throw e;
       }
     });
   };
@@ -118,7 +120,7 @@ export function RegistrationForm({
           onSubmit={form.handleSubmit(onSubmit)}
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
-          <UserFields form={form} isOnMainRegistration={isOnMainRegistration} />
+          <UserFields form={form} />
 
           {isStudent ? (
             <StudentFormFields
@@ -127,8 +129,7 @@ export function RegistrationForm({
               levels={levels}
             />
           ) : (
-            // @ts-expect-error
-            <TeacherFormFields form={form} />
+            <TeacherFormFields form={form as any} />
           )}
 
           <div className="md:col-span-2">

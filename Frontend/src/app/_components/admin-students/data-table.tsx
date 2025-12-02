@@ -13,9 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { StudentsHeader } from "../students-header";
 import type { Student } from "@/types/student";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StudentsHeader } from "./students-header";
 
 type Props = {
   columns: ColumnDef<Student>[];

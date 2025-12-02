@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { mockStudent, mockTeacher } from "@/seeders/user";
+import { mockStudent } from "@/seeders/user";
 import { Suspense } from "react";
 import { UserProfile } from "./_components/user-profile";
 

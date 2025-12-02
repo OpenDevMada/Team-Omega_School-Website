@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ROUTES } from "@/utils/constants";
+import { cn } from "@/lib/utils";
 
 export function HeroSection() {
   const floating = {
@@ -108,10 +111,10 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.25 }}
           className="flex flex-col items-center gap-4 md:flex-row md:gap-6"
         >
-          <Button className="inline-flex items-center gap-2 rounded-full bg-[#10B981] px-8 py-6 text-base font-semibold text-white shadow-lg shadow-[#10B981]/30 transition hover:bg-[#0EA972] hover:shadow-none md:text-lg">
+          <Link to={ROUTES.WEBSITE.AUTH.SIGN_UP} className={cn("inline-flex items-center gap-2 rounded-full bg-[#10B981] px-8 py-3 text-base font-semibold text-white shadow-lg shadow-[#10B981]/30 transition hover:bg-[#0EA972] hover:shadow-none md:text-lg")}>
             S'inscrire maintenant
             <ArrowRight className="h-5 w-5" />
-          </Button>
+          </Link>
           <Button
             variant="outline"
             className="inline-flex items-center hover:text-blue-300 gap-2 rounded-full border-white/60 bg-white/10 px-8 py-6 text-base font-semibold text-white backdrop-blur transition hover:bg-white/20 md:text-lg"

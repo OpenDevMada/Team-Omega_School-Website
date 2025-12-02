@@ -66,7 +66,9 @@ export function CreateAdmin() {
     if (!stepData) return true;
     const isValid = await form.trigger(stepData.fields);
     if (!isValid)
-      toast.error("Veuillez completer les champs obligatoires avant de continuer");
+      toast.error(
+        "Veuillez completer les champs obligatoires avant de continuer"
+      );
     return isValid;
   };
 
@@ -111,7 +113,12 @@ export function CreateAdmin() {
                   <FormItem>
                     <FormLabel>Prénom</FormLabel>
                     <FormControl>
-                      <Input {...field} type="text" placeholder="Tokiniaina" />
+                      <Input
+                        data-testid="firstName-id"
+                        {...field}
+                        type="text"
+                        placeholder="Tokiniaina"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -126,6 +133,7 @@ export function CreateAdmin() {
                     <FormLabel>Nom</FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="lastName-id"
                         {...field}
                         type="text"
                         placeholder="Nomenjanahary"
@@ -149,7 +157,7 @@ export function CreateAdmin() {
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger data-testid="sex-id" className="w-full">
                           <SelectValue placeholder="Sélectionner" />
                         </SelectTrigger>
                         <SelectContent>
@@ -253,7 +261,11 @@ export function CreateAdmin() {
             </p>
 
             {stepIndex === steps.length - 1 ? (
-              <Button type="submit" disabled={pending} className="md:w-full w-auto text-white">
+              <Button
+                type="submit"
+                disabled={pending}
+                className="md:w-full w-auto text-white"
+              >
                 {pending ? (
                   <>
                     <Spinner /> Création du compte...

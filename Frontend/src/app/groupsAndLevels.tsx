@@ -48,9 +48,9 @@ export default function GroupsAndLevelsPage() {
         const res = await levelService.getAll();
         setLevels(res);
       }
-    } catch (error: any) {
-      toast.error(error?.message || "Erreur lors du chargement");
-      console.error(error);
+    } catch (error) {
+      toast.error("Erreur lors du chargement");
+      console.error(error instanceof Error && error.message);
     } finally {
       setLoading(false);
     }

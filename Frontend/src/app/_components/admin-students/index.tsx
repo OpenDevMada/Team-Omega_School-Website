@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { StudentUpdateDialog } from "./update-dialog";
 import { groupService, levelService, studentService } from "@/services/students";
 import type { Group, Level, Student } from "@/types/student";
-import { columns } from "./tables/columns";
-import { DataTable } from "./tables/data-table";
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
