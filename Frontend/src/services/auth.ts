@@ -2,7 +2,7 @@ import { api } from "@/lib/api";
 import { passwordSchema, userSchema } from "@/schemas/user.schema";
 import type { Student } from "@/types/student";
 import type { Teacher } from "@/types/teacher";
-import type { User, UserCredentials } from "@/types/user";
+import type { Role, User, UserCredentials } from "@/types/user";
 import { ENDPOINTS } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -16,19 +16,17 @@ const passwordSchemaDto = passwordSchema.pick({
 });
 
 export const authService = {
-  getUser: async () => {
-    const response = await api.get("/auth/me", { withCredentials: true });
+  getUser: async (role: Role) => {
+    const response = await api.get(`/${role.toLowerCase()}s/me`, {
+      withCredentials: true,
+    });
     return response.data as Student | Teacher | User;
   },
   signIn: async (credentials: UserCredentials) => {
     try {
-      const response = await api.post(
-        ENDPOINTS.AUTH.SIGN_IN,
-        credentials,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await api.post(ENDPOINTS.AUTH.SIGN_IN, credentials, {
+        withCredentials: true,
+      });
       return response.data;
     } catch (error) {
       console.error(`Sign in error: ${error}`);
@@ -50,9 +48,13 @@ export const authService = {
     email,
   }: z.infer<typeof emailSchema>) => {
     try {
-      const response = await api.post(`/sendEmail`, email, {
-        withCredentials: true,
-      });
+      const response = await api.post(
+        `/request-reset`,
+        { email },
+        {
+          withCredentials: true,
+        }
+      );
       return response.data;
     } catch (error) {
       console.error(`Email send password error: ${error}`);
@@ -60,11 +62,15 @@ export const authService = {
       throw error;
     }
   },
-  verifyEmailOtp: async (otpValue: string) => {
+  verifyEmailOtp: async (email: string, otpValue: string) => {
     try {
-      const response = await api.post(`/verify-otp`, otpValue, {
-        withCredentials: true,
-      });
+      const response = await api.post(
+        `/verify-otp`,
+        { email, otpValue },
+        {
+          withCredentials: true,
+        }
+      );
       return response.data;
     } catch (error) {
       console.error(`Reset password error: ${error}`);
@@ -72,11 +78,23 @@ export const authService = {
       throw error;
     }
   },
-  resetPassword: async (newPassword: z.infer<typeof passwordSchemaDto>) => {
+  resetPassword: async ({
+    email,
+    otp,
+    values,
+  }: {
+    email: string;
+    otp: string;
+    values: z.infer<typeof passwordSchemaDto>;
+  }) => {
     try {
-      const response = await api.post(`/reset-password`, newPassword, {
-        withCredentials: true,
-      });
+      const response = await api.post(
+        `/reset-password`,
+        { email, otp, newPassword: values.newPassword },
+        {
+          withCredentials: true,
+        }
+      );
       return response.data;
     } catch (error) {
       console.error(`Reset password error: ${error}`);
@@ -88,10 +106,10 @@ export const authService = {
   },
 };
 
-export const getAuthentifiedUser = () => {
+export const getAuthentifiedUser = (role: Role) => {
   const [user, setUser] = useState<Student | Teacher | User>();
   useEffect(() => {
-    authService.getUser().then(setUser);
+    authService.getUser(role).then(setUser);
   });
   return user;
-}
+};

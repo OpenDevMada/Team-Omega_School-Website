@@ -16,15 +16,16 @@ import { REGEXP_ONLY_DIGITS } from "input-otp"
 import { Label } from "../ui/label"
 
 interface OtpStepProps {
+  value: string
   email: string
   onNext: (otp: string) => Promise<void>
   onBack: () => void
   isLoading?: boolean
 }
 
-export function OtpStep({ email, onNext, onBack, isLoading = false }: OtpStepProps) {
+export function OtpStep({ value, email, onNext, onBack, isLoading = false }: OtpStepProps) {
   const [error, setError] = useState<string>("")
-  const [localLoading, setLocalLoading] = useState(false)
+  const [localLoading, setLocalLoading] = useState<boolean>(false)
 
   const {
     control,
@@ -34,9 +35,9 @@ export function OtpStep({ email, onNext, onBack, isLoading = false }: OtpStepPro
     resolver: zodResolver(otpSchema),
     mode: "onChange",
     defaultValues: {
-      otp: "",
+      otp: value ?? "",
     },
-  })
+  });
 
   const onSubmit = async (data: OtpInput) => {
     try {

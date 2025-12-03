@@ -37,6 +37,7 @@ export function ForgetAndResetPassword() {
   const [_, setOpen] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<StepValue>("email")
   const [email, setEmail] = useState<string>("")
+  const [otpValue, __] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleEmailSubmit = async (emailInput: string) => {
@@ -56,7 +57,7 @@ export function ForgetAndResetPassword() {
   const handleOtpSubmit = async (otp: string) => {
     setIsLoading(true)
     try {
-      const res = await authService.verifyEmailOtp(otp);
+      const res = await authService.verifyEmailOtp(email, otp);
       console.log("Response", res)
       if (res.data)
         setCurrentStep("password")
@@ -70,7 +71,7 @@ export function ForgetAndResetPassword() {
   const handlePasswordSubmit = async (password: string) => {
     setIsLoading(true)
     try {
-      const res = await authService.resetPassword({ newPassword: password });
+      const res = await authService.resetPassword({email, otp: otpValue, values: {newPassword: password}});
       console.log("Response", res)
       setCurrentStep("success")
     } catch (error) {
@@ -97,7 +98,7 @@ export function ForgetAndResetPassword() {
   }
 
   return (
-    <Card className="overflow-hidden border-0">
+    <Card className="overflow-hidden border">
       <CardHeader>
         <CardTitle className="text-(--blue) tracking-tight text-2xl">Réinitialiser votre mot de passe</CardTitle>
         <CardDescription>
@@ -108,7 +109,7 @@ export function ForgetAndResetPassword() {
 
       <CardContent className="px-6 py-0">
         <Stepper defaultValue={currentStep} orientation="horizontal">
-          <StepperList>
+          <StepperList className="md:flex md:flex-row flex-col items-start gap-4">
             {steps.map((step) => (
               <StepperItem key={step.value} value={step.value}>
                 <StepperTrigger>
@@ -128,7 +129,7 @@ export function ForgetAndResetPassword() {
           </StepperContent>
 
           <StepperContent value="otp" className="flex flex-col gap-4">
-            <OtpStep email={email} onNext={handleOtpSubmit} onBack={handleBack} isLoading={isLoading} />
+            <OtpStep value={otpValue} email={email} onNext={handleOtpSubmit} onBack={handleBack} isLoading={isLoading} />
           </StepperContent>
 
           <StepperContent value="password" className="flex flex-col gap-4">
