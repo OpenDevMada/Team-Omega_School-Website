@@ -3,9 +3,10 @@ import { Button, buttonVariants } from "./ui/button";
 import { Menu, GraduationCap } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { ROUTES } from "@/utils/constants";
 
 export function Header() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
   return (
     <header className="sticky w-full top-0 z-30 bg-white/40 backdrop-blur-3xl border-b shadow-sm">
@@ -21,10 +22,10 @@ export function Header() {
           <Link to="/" className="hover:text-[#1E40AF] transition">
             Accueil
           </Link>
-          <Link to="/all-courses" className="hover:text-[#1E40AF] transition">
+          <Link to={ROUTES.WEBSITE.COURSES} className="hover:text-[#1E40AF] transition">
             Nos cours
           </Link>
-          <Link to="/announcements" className="hover:text-[#1E40AF] transition">
+          <Link to={ROUTES.WEBSITE.ANNOUNCEMENT} className="hover:text-[#1E40AF] transition">
             Annonces
           </Link>
           <Link to="/contact" className="hover:text-[#1E40AF] transition">
@@ -34,7 +35,7 @@ export function Header() {
 
         <div className="hidden md:flex items-center gap-3">
           <Link
-            to="/login"
+            to={ROUTES.WEBSITE.AUTH.SIGN_IN}
             className={buttonVariants({
               variant: null,
               className:
@@ -44,7 +45,7 @@ export function Header() {
             Connexion
           </Link>
           <Link
-            to="/register"
+            to={ROUTES.WEBSITE.AUTH.SIGN_UP}
             className={buttonVariants({
               variant: null,
               className:
@@ -77,18 +78,18 @@ export function Header() {
                   Accueil
                 </Link>
                 <Link
-                  to="/annonces"
+                  to={ROUTES.WEBSITE.ANNOUNCEMENT}
                   onClick={() => setOpen(false)}
                   className="hover:text-[#1E40AF]"
                 >
                   Annonces
                 </Link>
                 <Link
-                  to="#about"
+                  to={ROUTES.WEBSITE.COURSES}
                   onClick={() => setOpen(false)}
                   className="hover:text-[#1E40AF]"
                 >
-                  À propos
+                  Nos cours
                 </Link>
                 <Link
                   to="/contact"
@@ -99,7 +100,7 @@ export function Header() {
                 </Link>
                 <div className="flex w-full gap-3 items-center">
                   <Link
-                    to="/login"
+                    to={ROUTES.WEBSITE.AUTH.SIGN_IN}
                     className={buttonVariants({
                       variant: "outline",
                       className: "border-[#1E40AF] text-[#1E40AF]",
@@ -109,7 +110,7 @@ export function Header() {
                     Connexion
                   </Link>
                   <Link
-                    to="/register"
+                    to={ROUTES.WEBSITE.AUTH.SIGN_UP}
                     className={buttonVariants({
                       className: "bg-[#10B981] text-white hover:bg-[#0EA972]",
                     })}

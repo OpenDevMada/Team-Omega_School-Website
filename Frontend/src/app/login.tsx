@@ -3,21 +3,21 @@ import { Link } from "react-router-dom"
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-linear-to-br from-blue-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="md:min-h-screen min-h-[80vh] grid lg:grid-cols-2 bg-linear-to-br from-blue-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="flex flex-col justify-center items-center p-8">
         <Link to="/" className="flex items-center gap-3 mb-10">
-          <div className="flex items-center justify-center shadow-md rounded-full bg-white">
+          <div className="flex items-center justify-center gap-4 md:flex-row flex-col">
             <img
               src="/images/logo_opendev.jpg"
               alt="logo-opendev"
-              className="rounded-full w-20 h-20"
+              className="md:rounded-full rounded-xl md:w-20 w-32 md:h-20 h-32"
             />
+            <span className="md:text-5xl text-3xl ds-font font-extrabold text-(--blue) tracking-tight select-none">
+              Omega School
+            </span>
           </div>
-          <span className="text-5xl font-extrabold ds-font text-(--blue) tracking-tight select-none">
-            Omega School
-          </span>
         </Link>
-        <div className="w-full max-w-md bg-white/50 dark:bg-gray-900 rounded-xl shadow-lg px-8 py-10">
+        <div className="w-full max-w-md bg-white/50 dark:bg-gray-900 rounded-xl shadow-lg md:px-8 px-6 py-10">
           <LoginForm />
         </div>
       </div>

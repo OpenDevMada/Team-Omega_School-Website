@@ -25,17 +25,17 @@ export default function CoursesPage() {
   }, []);
 
   return (
-    <div className="p-12 space-y-6">
+    <div className="md:p-12 p-4 space-y-6">
       <div className="flex flex-start md:items-center md:gap-0 gap-3 justify-between flex-col md:flex-row">
         <div className="space-y-2">
-          <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0 text-(--blue)">Cours disponibles</h2>
+          <h2 className="scroll-m-20 md:text-3xl text-2xl font-semibold tracking-tight first:mt-0 text-(--blue)">Cours disponibles</h2>
           <p className="text-sm text-muted-foreground">Parcourez les cours proposés cette année</p>
         </div>
       </div>
 
       <div className="grid md:grid-cols-3 sm:grid-cols-2 items-center gap-4">
         {loading ? (
-          <div className="col-span-full flex flex-col gap-4 justify-center text-muted-foreground items-center min-h-[40vh]">
+          <div className="col-span-full md:text-md text-sm flex flex-col gap-4 justify-center text-muted-foreground items-center min-h-[40vh]">
             <Spinner className="size-8" />
             Chargement des cours. Veillez patientez un moment...
           </div>
