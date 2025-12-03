@@ -9,7 +9,6 @@ import {
   useTransition,
 } from "react";
 import { Spinner } from "../ui/spinner";
-import Cookies from "js-cookie"
 import { toast } from "sonner";
 import z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
@@ -20,6 +19,13 @@ import { ROUTES } from "@/utils/constants";
 import { Eye, EyeOff } from "lucide-react";
 import { authService } from "@/services/auth";
 import type { Role } from "@/types/user";
+import { setAccessToken } from "@/lib/api";
+
+interface ApiLoginResponse {
+  token: string
+  role: Role
+  email: string
+}
 
 export function LoginForm({
   className,
@@ -51,21 +57,17 @@ export function LoginForm({
     startTransition(async () => {
       await new Promise((res) => setTimeout(res, 2000));
       try {
-        const response = await authService.signIn(values) as { token: string, email: string, role: Role };
+        const response: ApiLoginResponse = await authService.signIn(values) as { token: string, email: string, role: Role };
 
-        Cookies.set("token", response.token, {
-          secure: true,
-          sameSite: "strict",
-          expires: 7,
-          path: "/"
-        });
+        setAccessToken(response.token);
+        // Add to header or localStorage user's role
 
         toast.success("Connection réussie");
         setTimeout(() => {
           navigate("/profile");
         }, 2000);
       } catch (error) {
-        console.log(error instanceof Error && error.message);
+        console.log(`Login error: ${error instanceof Error && error.message}`);
         toast.error("Email ou mot de passe invalide");
       }
     });
@@ -82,8 +84,8 @@ export function LoginForm({
   return (
     <Form {...form}>
       <div className="flex flex-col gap-0.5">
-        <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0">
-          Connecte toi a ton compte
+        <h2 className="scroll-m-20 md:text-3xl text-2xl font-semibold tracking-tight first:mt-0">
+          Connecte toi à ton compte
         </h2>
         <p className="text-muted-foreground text-sm">Entrez vous identifiants pour pouvoir continuer</p>
       </div>

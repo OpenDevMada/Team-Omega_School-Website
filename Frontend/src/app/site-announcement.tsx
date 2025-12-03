@@ -15,17 +15,17 @@ export default function SiteAnnouncementsPage() {
   const { announcements, loading } = useAnnouncements();
 
   return (
-    <div className="p-12 space-y-6">
+    <div className="md:p-12 p-4 space-y-6">
       <div className="flex flex-start md:items-center md:gap-0 gap-3 justify-between flex-col md:flex-row">
         <div className="space-y-2">
-          <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight first:mt-0 text-(--blue)">Liste des annonces</h2>
+          <h2 className="scroll-m-20 md:text-3xl text-2xl font-semibold tracking-tight first:mt-0 text-(--blue)">Liste des annonces</h2>
           <p className="text-sm text-muted-foreground">Informations importantes et communiqués au sein d'<strong>Omega school</strong></p>
         </div>
       </div>
 
       <div className="grid md:grid-cols-3 sm:grid-cols-2 items-center gap-4">
         {loading ? (
-          <div className="col-span-full flex flex-col gap-4 justify-center text-muted-foreground items-center min-h-[40vh]">
+          <div className="col-span-full md:text-md text-sm flex flex-col gap-4 justify-center text-muted-foreground items-center min-h-[40vh]">
             <Spinner className="size-8" />
             Chargement des annonces. Veillez patientez un moment...
           </div>
@@ -50,7 +50,7 @@ export default function SiteAnnouncementsPage() {
             <Empty>
               <EmptyHeader>
                 <EmptyMedia variant={"icon"}>
-                  <BookX className="w-14 h-14 text-green-400" />
+                  <BookX className="md:w-14 w-8 md:h-14 h-8 text-green-400" />
                 </EmptyMedia>
                 <EmptyTitle>0 annonce</EmptyTitle>
                 <EmptyDescription>Pas d'annonce pour le moment.</EmptyDescription>
