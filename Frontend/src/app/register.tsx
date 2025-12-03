@@ -5,9 +5,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../components/ui/card";
-import { RegistrationForm } from "@/components/registration-form";
+import { RegistrationForm } from "@/components/auth/registration-form";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "@/utils/constants";
 
 export default function RegistrationPage() {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen w-full bg-gray-50">
       <div className="flex flex-col justify-center items-center py-10 px-4">
@@ -21,7 +24,7 @@ export default function RegistrationPage() {
               School
             </CardDescription>
           </CardHeader>
-          <RegistrationForm isStudent={true} onCreated={() => {}} isOnMainRegistration={true} />
+          <RegistrationForm isStudent={true} onCreated={() => navigate(ROUTES.WEBSITE.AUTH.SIGN_IN)} isOnMainRegistration={true} />
         </Card>
       </div>
     </div>

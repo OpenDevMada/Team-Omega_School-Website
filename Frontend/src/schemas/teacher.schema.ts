@@ -2,9 +2,9 @@ import { z } from "zod";
 import { userSchema } from "./user.schema";
 
 export const teacherSchema = userSchema.extend({
-  matriculeNumber: z.string(),
+  matriculeNumber: z.string().nonempty("Matricule requis"),
   bio: z.string().optional(),
-  role: z.literal(["TEACHER"]),
+  role: z.literal("TEACHER"),
 });
 
 export const teacherSchemaDto = teacherSchema.pick({
@@ -16,5 +16,5 @@ export const teacherSchemaDto = teacherSchema.pick({
   address: true,
   phoneNumber: true,
   bio: true,
-  matriculeNumber: true
+  matriculeNumber: true,
 });

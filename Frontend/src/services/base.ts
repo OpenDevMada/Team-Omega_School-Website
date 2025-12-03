@@ -15,8 +15,8 @@ export class BaseService<T, CreateDTO, UpdateDTO> {
   }
 
   async getAll(): Promise<T[]> {
-    const res = await api.get<T[]>(this.baseUrl, { withCredentials: true });
-    return res.data;
+    const res = await api.get<{content: T[]}>(this.baseUrl, { withCredentials: true });
+    return res.data.content;
   }
 
   async getById(id: string | number): Promise<T> {

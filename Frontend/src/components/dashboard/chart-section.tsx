@@ -5,7 +5,6 @@ import { statisticService } from '@/services/statistic'
 import type { Stat } from '@/types/statistic'
 import { DashboardBarChart } from './charts/bar-chart'
 import { DashboardPieChart } from './charts/pie-chart'
-import { toast } from 'sonner'
 
 export function ChartsSection() {
   const [stats, setStats] = useState<Stat[]>([])
@@ -16,7 +15,6 @@ export function ChartsSection() {
       try {
         setLoading(true)
         const data = await statisticService.getGlobalStat()
-        toast.info(data[0].periodLabel.toLocaleDateString)
         setStats(data)
         
         await new Promise(resolve => setTimeout(resolve, 800))

@@ -15,6 +15,7 @@ import type { Announcement } from "@/types/announcement";
 
 import { AnnouncementList } from "./_components/announcement-list";
 import { AnnouncementDialogForm } from "./_components/form-dialog";
+import { getAuthentifiedUser } from "@/services/auth";
 
 export function MainAnnouncement() {
   const { announcements, loading } = useAnnouncements();
@@ -25,6 +26,7 @@ export function MainAnnouncement() {
     setEditing(a);
     setDialogOpen(true);
   };
+  const user = getAuthentifiedUser();
 
   return (
     <div className="p-6 space-y-6">
@@ -38,36 +40,38 @@ export function MainAnnouncement() {
           </p>
         </div>
 
-        <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <AlertDialogTrigger asChild>
-            <Button className="flex items-center gap-2 text-white bg-(--yellow) hover:bg-yellow-500">
-              <Megaphone className="w-4 h-4" />{" "}
-              {editing ? "Modifier annonce" : "Nouvelle annonce"}
-            </Button>
-          </AlertDialogTrigger>
+        {user?.role === "ADMIN" && (
+          <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <Button className="flex items-center gap-2 text-white bg-(--yellow) hover:bg-yellow-500">
+                <Megaphone className="w-4 h-4" />{" "}
+                {editing ? "Modifier annonce" : "Nouvelle annonce"}
+              </Button>
+            </AlertDialogTrigger>
 
-          <AlertDialogContent className="max-w-md">
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl tracking-tight">
-                    {editing
-                      ? "Modifier l'annonce"
-                      : "Créer une nouvelle annonce"}
-                  </h2>
-                  <AlertDialogCancel asChild>
-                    <Button variant={"ghost"} size={"icon"}>
-                      <X />
-                    </Button>
-                  </AlertDialogCancel>
-                </div>
-              </AlertDialogTitle>
-              <Separator className="my-2" />
-            </AlertDialogHeader>
+            <AlertDialogContent className="max-w-md">
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl tracking-tight">
+                      {editing
+                        ? "Modifier l'annonce"
+                        : "Créer une nouvelle annonce"}
+                    </h2>
+                    <AlertDialogCancel asChild>
+                      <Button variant={"ghost"} size={"icon"}>
+                        <X />
+                      </Button>
+                    </AlertDialogCancel>
+                  </div>
+                </AlertDialogTitle>
+                <Separator className="my-2" />
+              </AlertDialogHeader>
 
-            <AnnouncementDialogForm editing={editing} setOpen={setDialogOpen} />
-          </AlertDialogContent>
-        </AlertDialog>
+              <AnnouncementDialogForm editing={editing} setOpen={setDialogOpen} />
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </div>
 
       <AnnouncementList

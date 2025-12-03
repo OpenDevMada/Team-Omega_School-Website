@@ -105,7 +105,7 @@ export function TeacherCard({
 
                   <p className="flex items-center gap-2">
                     <User className="w-4 h-4 text-(--blue)" />
-                    <span>{teacher.sex}</span>
+                    <span className="capitalize">{teacher.sex.toLowerCase()}</span>
                   </p>
 
                   {teacher.courses && teacher.courses.length > 0 && (

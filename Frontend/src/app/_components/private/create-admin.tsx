@@ -66,7 +66,9 @@ export function CreateAdmin() {
     if (!stepData) return true;
     const isValid = await form.trigger(stepData.fields);
     if (!isValid)
-      toast.error("Complète les champs obligatoires avant de continuer");
+      toast.error(
+        "Veuillez completer les champs obligatoires avant de continuer"
+      );
     return isValid;
   };
 
@@ -75,8 +77,8 @@ export function CreateAdmin() {
       await new Promise((res) => setTimeout(res, 3000));
       const created = await adminService.create(data);
       if (created) {
-        console.log(data);
-        toast.success("Admin créé !");
+        toast.success("Admin créé avec succes !");
+        form.reset();
       } else {
         toast.error("Une erreur est survenue.");
       }
@@ -87,7 +89,7 @@ export function CreateAdmin() {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <Stepper value={step} onValueChange={setStep} onValidate={onValidate}>
-          <StepperList>
+          <StepperList className="flex items-start md:items-center md:flex-row flex-col gap-4">
             {steps.map((s) => (
               <StepperItem key={s.value} value={s.value}>
                 <StepperTrigger>
@@ -103,7 +105,7 @@ export function CreateAdmin() {
           </StepperList>
 
           <StepperContent value="personal">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -111,7 +113,12 @@ export function CreateAdmin() {
                   <FormItem>
                     <FormLabel>Prénom</FormLabel>
                     <FormControl>
-                      <Input {...field} type="text" placeholder="Tokiniaina" />
+                      <Input
+                        data-testid="firstName-id"
+                        {...field}
+                        type="text"
+                        placeholder="Tokiniaina"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -126,6 +133,7 @@ export function CreateAdmin() {
                     <FormLabel>Nom</FormLabel>
                     <FormControl>
                       <Input
+                        data-testid="lastName-id"
                         {...field}
                         type="text"
                         placeholder="Nomenjanahary"
@@ -149,7 +157,7 @@ export function CreateAdmin() {
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
-                        <SelectTrigger className="w-full">
+                        <SelectTrigger data-testid="sex-id" className="w-full">
                           <SelectValue placeholder="Sélectionner" />
                         </SelectTrigger>
                         <SelectContent>
@@ -167,7 +175,7 @@ export function CreateAdmin() {
 
           {/* Contact setup */}
           <StepperContent value="contact">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
               <FormField
                 control={form.control}
                 name="email"
@@ -208,7 +216,7 @@ export function CreateAdmin() {
                 control={form.control}
                 name="address"
                 render={({ field }) => (
-                  <FormItem className="col-span-2">
+                  <FormItem className="md:col-span-2">
                     <FormLabel>Adresse</FormLabel>
                     <FormControl>
                       <Input
@@ -241,10 +249,9 @@ export function CreateAdmin() {
             />
           </StepperContent>
 
-          <div className="mt-6 flex justify-between items-center">
+          <div className="mt-6 w-full flex md:flex-row flex-col md:gap-0 gap-3 justify-between items-center">
             <StepperPrev asChild>
-              <Button variant="outline">
-                {" "}
+              <Button variant="outline" className="md:w-auto w-full">
                 <ArrowLeft size={16} /> Précédent
               </Button>
             </StepperPrev>
@@ -254,7 +261,11 @@ export function CreateAdmin() {
             </p>
 
             {stepIndex === steps.length - 1 ? (
-              <Button type="submit" disabled={pending}>
+              <Button
+                type="submit"
+                disabled={pending}
+                className="md:w-full w-auto text-white"
+              >
                 {pending ? (
                   <>
                     <Spinner /> Création du compte...
@@ -265,7 +276,7 @@ export function CreateAdmin() {
               </Button>
             ) : (
               <StepperNext asChild>
-                <Button className="bg-(--blue) hover:bg-blue-900 hover:cursor-pointer text-white">
+                <Button className="bg-(--blue) w-full md:w-auto hover:bg-blue-900 hover:cursor-pointer text-white">
                   Suivant <ArrowRight size={16} />
                 </Button>
               </StepperNext>

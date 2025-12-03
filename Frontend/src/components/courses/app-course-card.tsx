@@ -16,9 +16,10 @@ import type z from "zod";
 import type { courseSchema } from "@/schemas/course.schema";
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Spinner } from "../ui/spinner";
+import type { Role } from "@/types/user";
 
 interface CourseCardProps extends Course {
-  role: "admin" | "teacher" | "student";
+  role: Role;
   onView?: (course: Course) => void;
   onEdit?: (course: z.infer<typeof courseSchema>) => void | Promise<void>;
   onDelete?: (title: string) => void | Promise<void>;
@@ -39,15 +40,15 @@ export const CourseCard: FC<CourseCardProps> = ({
   onDelete,
   withLabel
 }) => {
-  const showActions = role === "admin";
+  const showActions = role === "ADMIN";
   const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [pending, setPending] = useState<boolean>(false);
 
-  const colorMap = {
-    admin: "--yellow",
-    teacher: "--blue",
-    student: "--green",
+  const colorMap: Record<Role, string> = {
+    ADMIN: "--yellow",
+    TEACHER: "--blue",
+    STUDENT: "--green",
   } as const;
 
   const handleEdit = async (values: z.infer<typeof courseSchema>) => {
@@ -76,7 +77,7 @@ export const CourseCard: FC<CourseCardProps> = ({
     <Card className="relative flex flex-col h-80 justify-between overflow-hidden transition-all duration-300 border border-border rounded-2xl bg-card hover:shadow-lg hover:-translate-y-1">
       <CardHeader className="pb-0 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <div className={`p-2 rounded-xl border border(${colorMap[role]}) bg-white dark:bg-gray-900`}>
+          <div className={`p-2 rounded-xl border border-(${colorMap[role]}) bg-white dark:bg-gray-900`}>
             <BookOpen className={`w-5 h-5 text-(${colorMap[role]})`} />
           </div>
           <h3 className={`text-lg font-semibold text-(${colorMap[role]})`}>
@@ -102,7 +103,7 @@ export const CourseCard: FC<CourseCardProps> = ({
                   title={`Supprimer`}
                   variant={withLabel ? "destructive" : "ghost"}
                   size={withLabel ? "default" : "icon-sm"}
-                  className="flex items-center gap-2"
+                  className={`flex items-center gap-2 ${!withLabel && "border border-border"}`}
                 >
                   {withLabel && "Supprimer"}
                   <Trash2 color={withLabel ? "white" : "red"} />
@@ -126,7 +127,7 @@ export const CourseCard: FC<CourseCardProps> = ({
           </div>
         )}
 
-        {role === "teacher" && onView && (
+        {role === "TEACHER" && onView && (
           <Button size="icon-sm" variant="outline" onClick={() => onView({
             id, title, description, teacherName, teacherMatricule, createdAt, updatedAt
           })}>
@@ -136,11 +137,11 @@ export const CourseCard: FC<CourseCardProps> = ({
       </CardHeader>
 
       <CardContent className="flex-1 flex flex-col">
-        <p className="text-sm text-muted-foreground line-clamp-3 grow">
+        {description && <p className="text-sm text-muted-foreground line-clamp-3 grow">
           {description}
-        </p>
-        {(showActions || role === "teacher") && (
-          <div className="flex items-center gap-3 mt-2">
+        </p>}
+        {(showActions || role === "TEACHER") && (
+          <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border border-border">
               <AvatarFallback className={`bg-(${colorMap[role]})/10 text-(${colorMap[role]}) font-medium`}>
                 {teacherName[0].toUpperCase()}
@@ -154,7 +155,7 @@ export const CourseCard: FC<CourseCardProps> = ({
         )}
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between text-xs text-slate-500 border-t border-border pt-3 mt-2">
+      <CardFooter className="flex items-center justify-between text-xs text-slate-500 border-t border-border">
         <div className="flex items-center gap-1">
           <CalendarDays className="w-4 h-4" />
           <span>Créé le {format(createdAt, "PPP", { locale: fr })}</span>

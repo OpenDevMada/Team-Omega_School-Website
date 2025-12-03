@@ -1,6 +1,5 @@
 import { api } from "@/lib/api";
-import type { Student, StudentPostData } from "@/types/student";
-import type { Teacher } from "@/types/teacher";
+import type { StudentPostData } from "@/types/student";
 
 export const getUsers = async (choosen: "teachers" | "students") => {
   try {

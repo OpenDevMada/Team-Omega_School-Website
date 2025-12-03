@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { PasswordTips } from "@/components/password-tips";
+import { PasswordTips } from "@/components/auth/password-tips";
 import { toast } from "sonner";
 import { passwordSchema } from "@/schemas/user.schema";
 import { Spinner } from "@/components/ui/spinner";
@@ -50,7 +50,7 @@ export function PasswordChangeTab() {
   };
 
   return (
-    <CardContent className="pt-6 flex items-start justify-center gap-12 md:mb-12 sm:mb-6">
+    <CardContent className="pt-6 flex md:flex-row flex-col items-start justify-center gap-12 md:mb-12 sm:mb-6">
       <PasswordTips />
 
       <Form {...form}>

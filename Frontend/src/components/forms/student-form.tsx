@@ -1,64 +1,37 @@
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
-import type { UseFormReturn } from "react-hook-form";
-import type { StudentFormType, UserFormType } from "@/validation/user";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import type { Group, Level } from "@/types/student";
+import { FormMessage, FormControl } from "@/components/ui/form"
+import type { UseFormReturn } from "react-hook-form"
+import { FormLabel } from "@/components/ui/form"
+import { FormItem } from "@/components/ui/form"
+import { FormField } from "@/components/ui/form"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import type { Group, Level } from "@/types/student"
+import type { StudentFormType, UserFormType } from "@/validation/user"
 
 interface StudentFormFieldsProps {
-  form: UseFormReturn<StudentFormType | UserFormType>;
-  groups: Group[];
-  levels: Level[];
-  isEditing: boolean;
-  isOnMainRegistration?: boolean;
+  form: UseFormReturn<StudentFormType | UserFormType>
+  groups: Group[]
+  levels: Level[]
 }
 
-export function StudentFormFields({ form, groups, levels, isEditing, isOnMainRegistration }: StudentFormFieldsProps) {
+export function StudentFormFields({ form, groups, levels }: StudentFormFieldsProps) {
   return (
     <>
-      {/* Registration number */}
-      <FormField
-        control={form.control}
-        name="registrationNumber"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Numéro d'inscription</FormLabel>
-            <FormControl>
-              <Input placeholder="STU20240001" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
       {/* Level */}
       <FormField
         control={form.control}
         name="level"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Niveau</FormLabel>
+            <FormLabel>Niveau {field.value}</FormLabel>
             <FormControl>
-              {/* @ts-ignore */}
-              <Select onValueChange={field.onChange} value={isEditing ? field.value?.name : field.value || ""}>
-                <SelectTrigger className={`${isOnMainRegistration ? "w-[260px]" : "w-[200px]"}`}>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <SelectTrigger className="w-full max-w-full">
                   <SelectValue placeholder="Sélectionner votre niveau" />
                 </SelectTrigger>
                 <SelectContent>
                   {levels.map((level) => (
-                    <SelectItem key={level.name} value={level.name}>
+                    <SelectItem key={level.id} value={level.name}>
                       {level.name}
                     </SelectItem>
                   ))}
@@ -78,14 +51,13 @@ export function StudentFormFields({ form, groups, levels, isEditing, isOnMainReg
           <FormItem>
             <FormLabel>Classe</FormLabel>
             <FormControl>
-              {/* @ts-ignore */}
-              <Select onValueChange={field.onChange} value={isEditing ? field.value?.name : field.value || ""}>
-                <SelectTrigger className={`${isOnMainRegistration ? "w-[260px]" : "w-[200px]"}`}>
+              <Select onValueChange={field.onChange} value={field.value || ""}>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Sélectionner votre classe" />
                 </SelectTrigger>
                 <SelectContent>
                   {groups.map((group) => (
-                    <SelectItem key={group.name} value={group.name}>
+                    <SelectItem key={group.id} value={group.name}>
                       {group.name}
                     </SelectItem>
                   ))}
@@ -97,12 +69,13 @@ export function StudentFormFields({ form, groups, levels, isEditing, isOnMainReg
         )}
       />
 
-      {isOnMainRegistration && (
+      {/* Emergency contact */}
+      {/* {isOnMainRegistration && ( */}
         <FormField
           control={form.control}
-          name="group"
+          name="emergencyContact"
           render={({ field }) => (
-            <FormItem className="col-span-2">
+            <FormItem>
               <FormLabel>Contact d'urgence</FormLabel>
               <FormControl>
                 <Input type="tel" placeholder="034 89 765 34" {...field} />
@@ -111,8 +84,7 @@ export function StudentFormFields({ form, groups, levels, isEditing, isOnMainReg
             </FormItem>
           )}
         />
-      )}
+      {/* )} */}
     </>
-  );
+  )
 }
-

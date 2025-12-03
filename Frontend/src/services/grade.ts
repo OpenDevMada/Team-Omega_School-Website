@@ -1,8 +1,8 @@
-import type { Grade } from "@/types/grade";
+import type { Grade, GradeRequestDto } from "@/types/grade";
 import { BaseService } from "./base";
 import { api } from "@/lib/api";
 
-class GradeService extends BaseService<Grade, any, any> {
+class GradeService extends BaseService<Grade, GradeRequestDto, GradeRequestDto> {
   constructor() {
     super("/grades");
   }

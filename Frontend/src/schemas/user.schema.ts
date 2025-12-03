@@ -1,19 +1,14 @@
 import * as z from "zod";
 
 export const userSchema = z.object({
-  firstName: z
-    .string()
-    .min(2, { message: "Le prénom doit contenir au moins 2 caractères" }),
-  lastName: z
-    .string()
-    .min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
-  birthDate: z.date({ message: "Votre date de naissance est requise" }),
-  email: z.email({ message: "Adresse email invalide" }),
-  password: z.string().min(8, "Mot de passe trop courte"),
+  firstName: z.string().min(1, "Le prénom est requis"),
+  lastName: z.string().min(1, "Le nom est requis"),
+  email: z.email("Email invalide"),
+  birthDate: z.date({ error: () => ({ message: "La date de naissance est requise" }) }),
   phoneNumber: z.string().min(10, { message: "Numéro de téléphone invalide" }),
   address: z.string().min(5, { message: "Adresse trop courte" }),
   sex: z
-    .enum(["MASCULIN", "FEMININ"])
+    .enum(["MASCULIN", "FEMININ", "PAS_SPECIFIE"])
     .refine((value) => value !== undefined && value !== null, {
       message: "Sélectionner un genre",
     }),

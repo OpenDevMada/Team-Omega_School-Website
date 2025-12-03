@@ -46,7 +46,7 @@ export const DeleteUserButton = ({ user, withLabel = false, onSuccess }: { user:
         </AlertDialogHeader>
         <AlertDialogFooter className="flex items-center gap-4">
           <Button variant={"destructive"} size={"default"} disabled={pending} onClick={handleDelete}>
-            {pending ? <Spinner /> : "Continer"}
+            {pending ? <Spinner /> : "Continuer"}
           </Button>
           <AlertDialogCancel asChild>
             <Button variant={"outline"} size={"default"}>Annuler</Button>
