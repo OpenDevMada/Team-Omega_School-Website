@@ -68,21 +68,18 @@ export const teachers: Teacher[] = [
   { firstName: "Haja", lastName: "Ranaivomanana", gender: "Masculin" },
   { firstName: "Mamy", lastName: "Rasoanirina", gender: "Féminin" },
 ].map((t, i) => {
-  // @ts-expect-error
   const teacher: Teacher = {
-    id: uuidv4(),
+    userId: uuidv4(),
     ...t,
     birthDate: new Date(1980 + (i % 8), i % 12, (i % 28) + 1),
     email: `${t.firstName.toLowerCase()}.${t.lastName.toLowerCase()}@teacher.mg`,
-    phone: `033${Math.floor(1000000 + Math.random() * 8999999)}`,
     password: "hashed_password",
     address: "Antananarivo, Madagascar",
     phoneNumber: `038${Math.floor(1000000 + Math.random() * 8999999)}`,
     avatar: null,
     role: "TEACHER",
     matriculeNumber: `TCH${200 + i}`,
-    bio: `Professeur expérimenté en ${
-      [
+    bio: `Professeur expérimenté en ${[
         "mathématiques",
         "français",
         "physique-chimie",
@@ -90,11 +87,12 @@ export const teachers: Teacher[] = [
         "histoire-géographie",
         "anglais",
         "éducation civique",
-      ][i]
-    }. Passionné par l’enseignement.`,
+      ][i]}. Passionné par l’enseignement.`,
     createdAt: new Date(),
     updatedAt: new Date(),
     courses: [],
+    passwordHash: "",
+    sex: "MASCULIN"
   };
   return teacher;
 });
@@ -113,7 +111,9 @@ teachers.forEach((teacher, i) => {
   teacher.courses.push({
     id: uuidv4(),
     title: courseTitles[i],
-    teacher,
+    teacherName: "",
+    teacherMatricule: "TCH-203",
+    description: "",
     createdAt: new Date(),
     updatedAt: new Date(),
   });
@@ -121,13 +121,15 @@ teachers.forEach((teacher, i) => {
 
 
 
-export const courses: Course[] = courseTitles.map((c) => {
+export const mockCourses: Course[] = courseTitles.map((c) => {
   const course: Course = {
     id: uuidv4(),
     title: c,
-    teacher: teachers[Math.floor(Math.random() * teachers.length)],
+    teacherName: teachers[Math.floor(Math.random() * teachers.length)].firstName,
     createdAt: new Date(2025, 9, 10),
-    updatedAt: new Date(2025, 10, 4)
+    updatedAt: new Date(2025, 10, 4),
+    description: "",
+    teacherMatricule: teachers[Math.floor(Math.random() * teachers.length)].matriculeNumber
   };
   return course;
 });

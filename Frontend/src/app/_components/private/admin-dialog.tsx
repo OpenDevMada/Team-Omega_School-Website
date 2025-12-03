@@ -13,19 +13,16 @@ import { Spinner } from "@/components/ui/spinner";
 import { adminService } from "@/services/admin";
 import { LucideTriangleAlert } from "lucide-react";
 import { useTransition } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export function DeleteAdmin({ id }: Readonly<{ id: string }>) {
   const [pending, startTransition] = useTransition();
-  // const navigate = useNavigate();
   const handleDelete = () => {
     startTransition(async () => {
       await new Promise((res) => setTimeout(res, 3000));
       await adminService.delete(id);
       toast.info("Compte administrateur supprimé");
       setTimeout(() => {
-        // navigate("/login?msg=admin+account+deleted");
         window.location.href = "/login?msg=admin+account+deleted";
       }, 2000);
     });
