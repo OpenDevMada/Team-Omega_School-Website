@@ -24,6 +24,8 @@ public class AuthServiceImpl implements AuthService {
     private final StudentServiceImpl studentServiceImpl;
     private final JwtServiceImpl jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final OtpServiceImpl otpService;
+    private final MailServiceImpl mailService;
 
     @Override
     public Student register(RegisterRequestDto request) {
@@ -84,4 +86,32 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponseDto(newAccessToken, newRefreshToken, user.getEmail(), user.getRole());
     }
 
+    @Override
+    public void sendPasswordResetOtp(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        String otp = otpService.generateAndSaveOtp(email);
+        mailService.sendOtpEmail(email, otp);
+    }
+
+    @Override
+    public boolean verifyOtp(String email, String otp) {
+        return otpService.verifyOtp(email, otp);
+    }
+
+    @Override
+    public void resetPassword(String email, String otp, String newPassword) {
+        if (!otpService.verifyOtp(email, otp)) {
+            throw new RuntimeException("OTP invalide ou expiré");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        otpService.deleteOtp(email);
+    }
 }

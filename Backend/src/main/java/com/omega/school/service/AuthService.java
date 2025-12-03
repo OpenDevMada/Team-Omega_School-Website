@@ -11,4 +11,11 @@ public interface AuthService {
     AuthResponseDto login(LoginRequestDto request);
 
     AuthResponseDto refreshToken(String refreshToken);
+
+    void sendPasswordResetOtp(String email);
+
+    boolean verifyOtp(String email, String otp);
+
+    void resetPassword(String email, String otp, String newPassword);
+
 }

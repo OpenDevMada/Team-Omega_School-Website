@@ -13,7 +13,7 @@ import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.mapper.AdminMapper;
 import com.omega.school.model.Admin;
-import com.omega.school.model.Teacher;
+
 import com.omega.school.repository.AdminRepository;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.AdminService;
