@@ -1,5 +1,6 @@
 package com.omega.school.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,4 +19,7 @@ public interface GroupService {
     Group updateGroup(UUID id, GroupRequestDto dto);
 
     void deleteGroup(UUID id);
+
+    List<Group> getAllGroupsNoPagination();
+
 }
