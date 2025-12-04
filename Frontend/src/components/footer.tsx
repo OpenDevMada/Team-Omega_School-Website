@@ -1,80 +1,104 @@
 import { Link } from "react-router-dom";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  ArrowUp,
-} from "lucide-react";
+import { Mail, Phone, MapPin, ArrowUp } from "lucide-react";
 import { ROUTES } from "@/utils/constants";
 import { Facebook, GitHubLight, LinkedIn } from "developer-icons";
+import { useState, useTransition } from "react";
+import { Spinner } from "./ui/spinner";
+import { toast } from "sonner";
 
 export function Footer() {
+  const [subscriptionEmail, setSubscriptionEmail] = useState<string>("");
+  const [pending, startTransition] = useTransition();
+
   return (
     <footer className="w-full bg-[#0F172A] px-6 py-12 text-white">
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
-          <section aria-labelledby="footer-brand">
-            <h3 id="footer-brand" className="mb-4 text-xl font-semibold text-[#FACC15]">
+        <div className="flex md:flex-row md:gap-10 gap-4 flex-col items-start">
+          <section
+            aria-labelledby="footer-brand"
+            className="md:max-w-sm w-full"
+          >
+            <h3
+              id="footer-brand"
+              className="mb-4 text-xl font-semibold text-[#FACC15]"
+            >
               Omega School
             </h3>
             <p className="text-sm text-gray-300">
-              Former des esprits curieux, responsables et engagés avec une pédagogie moderne,
-              bienveillante et ambitieuse.
+              Former des esprits curieux, responsables et engagés avec une
+              pédagogie moderne, bienveillante et ambitieuse.
             </p>
             <div className="mt-6 flex items-center gap-4">
-              <Link to="https://facebook.com/groups/1405028994020652/" className="hover:text-[#10B981]" aria-label="Facebook">
+              <Link
+                to="https://facebook.com/groups/1405028994020652/"
+                className="hover:text-[#10B981]"
+                aria-label="Facebook"
+              >
                 <Facebook size={28} />
               </Link>
-              <Link to="mailto:opendevalpha@gmail.com" className="hover:text-[#10B981]" aria-label="LinkedIn">
+              <Link
+                to="mailto:opendevalpha@gmail.com"
+                className="hover:text-[#10B981]"
+                aria-label="LinkedIn"
+              >
                 <LinkedIn size={32} />
               </Link>
-              <Link to="https://github.com/OpenDevMada/" className="hover:text-[#10B981]" aria-label="GitHub">
+              <Link
+                to="https://github.com/OpenDevMada/"
+                className="hover:text-[#10B981]"
+                aria-label="GitHub"
+              >
                 <GitHubLight size={28} />
               </Link>
             </div>
           </section>
 
-          <nav aria-labelledby="footer-links" className="grid grid-cols-2 gap-6 sm:grid-cols-2">
+          <nav
+            aria-labelledby="footer-links"
+            className="flex md:flex-row flex-col gap-4 items-center"
+          >
             <div>
               <h4 id="footer-links" className="mb-4 text-lg font-semibold">
                 Liens rapides
               </h4>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link to="/" className="hover:text-[#10B981]">Accueil</Link>
+                  <Link to="/" className="hover:text-[#10B981]">
+                    Accueil
+                  </Link>
                 </li>
                 <li>
-                  <Link to={ROUTES.WEBSITE.ANNOUNCEMENT} className="hover:text-[#10B981]">Annonces</Link>
+                  <Link
+                    to={ROUTES.WEBSITE.ANNOUNCEMENT}
+                    className="hover:text-[#10B981]"
+                  >
+                    Annonces
+                  </Link>
                 </li>
                 <li>
-                  <Link to={ROUTES.WEBSITE.COURSES} className="hover:text-[#10B981]">Nos cours</Link>
+                  <Link
+                    to={ROUTES.WEBSITE.COURSES}
+                    className="hover:text-[#10B981]"
+                  >
+                    Nos cours
+                  </Link>
                 </li>
                 <li>
-                  <Link to={ROUTES.WEBSITE.CONTACT} className="hover:text-[#10B981]">Contact</Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-4 text-lg font-semibold">Ressources</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link to="/register" className="hover:text-[#10B981]">Admissions</Link>
-                </li>
-                <li>
-                  <Link to="/programmes" className="hover:text-[#10B981]">Programmes</Link>
-                </li>
-                <li>
-                  <Link to="/reglement" className="hover:text-[#10B981]">Règlement intérieur</Link>
-                </li>
-                <li>
-                  <Link to="/parents" className="hover:text-[#10B981]">Espace parents</Link>
+                  <Link
+                    to={ROUTES.WEBSITE.CONTACT}
+                    className="hover:text-[#10B981]"
+                  >
+                    Contact
+                  </Link>
                 </li>
               </ul>
             </div>
           </nav>
 
           <section aria-labelledby="footer-contact" className="space-y-4">
-            <h4 id="footer-contact" className="text-lg font-semibold">Nous contacter</h4>
+            <h4 id="footer-contact" className="text-lg font-semibold">
+              Nous contacter
+            </h4>
             <ul className="space-y-3 text-sm text-gray-300">
               <li className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-5 w-5 text-[#FACC15]" />
@@ -88,14 +112,17 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-[#38BDF8]" />
-                <a href="mailto:opendevalpha@gmail.com" className="hover:text-white">
+                <a
+                  href="mailto:opendevalpha@gmail.com"
+                  className="hover:text-white"
+                >
                   opendevalpha@gmail.com
                 </a>
               </li>
             </ul>
           </section>
 
-          <section aria-labelledby="footer-newsletter">
+          <section aria-labelledby="footer-newsletter" className="flex-1">
             <h4 id="footer-newsletter" className="mb-4 text-lg font-semibold">
               Newsletter
             </h4>
@@ -115,16 +142,37 @@ export function Footer() {
                 id="newsletter-email"
                 name="email"
                 type="email"
+                value={subscriptionEmail}
+                onChange={(e) => setSubscriptionEmail(e.target.value)}
                 required
                 placeholder="Votre email"
                 className="w-full rounded-lg border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-gray-400 outline-none transition focus:border-[#10B981]"
               />
               <button
                 type="submit"
+                disabled={pending}
+                onClick={() => {
+                  if (subscriptionEmail.trim() === "") return;
+                  startTransition(async () => {
+                    if (!subscriptionEmail.endsWith("@gmail.com")) {
+                      toast.warning("Email invalide. Veuillez réessayer");
+                      return;
+                    }
+                    await new Promise((r) => setTimeout(r, 1000));
+                    toast.info("Email enregistré");
+                    setSubscriptionEmail("");
+                  });
+                }}
                 className="rounded-lg bg-[#10B981] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0EA972]"
                 aria-label="S'inscrire à la newsletter"
               >
-                S'inscrire
+                {pending ? (
+                  <>
+                    <Spinner />
+                  </>
+                ) : (
+                  "S'inscrire"
+                )}
               </button>
             </form>
           </section>
@@ -132,7 +180,9 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-gray-700 pt-6 text-xs text-gray-400 md:flex-row">
           <p className="text-center md:text-left">
-            &copy; {new Date().getFullYear()} <span className="text-[#FACC15]">Omega School</span> — OpenDev Mada. Tous droits réservés.
+            &copy; {new Date().getFullYear()}{" "}
+            <span className="text-[#FACC15]">Omega School</span> — OpenDev Mada.
+            Tous droits réservés.
           </p>
           <div className="flex items-center gap-4">
             <button
