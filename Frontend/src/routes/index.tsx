@@ -13,7 +13,7 @@ import ProfilePage from "@/app/profile";
 import RegistrationPage from "@/app/register";
 
 import NotFound from "@/app/not-found";
-// import { ProtectedRoute } from "@/app/_components/protected-route";
+import { ProtectedRoute } from "@/app/_components/protected-route";
 
 import CoursesPage from "@/app/courses";
 import StudentsPage from "@/app/students";
@@ -48,7 +48,7 @@ const routes = createRoutesFromElements(
         element={<ForgetPasswordPage />}
       />
     </Route>
-    {/* <Route element={<ProtectedRoute />}> */}
+    <Route element={<ProtectedRoute />}>
     <Route element={<AppLayout />} errorElement={<Error />} hasErrorBoundary>
       <Route path={ROUTES.APP.DASHBOARD} element={<DashboardPage />} />
       <Route path={ROUTES.APP.PROFILE} element={<ProfilePage />} />
@@ -63,7 +63,7 @@ const routes = createRoutesFromElements(
       />
       <Route path={ROUTES.APP.SETTINGS} element={<SettingsPage />} />
     </Route>
-    {/* </Route> */}
+    </Route>
     <Route path="/*" element={<NotFound />} />
   </>
 );

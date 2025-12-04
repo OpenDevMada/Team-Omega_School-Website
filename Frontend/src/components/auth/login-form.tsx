@@ -19,10 +19,10 @@ import { ROUTES } from "@/utils/constants";
 import { Eye, EyeOff } from "lucide-react";
 import { authService } from "@/services/auth";
 import type { Role } from "@/types/user";
-import { setAccessToken } from "@/lib/api";
+import Cookie from "js-cookie"
 
 interface ApiLoginResponse {
-  token: string
+  accessToken: string
   role: Role
   email: string
 }
@@ -57,15 +57,20 @@ export function LoginForm({
     startTransition(async () => {
       await new Promise((res) => setTimeout(res, 2000));
       try {
-        const response: ApiLoginResponse = await authService.signIn(values) as { token: string, email: string, role: Role };
+        const response: ApiLoginResponse = await authService.signIn(values);
 
-        setAccessToken(response.token);
-        // Add to header or localStorage user's role
+        Cookie.set("access-token-frontend", response.accessToken, {
+          secure: false,
+          path: "/",
+          expires: 1,
+          sameSite: "Lax"
+        });
 
         toast.success("Connection réussie");
         setTimeout(() => {
           navigate("/profile");
         }, 2000);
+        authService.getUser(response.role.toUpperCase() as Role).then(console.log).catch(e => console.error("Error auth user", e));
       } catch (error) {
         console.log(`Login error: ${error instanceof Error && error.message}`);
         toast.error("Email ou mot de passe invalide");
@@ -78,7 +83,6 @@ export function LoginForm({
       shown.current = true;
       toast.error("Ressource privée, connectez-vous");
     }
-    authService.getUser().then(r => console.log(r)).catch(e => console.error(e));
   }, [params]);
 
   return (
