@@ -16,7 +16,8 @@ const passwordSchemaDto = passwordSchema.pick({
 });
 
 export const authService = {
-  getUser: async (role: Role) => {
+  getUser: async () => {
+    const role = localStorage.getItem("userRole") as Role;
     const response = await api.get(`/${role.toLowerCase()}s/me`, {
       withCredentials: true,
     });
@@ -106,10 +107,10 @@ export const authService = {
   },
 };
 
-export const getAuthentifiedUser = (role: Role) => {
+export const getAuthentifiedUser = () => {
   const [user, setUser] = useState<Student | Teacher | User>();
   useEffect(() => {
-    authService.getUser(role).then(setUser);
+    authService.getUser().then(setUser);
   });
   return user;
 };
