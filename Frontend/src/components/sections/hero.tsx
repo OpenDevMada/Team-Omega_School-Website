@@ -25,7 +25,7 @@ export function HeroSection() {
   };
 
   return (
-    <header className="relative overflow-hidden border-b bg-linear-to-br from-[#0F172A] via-[#1E3A8A] to-[#312E81]">
+    <header className="relative overflow-hidden border-b bg-linear-to-br from-[#0F172A] via-[#1E3A8A] to-[#312E81]" id="hero">
       <div className="absolute inset-0 -z-10">
         <div className="absolute -left-32 top-16 h-64 w-64 rounded-full bg-[#10B981]/30 blur-3xl" />
         <div className="absolute right-12 top-24 h-72 w-72 rounded-full bg-[#FACC15]/20 blur-3xl" />
@@ -117,6 +117,10 @@ export function HeroSection() {
           </Link>
           <Button
             variant="outline"
+            onClick={() => {
+              const aboutSection = document.getElementById("about");
+              aboutSection?.scrollIntoView({ behavior: "smooth" })
+            }}
             className="inline-flex items-center hover:text-blue-300 gap-2 rounded-full border-white/60 bg-white/10 px-8 py-6 text-base font-semibold text-white backdrop-blur transition hover:bg-white/20 md:text-lg"
           >
             Découvrir l'école
