@@ -11,6 +11,10 @@ import com.omega.school.model.Student;
 import com.omega.school.model.User;
 import com.omega.school.repository.UserRepository;
 import com.omega.school.service.AuthService;
+import com.omega.school.service.JwtService;
+import com.omega.school.service.MailService;
+import com.omega.school.service.OtpService;
+import com.omega.school.service.StudentService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,11 +25,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final StudentServiceImpl studentServiceImpl;
-    private final JwtServiceImpl jwtService;
+    private final StudentService studentService;
+    private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
-    private final OtpServiceImpl otpService;
-    private final MailServiceImpl mailService;
+    private final OtpService otpService;
+    private final MailService mailService;
 
     @Override
     public Student register(RegisterRequestDto request) {
@@ -41,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
         studentRequestDto.setSex(request.getSex());
         studentRequestDto.setPhoneNumber(request.getPhoneNumber());
 
-        return studentServiceImpl.createStudent(studentRequestDto);
+        return studentService.createStudent(studentRequestDto);
 
     }
 

@@ -34,7 +34,6 @@ public class SecurityConfig {
                         "/swagger-ui.html")
                 .permitAll()
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/redis-test").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

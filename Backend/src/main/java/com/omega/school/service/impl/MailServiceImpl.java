@@ -57,10 +57,10 @@ public class MailServiceImpl implements MailService {
         String subject = "Code de réinitialisation – Omega School";
 
         String message = "Bonjour,\n\nVotre code de réinitialisation est : " + otp +
-                "\nIl expire dans 5 minutes.\n\nSi vous n'avez pas demandé cette réinitialisation, ignorez cet email. \\n"
+                "\nIl expire dans 5 minutes.\n\nSi vous n'avez pas demandé cette réinitialisation, ignorez cet email. \n\n"
                 + //
-                "\\n" + //
-                "Cordialement,\\n" + //
+                "\n" + //
+                "Cordialement,\n" + //
                 "L'équipe Omega School";
 
         Content content = new Content("text/plain", message);
