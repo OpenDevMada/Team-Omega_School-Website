@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
+import { omegaFlyers } from "../flyers";
 
 export function CallToActionSection() {
   return (
-    <section className="relative overflow-hidden bg-[#1E40AF] py-28">
+    <section className="relative overflow-hidden bg-[#1E40AF] py-28" id="cta">
       <div className="absolute inset-0 -z-10">
         <div className="absolute -top-10 right-0 h-56 w-56 rounded-full bg-[#FACC15]/30 blur-3xl" />
         <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-[#10B981]/30 blur-3xl" />
@@ -49,13 +50,8 @@ export function CallToActionSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <a
-            href="#inscription"
-            className="inline-flex items-center justify-center rounded-full bg-[#FACC15] px-8 py-4 text-base font-semibold text-[#1E40AF] shadow-lg shadow-[#FACC15]/40 transition hover:-translate-y-1 hover:bg-[#FBBF24]"
-          >
-            Prendre rendez-vous
-          </a>
-          <a
-            href="#contact"
+            href="#"
+            onClick={() => omegaFlyers()}
             className="inline-flex items-center justify-center rounded-full border border-white/40 px-8 py-4 text-base font-semibold text-white transition hover:bg-white/10"
           >
             Télécharger la brochure
@@ -69,19 +65,19 @@ export function CallToActionSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.9, delay: 0.3 }}
         >
-          <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+          <div className="rounded-2xl border border-white/10 bg-white/10 p-4 transition-all hover:-translate-y-1 backdrop-blur">
             <p className="text-3xl font-bold text-white">+120</p>
             <p className="text-sm uppercase tracking-wider">
               nouvelles places disponibles
             </p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+          <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur transition-all hover:-translate-y-1">
             <p className="text-3xl font-bold text-white">15 juin</p>
             <p className="text-sm uppercase tracking-wider">
               clôture des inscriptions
             </p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+          <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur transition-all hover:-translate-y-1">
             <p className="text-3xl font-bold text-white">100%</p>
             <p className="text-sm uppercase tracking-wider">
               d'accompagnement personnalisé

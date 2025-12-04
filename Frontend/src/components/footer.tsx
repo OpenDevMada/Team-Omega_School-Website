@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
 import {
-  Facebook,
-  Linkedin,
-  Github,
   Mail,
   Phone,
   MapPin,
   ArrowUp,
 } from "lucide-react";
+import { ROUTES } from "@/utils/constants";
+import { Facebook, GitHubLight, LinkedIn } from "developer-icons";
 
 export function Footer() {
   return (
@@ -23,14 +22,14 @@ export function Footer() {
               bienveillante et ambitieuse.
             </p>
             <div className="mt-6 flex items-center gap-4">
-              <Link to="#" className="hover:text-[#10B981]" aria-label="Facebook">
-                <Facebook />
+              <Link to="https://facebook.com/groups/1405028994020652/" className="hover:text-[#10B981]" aria-label="Facebook">
+                <Facebook size={28} />
               </Link>
-              <Link to="#" className="hover:text-[#10B981]" aria-label="LinkedIn">
-                <Linkedin />
+              <Link to="mailto:opendevalpha@gmail.com" className="hover:text-[#10B981]" aria-label="LinkedIn">
+                <LinkedIn size={32} />
               </Link>
-              <Link to="#" className="hover:text-[#10B981]" aria-label="GitHub">
-                <Github />
+              <Link to="https://github.com/OpenDevMada/" className="hover:text-[#10B981]" aria-label="GitHub">
+                <GitHubLight size={28} />
               </Link>
             </div>
           </section>
@@ -45,13 +44,13 @@ export function Footer() {
                   <Link to="/" className="hover:text-[#10B981]">Accueil</Link>
                 </li>
                 <li>
-                  <Link to="/announcements" className="hover:text-[#10B981]">Annonces</Link>
+                  <Link to={ROUTES.WEBSITE.ANNOUNCEMENT} className="hover:text-[#10B981]">Annonces</Link>
                 </li>
                 <li>
-                  <Link to="/apropos" className="hover:text-[#10B981]">À propos</Link>
+                  <Link to={ROUTES.WEBSITE.COURSES} className="hover:text-[#10B981]">Nos cours</Link>
                 </li>
                 <li>
-                  <Link to="/contact" className="hover:text-[#10B981]">Contact</Link>
+                  <Link to={ROUTES.WEBSITE.CONTACT} className="hover:text-[#10B981]">Contact</Link>
                 </li>
               </ul>
             </div>
@@ -89,8 +88,8 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-[#38BDF8]" />
-                <a href="mailto:contact@omegaschool.edu" className="hover:text-white">
-                  contact@omegaschool.edu
+                <a href="mailto:opendevalpha@gmail.com" className="hover:text-white">
+                  opendevalpha@gmail.com
                 </a>
               </li>
             </ul>
@@ -128,13 +127,6 @@ export function Footer() {
                 S'inscrire
               </button>
             </form>
-            <p className="mt-2 text-xs text-gray-400">
-              En vous inscrivant, vous acceptez notre{" "}
-              <Link to="/confidentialite" className="underline hover:text-white">
-                politique de confidentialité
-              </Link>
-              .
-            </p>
           </section>
         </div>
 
@@ -143,9 +135,6 @@ export function Footer() {
             &copy; {new Date().getFullYear()} <span className="text-[#FACC15]">Omega School</span> — OpenDev Mada. Tous droits réservés.
           </p>
           <div className="flex items-center gap-4">
-            <Link to="/mentions-legales" className="hover:text-white">Mentions légales</Link>
-            <Link to="/confidentialite" className="hover:text-white">Confidentialité</Link>
-            <Link to="/cookies" className="hover:text-white">Cookies</Link>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="inline-flex items-center gap-2 rounded-full border border-white/20 px-3 py-2 text-white transition hover:bg-white/10"
