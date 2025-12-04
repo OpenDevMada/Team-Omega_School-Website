@@ -1,13 +1,8 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useTransition } from "react";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
 import z from "zod";
@@ -18,80 +13,63 @@ import { Separator } from "../ui/separator";
 import { ROUTES } from "@/utils/constants";
 import { Eye, EyeOff } from "lucide-react";
 import { authService } from "@/services/auth";
-import type { Role } from "@/types/user";
-import Cookie from "js-cookie"
+import Cookie from "js-cookie";
 
-interface ApiLoginResponse {
-  accessToken: string
-  role: Role
-  email: string
-}
+const signInSchema = z.object({
+  email: z.email("Email invalide").min(1, "Email requis"),
+  password: z.string().min(1, "Mot de passe requis"),
+});
+
+type SignInFormValues = z.infer<typeof signInSchema>;
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const location = useLocation();
-  const shown = useRef(false);
-  const params = new URLSearchParams(location.search);
-  const error = params.get("err");
   const [pending, startTransition] = useTransition();
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const signInSchema = z.object({
-    email: z.email("Email invalide").nonempty("Email requis"),
-    password: z.string().nonempty("Mot de passe requis"),
-  });
-
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const form = useForm<z.infer<typeof signInSchema>>({
+  const form = useForm<SignInFormValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
-      password: ""
-    }
+      password: "",
+    },
   });
 
-  const onSubmit = async (values: z.infer<typeof signInSchema>) => {
+  const onSubmit = async (values: SignInFormValues) => {
     startTransition(async () => {
-      await new Promise((res) => setTimeout(res, 2000));
       try {
-        const response: ApiLoginResponse = await authService.signIn(values);
+        const response = await authService.signIn(values);
 
         Cookie.set("access-token-frontend", response.accessToken, {
-          secure: false,
+          secure: import.meta.env.PROD,
           path: "/",
           expires: 1,
-          sameSite: "Lax"
+          sameSite: "Lax",
         });
 
-        toast.success("Connection réussie");
+        toast.success("Connexion réussie");
+
         setTimeout(() => {
           navigate("/profile");
-        }, 2000);
-        authService.getUser(response.role.toUpperCase() as Role).then(console.log).catch(e => console.error("Error auth user", e));
+        }, 1000);
       } catch (error) {
-        console.log(`Login error: ${error instanceof Error && error.message}`);
-        toast.error("Email ou mot de passe invalide");
+        console.error("Login error:", error);
       }
     });
   };
 
-  useEffect(() => {
-    if (error && !shown.current && error === "brut-force") {
-      shown.current = true;
-      toast.error("Ressource privée, connectez-vous");
-    }
-  }, [params]);
-
   return (
     <Form {...form}>
       <div className="flex flex-col gap-0.5">
-        <h2 className="scroll-m-20 md:text-3xl text-2xl font-semibold tracking-tight first:mt-0">
-          Connecte toi à ton compte
+        <h2 className="scroll-m-20 md:text-3xl text-2xl font-semibold tracking-tight">
+          Connecte-toi à ton compte
         </h2>
-        <p className="text-muted-foreground text-sm">Entrez vous identifiants pour pouvoir continuer</p>
+        <p className="text-muted-foreground text-sm">
+          Entrez vos identifiants pour continuer
+        </p>
       </div>
       <Separator className="my-4" />
       <form
@@ -106,12 +84,18 @@ export function LoginForm({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="benja@gmail.com" {...field} />
+                <Input
+                  type="email"
+                  placeholder="benja@gmail.com"
+                  disabled={pending}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="password"
@@ -119,21 +103,31 @@ export function LoginForm({
             <FormItem>
               <div className="flex items-center w-full justify-between">
                 <FormLabel>Mot de passe</FormLabel>
-                <Link to={ROUTES.WEBSITE.AUTH.FORGET_PASSWORD} className="text-sm text-muted-foreground">Mot de passe oublie ?</Link>
+                <Link
+                  to={ROUTES.WEBSITE.AUTH.FORGET_PASSWORD}
+                  className="text-sm text-muted-foreground hover:underline"
+                >
+                  Mot de passe oublié ?
+                </Link>
               </div>
               <FormControl>
                 <div className="relative">
                   <Input
-                    id="password"
                     type={showPassword ? "text" : "password"}
+                    disabled={pending}
                     {...field}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    disabled={pending}
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </FormControl>
@@ -141,14 +135,12 @@ export function LoginForm({
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          className="bg-(--blue) hover:bg-blue-900"
-          disabled={pending}
-        >
+
+        <Button type="submit" disabled={pending}>
           {pending ? (
             <>
-              <Spinner /> Connection...
+              <Spinner className="mr-2" />
+              Connexion...
             </>
           ) : (
             "Se connecter"

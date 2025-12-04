@@ -62,7 +62,7 @@ export function OtpStep({ value, email, onNext, onBack, isLoading = false }: Otp
 
       <Alert className="bg-blue-50 border-blue-200">
         <Shield className="h-4 w-4 text-blue-600" />
-        <AlertDescription className="text-blue-900">
+        <AlertDescription className="text-blue-900 flex items-center">
           Un code de vérification a été envoyé à <strong>{email}</strong>
         </AlertDescription>
       </Alert>

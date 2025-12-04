@@ -13,7 +13,7 @@ export function Footer() {
   return (
     <footer className="w-full bg-[#0F172A] px-6 py-12 text-white">
       <div className="mx-auto max-w-7xl">
-        <div className="flex md:flex-row md:gap-10 gap-4 flex-col items-start">
+        <div className="grid md:grid-cols-4 sm:grid-cols-2 grid-cols-1 items-start gap-4 space-y-12">
           <section
             aria-labelledby="footer-brand"
             className="md:max-w-sm w-full"
@@ -55,7 +55,7 @@ export function Footer() {
 
           <nav
             aria-labelledby="footer-links"
-            className="flex md:flex-row flex-col gap-4 items-center"
+            className="flex md:flex-row flex-col gap-4 items-start"
           >
             <div>
               <h4 id="footer-links" className="mb-4 text-lg font-semibold">
