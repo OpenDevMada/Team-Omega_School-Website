@@ -1,82 +1,77 @@
 import axios from "axios";
+import Cookie from "js-cookie";
 
-// Create an axios api instance
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "",
-  withCredentials: true
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// Manage JWT token and set it to the headers
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
+api.interceptors.request.use((config) => {
+  const token = Cookie.get("access-token-frontend");
+  console.log("HEADERS", config.headers);
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
-);
 
-// Manage backend loading
+  return config;
+});
+
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((p) => {
+    if (error) p.reject(error);
+    else p.resolve(token);
+  });
+
+  failedQueue = [];
+};
+
 api.interceptors.response.use(
   (response) => response,
 
   async (error) => {
     const original = error.config;
 
-    if (error.code === "ECONNABORTED") {
-      console.warn("Backend waking up...");
+    if (error.response?.status === 401 && !original._retry) {
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            original.headers.Authorization = "Bearer " + token;
+            return api(original);
+          })
+          .catch((err) => Promise.reject(err));
+      }
 
-      await new Promise((r) => setTimeout(r, 4000));
-
-      return api(original);
-    }
-
-    if (error.response.status in [401, 403]) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
-  }
-);
-
-let accessToken: string | null = null;
-
-export function setAccessToken(token: string) {
-  accessToken = token;
-}
-
-api.interceptors.request.use((config) => {
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
-});
-
-api.interceptors.response.use(
-  (res) => res,
-  async (error) => {
-    if (error.response?.status === 401 && !error.config._retry) {
-      error.config._retry = true;
+      original._retry = true;
+      isRefreshing = true;
 
       try {
-        const response = await api.post("/auth/refresh");
-        const newAccessToken = response.data.accessToken;
+        const refreshResponse = await api.post("/auth/refresh");
 
-        setAccessToken(newAccessToken);
+        const newToken = refreshResponse.data.accessToken;
+        Cookie.set("access-token-frontend", newToken);
 
-        error.config.headers.Authorization = `Bearer ${newAccessToken}`;
+        processQueue(null, newToken);
 
-        return api.request(error.config);
+        original.headers.Authorization = `Bearer ${newToken}`;
+
+        return api(original);
       } catch (err) {
-        console.error("Invalid refresh token");
+        processQueue(err, null);
         return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
+
     return Promise.reject(error);
   }
 );

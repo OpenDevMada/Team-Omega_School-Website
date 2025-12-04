@@ -24,7 +24,7 @@ export function DeviseSection() {
   ];
 
   return (
-    <section className="relative overflow-hidden border-t border-gray-100 bg-white py-24">
+    <section className="relative overflow-hidden border-t border-gray-100 bg-white py-24" id="devise">
       <div className="absolute inset-x-0 top-10 flex justify-center">
         <div className="h-24 w-24 rounded-full bg-[#FACC15]/10 blur-3xl" />
       </div>
