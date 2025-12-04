@@ -7,6 +7,7 @@ import { ENDPOINTS } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
+import Cookie from "js-cookie";
 
 const emailSchema = userSchema.pick({
   email: true,
@@ -15,42 +16,76 @@ const passwordSchemaDto = passwordSchema.pick({
   newPassword: true,
 });
 
+interface ApiLoginResponse {
+  accessToken: string;
+  refreshToken?: string;
+  role: Role;
+  email: string;
+}
+
+interface ApiResetPasswordResponse {
+  details?: string
+  error?: string
+  status?: number
+}
+
 export const authService = {
   getUser: async () => {
-    const role = localStorage.getItem("userRole") as Role;
-    const response = await api.get(`/${role.toLowerCase()}s/me`, {
-      withCredentials: true,
-    });
-    return response.data as Student | Teacher | User;
-  },
-  signIn: async (credentials: UserCredentials) => {
     try {
-      const response = await api.post(ENDPOINTS.AUTH.SIGN_IN, credentials, {
-        withCredentials: true,
-      });
-      return response.data;
+      const role = localStorage.getItem("userRole") as Role | null;
+
+      if (!role) {
+        throw new Error("No role found in localStorage");
+      }
+
+      const endpoint = `/${role.toLowerCase()}s/me`;
+
+      const response = await api.get(endpoint);
+      return response.data as Student | Teacher | User;
     } catch (error) {
-      console.error(`Sign in error: ${error}`);
-      toast.error("Une erreur inattendue est survenue durant la connexion.");
+      console.error("Get user error:", error);
+      throw error;
+    }
+  },
+  signIn: async (credentials: UserCredentials): Promise<ApiLoginResponse> => {
+    try {
+      const response = await api.post(ENDPOINTS.AUTH.SIGN_IN, credentials);
+
+      if (response.data.role) {
+        localStorage.setItem("userRole", response.data.role);
+      }
+
+      return response.data;
+    } catch (error: any) {
+      console.error("Sign in error:", error);
+
+      if (error.response?.status === 401) {
+        toast.error("Email ou mot de passe invalide");
+      } else if (error.response?.status === 403) {
+        toast.error("Accès refusé");
+      } else {
+        toast.error("Erreur de connexion. Veuillez réessayer.");
+      }
+
       throw error;
     }
   },
   signOut: async () => {
     try {
-      const response = await api.get("/sign-out", { withCredentials: true });
-      return response.data;
+      await api.post(ENDPOINTS.AUTH.SIGN_OUT);
     } catch (error) {
-      console.error(`Sign out error: ${error}`);
-      toast.error("Une erreur inattendue est survenue durant la deconnexion.");
-      throw error;
+      console.error("Logout error:", error);
+    } finally {
+      Cookie.remove("access-token-frontend");
+      localStorage.removeItem("userRole");
     }
   },
   sendEmailForResetingPassword: async ({
     email,
-  }: z.infer<typeof emailSchema>) => {
+  }: z.infer<typeof emailSchema>): Promise<string | null> => {
     try {
       const response = await api.post(
-        `/request-reset`,
+        ENDPOINTS.AUTH.REQUEST_SEND_EMAIL,
         { email },
         {
           withCredentials: true,
@@ -63,11 +98,11 @@ export const authService = {
       throw error;
     }
   },
-  verifyEmailOtp: async (email: string, otpValue: string) => {
+  verifyEmailOtp: async (email: string, otpValue: string): Promise<boolean | null> => {
     try {
       const response = await api.post(
-        `/verify-otp`,
-        { email, otpValue },
+        ENDPOINTS.AUTH.VERIFY_EMAIL_OTP,
+        { email, otp: otpValue },
         {
           withCredentials: true,
         }
@@ -87,10 +122,10 @@ export const authService = {
     email: string;
     otp: string;
     values: z.infer<typeof passwordSchemaDto>;
-  }) => {
+  }): Promise<ApiResetPasswordResponse | string> => {
     try {
       const response = await api.post(
-        `/reset-password`,
+        ENDPOINTS.AUTH.RESET_PASSWORD,
         { email, otp, newPassword: values.newPassword },
         {
           withCredentials: true,
@@ -102,6 +137,15 @@ export const authService = {
       toast.error(
         "Une erreur inattendue est survenue durant la modification de votre mot de passe"
       );
+      throw error;
+    }
+  },
+  refreshToken: async (): Promise<ApiLoginResponse | null> => {
+    try {
+      const response = await api.post(ENDPOINTS.AUTH.REFRESH_TOKEN);
+      return response.data;
+    } catch (error) {
+      console.error("Refresh token error:", error);
       throw error;
     }
   },

@@ -1,3 +1,4 @@
+import { ENDPOINTS } from "@/utils/constants";
 import axios from "axios";
 import Cookie from "js-cookie";
 
@@ -11,7 +12,6 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = Cookie.get("access-token-frontend");
-  console.log("HEADERS", config.headers);
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -54,7 +54,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshResponse = await api.post("/auth/refresh");
+        const refreshResponse = await api.post(ENDPOINTS.AUTH.REFRESH_TOKEN);
 
         const newToken = refreshResponse.data.accessToken;
         Cookie.set("access-token-frontend", newToken);

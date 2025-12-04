@@ -17,6 +17,7 @@ import { PasswordStep } from "./password-step"
 import { SuccessStep } from "./sucess-step"
 import { Separator } from "../ui/separator"
 import { authService } from "@/services/auth"
+import { toast } from "sonner"
 
 type StepValue = "email" | "otp" | "password" | "success"
 
@@ -32,21 +33,24 @@ export function ForgetAndResetPassword() {
     { value: "otp", title: "Vérifier le code", description: "Entrez le code OTP" },
     { value: "password", title: "Mot de passe", description: "Créez un nouveau mot de passe" },
     { value: "success", title: "Succès", description: "Mot de passe réinitialisé" },
-  ]
+  ];
 
   const [_, setOpen] = useState<boolean>(false);
-  const [currentStep, setCurrentStep] = useState<StepValue>("email")
+  const [currentStep, setCurrentStep] = useState<StepValue>("email");
   const [email, setEmail] = useState<string>("")
-  const [otpValue, __] = useState<string>("");
+  const [otpValue, setOtpValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleEmailSubmit = async (emailInput: string) => {
     setIsLoading(true)
     try {
       const res = await authService.sendEmailForResetingPassword({ email: emailInput });
-      console.log("Response", res)
-      setEmail(emailInput)
-      setCurrentStep("otp")
+      if (res && typeof res === "string") {
+        setEmail(emailInput)
+        setCurrentStep("otp")
+      } else {
+        toast.error("Une erreur est survenue", { description: "Etape 1 - Envoi d'email" })
+      }
     } catch (error) {
       throw error
     } finally {
@@ -58,9 +62,12 @@ export function ForgetAndResetPassword() {
     setIsLoading(true)
     try {
       const res = await authService.verifyEmailOtp(email, otp);
-      console.log("Response", res)
-      if (res.data)
-        setCurrentStep("password")
+      if (res) {
+        setOtpValue(otp);
+        setCurrentStep("password");
+      } else {
+        toast.error("Une erreur est survenue", { description: "Etape 2 - Verification du code OTP" })
+      }
     } catch (error) {
       throw error
     } finally {
@@ -71,9 +78,12 @@ export function ForgetAndResetPassword() {
   const handlePasswordSubmit = async (password: string) => {
     setIsLoading(true)
     try {
-      const res = await authService.resetPassword({email, otp: otpValue, values: {newPassword: password}});
-      console.log("Response", res)
-      setCurrentStep("success")
+      const res = await authService.resetPassword({ email, otp: otpValue, values: { newPassword: password } });
+      if (res && typeof res === "string") {
+        setCurrentStep("success")
+      } else {
+        toast.error("Une erreur est survenue", { description: "Etape 3 - Changement de mot de passe" })
+      }
     } catch (error) {
       throw error
     } finally {
@@ -108,7 +118,7 @@ export function ForgetAndResetPassword() {
       </CardHeader>
 
       <CardContent className="px-6 py-0">
-        <Stepper defaultValue={currentStep} orientation="horizontal">
+        <Stepper value={currentStep} disabled onValueChange={(value) => setCurrentStep(value as StepValue)} orientation="horizontal">
           <StepperList className="md:flex md:flex-row flex-col items-start gap-4">
             {steps.map((step) => (
               <StepperItem key={step.value} value={step.value}>
