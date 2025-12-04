@@ -1,41 +1,52 @@
 package com.omega.school.service.impl;
 
-import com.omega.school.service.OtpService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import java.time.LocalDateTime;
+import java.util.Random;
+
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.concurrent.ThreadLocalRandom;
+import com.omega.school.model.Otp;
+import com.omega.school.repository.OtpRepository;
+import com.omega.school.service.OtpService;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class OtpServiceImpl implements OtpService {
 
-    private final StringRedisTemplate redisTemplate;
-    private static final Duration OTP_TTL = Duration.ofMinutes(5);
+    private final OtpRepository otpRepository;
+    private final Random random = new Random();
 
     @Override
     public String generateAndSaveOtp(String email) {
-        String otp = String.valueOf(100000 + ThreadLocalRandom.current().nextInt(900000));
-        String key = buildKey(email);
-        redisTemplate.opsForValue().set(key, otp, OTP_TTL);
+        String otp = String.valueOf(100000 + random.nextInt(900000));
+
+        LocalDateTime expiration = LocalDateTime.now().plusMinutes(5);
+
+        // supprime ancien OTP si existe
+        otpRepository.deleteByEmail(email);
+
+        Otp otpEntity = new Otp();
+        otpEntity.setEmail(email);
+        otpEntity.setCode(otp);
+        otpEntity.setExpiresAt(expiration);
+
+        otpRepository.save(otpEntity);
+
         return otp;
     }
 
     @Override
     public boolean verifyOtp(String email, String otp) {
-        String key = buildKey(email);
-        String stored = redisTemplate.opsForValue().get(key);
-        return stored != null && stored.equals(otp);
+        return otpRepository.findByEmail(email)
+                .filter(o -> o.getCode().equals(otp))
+                .filter(o -> o.getExpiresAt().isAfter(LocalDateTime.now()))
+                .isPresent();
     }
 
     @Override
     public void deleteOtp(String email) {
-        redisTemplate.delete(buildKey(email));
-    }
-
-    private String buildKey(String email) {
-        return "OTP:" + email.toLowerCase();
+        otpRepository.deleteByEmail(email);
     }
 }

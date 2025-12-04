@@ -41,10 +41,11 @@ public class AuthController {
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", response.getRefreshToken())
                 .httpOnly(true)
                 .secure(true)
-                .path("/auth/refresh")
+                .path("/")
+                .sameSite("None")
                 .maxAge(7 * 24 * 60 * 60)
-                .sameSite("Strict")
                 .build();
+        ;
 
         return ResponseEntity
                 .ok()
@@ -66,8 +67,8 @@ public class AuthController {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
-                .maxAge(7 * 24 * 60 * 60)
                 .sameSite("None")
+                .maxAge(7 * 24 * 60 * 60)
                 .build();
 
         return ResponseEntity
