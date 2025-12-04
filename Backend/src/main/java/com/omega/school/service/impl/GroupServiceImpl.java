@@ -1,7 +1,7 @@
 package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -70,4 +70,10 @@ public class GroupServiceImpl implements GroupService {
         }
         groupRepository.deleteById(id);
     }
+
+    @Override
+    public List<Group> getAllGroupsNoPagination() {
+        return groupRepository.findAll();
+    }
+
 }
