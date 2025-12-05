@@ -22,3 +22,5 @@ jobs:
           directory: ./Frontend
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+          buildArgs: |
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
