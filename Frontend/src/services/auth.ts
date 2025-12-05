@@ -158,3 +158,18 @@ export const getAuthentifiedUser = () => {
   });
   return user;
 };
+
+export const useAuthUser = () => {
+  const [user, setUser] = useState<Student | Teacher | User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    authService
+      .getUser()
+      .then((data) => setUser(data))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { user, loading };
+};
