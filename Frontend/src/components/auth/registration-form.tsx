@@ -15,7 +15,6 @@ import { userSchema } from "@/validation/user";
 import { z } from "zod";
 import { studentService } from "@/services/students";
 import { type Group, type Level } from "@/types/student";
-import { BaseService } from "@/services/base";
 import { teacherService } from "@/services/teacher";
 import { api } from "@/lib/api";
 import { ENDPOINTS, ROUTES } from "@/utils/constants";
@@ -40,10 +39,6 @@ export function RegistrationForm({
   const [pending, startTransition] = useTransition();
   const [groups, setGroups] = useState<Group[]>([]);
   const [levels, setLevels] = useState<Level[]>([]);
-  const [levelService, groupService] = [
-    new BaseService<Level, any, any>("/levels"),
-    new BaseService<Group, any, any>("/groups"),
-  ];
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof userSchema>>({
@@ -82,12 +77,13 @@ export function RegistrationForm({
       await new Promise(res => setTimeout(res, 1000));
       try {
         if (isOnMainRegistration) {
-          console.log(values)
           const response = await api.post(ENDPOINTS.AUTH.SIGN_UP, values);
           console.log(response, "response")
           if (response.data || response.status in [200, 201, 204]) {
-            toast.success(`${response.data.firstName} inscrit avec succès.`);
-            navigate(ROUTES.WEBSITE.AUTH.SIGN_IN);
+            toast.success(`${response.data.firstName} inscrit avec succès.`, { description: "Vous allez être redirigé vers la page de connexion." });
+            setTimeout(() => {
+              navigate(ROUTES.WEBSITE.AUTH.SIGN_IN);
+            }, 2500);
           }
         } else {
           // @ts-expect-error
@@ -109,8 +105,12 @@ export function RegistrationForm({
   };
 
   useEffect(() => {
-    levelService.getAll().then((levels) => setLevels(levels));
-    groupService.getAll().then((groups) => setGroups(groups));
+    const fetchLevelsAndGroups = async () => {
+      const res = await api.get("/public/options");
+      setLevels(res.data.levels as Level[]);
+      setGroups(res.data.groups as Group[]);
+    }
+    fetchLevelsAndGroups();
   }, []);
 
   return (
