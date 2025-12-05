@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookie from "js-cookie";
 
 export const api = axios.create({
-  baseURL: "https://api-spring-boot-uweb.onrender.com/",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
