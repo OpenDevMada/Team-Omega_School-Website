@@ -1,12 +1,20 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.StudentPartialUpdateDto;
 import com.omega.school.dto.StudentRequestDto;
+import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Student;
+import com.omega.school.model.User;
 import com.omega.school.service.StudentService;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
 @RestController
@@ -16,56 +24,96 @@ public class StudentController {
 
     private final StudentService studentService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<Student> createStudent(@RequestBody StudentRequestDto student) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+        Student created = studentService.createStudent(student);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Student> getById(@PathVariable UUID id) {
-        return studentService.getStudentById(id)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/{userId}")
+    public ResponseEntity<Student> getById(@PathVariable UUID userId) {
+        return studentService.getStudentById(userId)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Étudiant non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/registration/{regNumber}")
     public ResponseEntity<Student> getByRegistrationNumber(@PathVariable String regNumber) {
         return studentService.getByRegistrationNumber(regNumber)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Étudiant non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-    public ResponseEntity<List<Student>> getAll() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ResponseEntity<Page<Student>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Student> students = studentService.getAllStudents(page, size);
+        if (students.isEmpty())
+            return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(students);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/level/{level}")
     public ResponseEntity<List<Student>> getByLevel(@PathVariable String level) {
-        return ResponseEntity.ok(studentService.getByLevel(level));
+        List<Student> students = studentService.getByLevel(level);
+        if (students.isEmpty()) {
+            throw new EntityNotFoundException("Aucun étudiant trouvé pour ce niveau");
+        }
+        return ResponseEntity.ok(students);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/group/{group}")
     public ResponseEntity<List<Student>> getByGroup(@PathVariable String group) {
-        return ResponseEntity.ok(studentService.getByGroup(group));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Student> update(@PathVariable UUID id, @RequestBody StudentRequestDto student) {
-        try {
-            return ResponseEntity.ok(studentService.updateStudent(id, student));
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        List<Student> students = studentService.getByGroup(group);
+        if (students.isEmpty()) {
+            throw new EntityNotFoundException("Aucun étudiant trouvé pour ce groupe");
         }
+        return ResponseEntity.ok(students);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        studentService.deleteStudent(id);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/{userId}")
+    public ResponseEntity<Student> update(@PathVariable UUID userId, @RequestBody StudentUpdateDto student) {
+        Student updated = studentService.updateStudent(userId, student);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Student> partialUpdate(
+            @PathVariable UUID userId,
+            @RequestBody StudentPartialUpdateDto dto) {
+
+        Student updated = studentService.partialUpdateStudent(userId, dto);
+        return ResponseEntity.ok(updated);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable UUID userId) {
+        studentService.deleteStudent(userId);
         return ResponseEntity.noContent().build();
     }
+
+    @PreAuthorize("hasAuthority('STUDENT')")
+    @GetMapping("/me")
+    public ResponseEntity<Student> getMyProfile() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof User user) {
+            return studentService.getByEmail(user.getEmail())
+                    .map(ResponseEntity::ok)
+                    .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
 }

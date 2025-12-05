@@ -2,7 +2,6 @@ package com.omega.school.dto;
 
 import java.time.LocalDate;
 
-import com.omega.school.model.Role;
 import com.omega.school.model.Sex;
 
 import jakarta.validation.constraints.Email;
@@ -17,12 +16,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDto {
+    private String avatarUrl;
+
     @NotBlank
     private String firstName;
 
     @NotBlank
     private String lastName;
 
+    @NotBlank
     @Email
     private String email;
 
@@ -38,9 +40,4 @@ public class UserRequestDto {
     @NotBlank
     private String phoneNumber;
 
-    @NotBlank
-    private String password;
-
-    @NotNull
-    private Role role;
 }

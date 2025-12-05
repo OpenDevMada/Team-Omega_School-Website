@@ -1,9 +1,14 @@
 package com.omega.school.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.omega.school.dto.*;
@@ -27,6 +32,9 @@ public class CourseServiceImpl implements CourseService {
         if (courseRepository.existsByTitle(dto.getTitle())) {
             throw new IllegalArgumentException("Titre déjà utilisé");
         }
+        if (dto.getTitle() == null || dto.getTitle().isBlank()) {
+            throw new IllegalArgumentException("Le titre du cours ne peut pas être vide");
+        }
 
         Teacher teacher = teacherRepository.findByMatriculeNumber(dto.getTeacherMatricule())
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
@@ -46,19 +54,46 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseResponseDto> getAllCourses() {
-        return courseRepository.findAll()
-                .stream().map(CourseMapper::toDto)
+    public Map<String, Object> getAllCourses(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Course> coursePage = courseRepository.findAll(pageable);
+
+        List<CourseResponseDto> content = coursePage.getContent()
+                .stream()
+                .map(CourseMapper::toDto)
                 .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", content);
+        response.put("currentPage", coursePage.getNumber());
+        response.put("totalItems", coursePage.getTotalElements());
+        response.put("totalPages", coursePage.getTotalPages());
+
+        return response;
     }
 
     @Override
-    public List<CourseResponseDto> getCoursesByTeacherMatricule(String matricule) {
+    public Map<String, Object> getCoursesByTeacherMatricule(String matricule, int page, int size) {
         Teacher teacher = teacherRepository.findByMatriculeNumber(matricule)
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
-        return courseRepository.findByTeacherUserId(teacher.getUserId())
-                .stream().map(CourseMapper::toDto)
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Course> coursePage = courseRepository.findByTeacherUserId(
+                teacher.getUserId(), pageable);
+
+        List<CourseResponseDto> content = coursePage.getContent()
+                .stream()
+                .map(CourseMapper::toDto)
                 .collect(Collectors.toList());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", content);
+        response.put("currentPage", coursePage.getNumber());
+        response.put("totalItems", coursePage.getTotalElements());
+        response.put("totalPages", coursePage.getTotalPages());
+
+        return response;
     }
 
     @Override
@@ -69,10 +104,52 @@ public class CourseServiceImpl implements CourseService {
         Teacher teacher = teacherRepository.findByMatriculeNumber(dto.getTeacherMatricule())
                 .orElseThrow(() -> new EntityNotFoundException("Enseignant non trouvé"));
 
+        if (!course.getTitle().equals(dto.getTitle()) && courseRepository.existsByTitle(dto.getTitle())) {
+            throw new IllegalArgumentException("Titre déjà utilisé");
+        }
+
         course.setDescription(dto.getDescription());
         course.setTeacher(teacher);
         course.setUpdatedAt(LocalDateTime.now());
         return CourseMapper.toDto(courseRepository.save(course));
+    }
+
+    @Override
+    public Map<String, Object> getCoursesForStudent(
+            String registration, int page, int size) {
+
+        Page<Course> courses = courseRepository.findCoursesByStudent(
+                registration,
+                PageRequest.of(page, size));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("courses", courses.getContent());
+        response.put("currentPage", courses.getNumber());
+        response.put("totalItems", courses.getTotalElements());
+        response.put("totalPages", courses.getTotalPages());
+
+        return response;
+    }
+
+    @Override
+    public Map<String, Object> getCoursesForStudentForTeacher(
+            String registration,
+            String teacherId,
+            int page,
+            int size) {
+
+        Page<Course> courses = courseRepository.findCoursesByStudentAndTeacher(
+                registration,
+                teacherId,
+                PageRequest.of(page, size));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("courses", courses.getContent());
+        response.put("currentPage", courses.getNumber());
+        response.put("totalItems", courses.getTotalElements());
+        response.put("totalPages", courses.getTotalPages());
+
+        return response;
     }
 
     @Override

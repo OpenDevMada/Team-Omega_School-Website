@@ -2,7 +2,6 @@ package com.omega.school.model;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,10 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 public class Group {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

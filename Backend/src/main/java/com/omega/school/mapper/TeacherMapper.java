@@ -1,6 +1,9 @@
 package com.omega.school.mapper;
 
+import com.omega.school.dto.TeacherPartialUpdateDto;
 import com.omega.school.dto.TeacherRequestDto;
+import com.omega.school.dto.TeacherUpdateDto;
+import com.omega.school.model.Role;
 import com.omega.school.model.Teacher;
 
 public class TeacherMapper {
@@ -17,10 +20,33 @@ public class TeacherMapper {
         teacher.setSex(dto.getSex());
         teacher.setAddress(dto.getAddress());
         teacher.setPhoneNumber(dto.getPhoneNumber());
-        teacher.setPasswordHash(dto.getPassword());
-        teacher.setRole(dto.getRole());
-        teacher.setMatriculeNumber(dto.getMatriculeNumber());
+        teacher.setRole(Role.TEACHER);
         teacher.setBio(dto.getBio());
         return teacher;
     }
+
+    public static void updateEntityFromDto(TeacherUpdateDto dto, Teacher teacher) {
+        if (dto == null || teacher == null)
+            return;
+
+        teacher.setFirstName(dto.getFirstName());
+        teacher.setLastName(dto.getLastName());
+        teacher.setEmail(dto.getEmail());
+        teacher.setBirthDate(dto.getBirthDate());
+        teacher.setSex(dto.getSex());
+        teacher.setAddress(dto.getAddress());
+        teacher.setPhoneNumber(dto.getPhoneNumber());
+        teacher.setBio(dto.getBio());
+    }
+
+    public static void partialUpdate(TeacherPartialUpdateDto dto, Teacher teacher) {
+
+        // Mise à jour des champs hérités de User
+        UserMapper.partialUpdate(dto, teacher);
+
+        if (dto.getBio() != null) {
+            teacher.setBio(dto.getBio());
+        }
+    }
+
 }

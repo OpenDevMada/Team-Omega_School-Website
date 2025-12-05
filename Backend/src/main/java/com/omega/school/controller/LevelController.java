@@ -1,48 +1,51 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.LevelRequestDto;
 import com.omega.school.model.Level;
 import com.omega.school.service.LevelService;
+
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import java.util.*;
 
 @RestController
 @RequestMapping("/levels")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ADMIN')")
 public class LevelController {
 
     private final LevelService levelService;
 
     @PostMapping
-    public ResponseEntity<Level> create(@RequestBody String levelName) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(levelService.createLevel(levelName));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
+    public ResponseEntity<Level> create(@RequestBody LevelRequestDto dto) {
+        Level created = levelService.createLevel(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping("/name/{name}")
     public ResponseEntity<Level> getByName(@PathVariable String name) {
         return levelService.getLevelByName(name)
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Niveau non trouvé"));
+                .orElseThrow(() -> new EntityNotFoundException("Niveau non trouvé"));
     }
 
     @GetMapping
-    public ResponseEntity<List<Level>> getAll() {
-        return ResponseEntity.ok(levelService.getAllLevels());
+    public ResponseEntity<Page<Level>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Level> levels = levelService.getAllLevels(page, size);
+        return ResponseEntity.ok(levels);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Level> update(@PathVariable UUID id, @RequestBody String levelName) {
-        try {
-            return ResponseEntity.ok(levelService.updateLevel(id, levelName));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public ResponseEntity<Level> update(@PathVariable UUID id, @RequestBody LevelRequestDto dto) {
+        Level updated = levelService.updateLevel(id, dto);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")

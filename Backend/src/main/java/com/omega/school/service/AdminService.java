@@ -1,22 +1,29 @@
 package com.omega.school.service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.omega.school.dto.AdminRequestDto;
+import org.springframework.data.domain.Page;
+
+import com.omega.school.dto.UserPartialUpdateDto;
+import com.omega.school.dto.UserRequestDto;
+import com.omega.school.dto.UserUpdateDto;
 import com.omega.school.model.Admin;
 
 public interface AdminService {
-    Admin createAdmin(AdminRequestDto admin);
+    Admin createAdmin(UserRequestDto admin);
 
-    Optional<Admin> getAdminById(UUID id);
+    Optional<Admin> getAdminById(UUID userId);
 
     Optional<Admin> getByAdminId(String adminId);
 
-    List<Admin> getAllAdmins();
+    Page<Admin> getAllAdmins(int page, int size);
 
-    Admin updateAdmin(UUID id, AdminRequestDto updatedAdmin);
+    Admin updateAdmin(UUID userId, UserUpdateDto updatedAdmin);
 
-    void deleteAdmin(UUID id);
+    Admin partialUpdateAdmin(UUID userId, UserPartialUpdateDto dto);
+
+    void deleteAdmin(UUID userId);
+
+    Optional<Admin> getByEmail(String email);
 }

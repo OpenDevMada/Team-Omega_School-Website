@@ -4,23 +4,31 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+
+import com.omega.school.dto.StudentPartialUpdateDto;
 import com.omega.school.dto.StudentRequestDto;
+import com.omega.school.dto.StudentUpdateDto;
 import com.omega.school.model.Student;
 
 public interface StudentService {
     Student createStudent(StudentRequestDto student);
 
-    Optional<Student> getStudentById(UUID id);
+    Optional<Student> getStudentById(UUID userId);
 
     Optional<Student> getByRegistrationNumber(String regNumber);
 
-    List<Student> getAllStudents();
+    Page<Student> getAllStudents(int page, int size);
 
     List<Student> getByLevel(String levelName);
 
     List<Student> getByGroup(String groupName);
 
-    Student updateStudent(UUID id, StudentRequestDto updatedStudent);
+    Student updateStudent(UUID userId, StudentUpdateDto updatedStudent);
 
-    void deleteStudent(UUID id);
+    Student partialUpdateStudent(UUID userId, StudentPartialUpdateDto dto);
+
+    void deleteStudent(UUID userId);
+
+    Optional<Student> getByEmail(String email);
 }

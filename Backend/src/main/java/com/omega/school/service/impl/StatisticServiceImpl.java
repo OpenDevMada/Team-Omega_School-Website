@@ -2,8 +2,12 @@ package com.omega.school.service.impl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import com.omega.school.model.Statistic;
 import com.omega.school.repository.StatisticRepository;
@@ -22,12 +26,16 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     @Override
-    public List<Statistic> getAllStatistics() {
-        return statisticRepository.findAll();
+    public Page<Statistic> getAllStatistics(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return statisticRepository.findAll(pageable);
     }
 
     @Override
     public Optional<Statistic> getStatisticsByPeriodLabel(String periodLabel) {
+        if (periodLabel == null || periodLabel.isBlank()) {
+            throw new IllegalArgumentException("Le label de période ne peut pas être vide");
+        }
         return statisticRepository.findByPeriodLabel(periodLabel);
     }
 

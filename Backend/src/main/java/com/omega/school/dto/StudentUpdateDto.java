@@ -10,7 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AdminRequestDto extends UserRequestDto {
+public class StudentUpdateDto extends UserUpdateDto {
     @NotBlank
-    private String adminId;
+    private String level;
+
+    @NotBlank
+    private String group;
+
+    private String emergencyContact;
 }

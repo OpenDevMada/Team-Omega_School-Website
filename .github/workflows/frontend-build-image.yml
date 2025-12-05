@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Build Frontend Image CI
 on:
   push:
     branches: [ "main" ]
@@ -14,11 +14,13 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v6
         name: Build & push Docker image
         with:
-          image: opendevalpha/opendevmada-school
+          image: opendevalpha/opendevmada-school-front
           appendMode: true
           addLatest: true
           registry: docker.io
-          dockerfile: ./Backend/Dockerfile
-          directory: ./Backend
+          dockerfile: ./Frontend/Dockerfile
+          directory: ./Frontend
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+          buildArgs: |
+            VITE_API_URL=${{ secrets.VITE_API_URL }}
