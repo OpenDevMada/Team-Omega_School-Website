@@ -11,7 +11,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = Cookie.get("access-token-frontend");
+  const token = localStorage.getItem("access-token-frontend");
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -57,7 +57,7 @@ api.interceptors.response.use(
         const refreshResponse = await api.post(ENDPOINTS.AUTH.REFRESH_TOKEN);
 
         const newToken = refreshResponse.data.accessToken;
-        Cookie.set("access-token-frontend", newToken);
+        localStorage.setItem("access-token-frontend", newToken);
 
         processQueue(null, newToken);
 
@@ -66,6 +66,7 @@ api.interceptors.response.use(
         return api(original);
       } catch (err) {
         processQueue(err, null);
+        localStorage.removeItem("access-token-frontend");
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

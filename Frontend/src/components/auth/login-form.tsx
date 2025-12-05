@@ -43,12 +43,7 @@ export function LoginForm({
       try {
         const response = await authService.signIn(values);
 
-        Cookie.set("access-token-frontend", response.accessToken, {
-          secure: import.meta.env.PROD,
-          path: "/",
-          expires: 1,
-          sameSite: "Lax",
-        });
+        localStorage.setItem("access-token-frontend", response.accessToken);
 
         toast.success("Connexion réussie");
 

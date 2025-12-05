@@ -55,6 +55,8 @@ export const authService = {
         localStorage.setItem("userRole", response.data.role);
       }
 
+      localStorage.setItem("access-token-frontend", response.data.accessToken);
+
       return response.data;
     } catch (error: any) {
       console.error("Sign in error:", error);
@@ -76,8 +78,8 @@ export const authService = {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      Cookie.remove("access-token-frontend");
-      localStorage.removeItem("userRole");
+    localStorage.removeItem("access-token-frontend");
+    localStorage.removeItem("userRole");
     }
   },
   sendEmailForResetingPassword: async ({
