@@ -13,7 +13,7 @@ import { Separator } from "../ui/separator";
 import { ROUTES } from "@/utils/constants";
 import { Eye, EyeOff } from "lucide-react";
 import { authService } from "@/services/auth";
-import Cookie from "js-cookie";
+
 
 const signInSchema = z.object({
   email: z.email("Email invalide").min(1, "Email requis"),

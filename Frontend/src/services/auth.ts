@@ -7,7 +7,7 @@ import { ENDPOINTS } from "@/utils/constants";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
-import Cookie from "js-cookie";
+
 
 const emailSchema = userSchema.pick({
   email: true,

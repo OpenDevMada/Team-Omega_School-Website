@@ -1,6 +1,6 @@
 import { ENDPOINTS } from "@/utils/constants";
 import axios from "axios";
-import Cookie from "js-cookie";
+
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
