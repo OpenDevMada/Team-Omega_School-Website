@@ -3,8 +3,7 @@ import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition, type Dispatch, type SetStateAction } from "react";
 import { Edit, X } from "lucide-react";
-import { BaseService } from "@/services/base";
-import type { Teacher, TeacherUpdateDto } from "@/types/teacher";
+import type { TeacherUpdateDto } from "@/types/teacher";
 import type z from "zod";
 import { TeacherFormFields } from "@/components/forms/teacher-form";
 import { Spinner } from "@/components/ui/spinner";
@@ -13,8 +12,6 @@ import { Button } from "@/components/ui/button";
 import { teacherSchemaDto } from "@/schemas/teacher.schema";
 import { Form } from "@/components/ui/form";
 import { UserFields } from "@/components/forms/user-form";
-
-export const teacherService = new BaseService<Teacher, any, TeacherUpdateDto>("/teachers");
 
 export function TeacherUpdateDialog({ teacher, id, setOpen }: { teacher: TeacherUpdateDto, id: string, setOpen: Dispatch<SetStateAction<boolean>> }) {
   const [pending, startTransition] = useTransition();
