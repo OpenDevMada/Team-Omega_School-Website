@@ -66,7 +66,7 @@ export const authService = {
       } else if (error.response?.status === 403) {
         toast.error("Accès refusé");
       } else {
-        toast.error("Erreur de connexion. Veuillez réessayer.");
+        toast.error(error.response?.data?.details || "Erreur de connexion. Veuillez réessayer.");
       }
 
       throw error;
