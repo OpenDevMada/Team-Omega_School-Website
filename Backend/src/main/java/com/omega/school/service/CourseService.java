@@ -1,8 +1,10 @@
 package com.omega.school.service;
 
+import java.util.List;
 import java.util.Map;
 
 import com.omega.school.dto.*;
+import com.omega.school.model.Course;
 
 public interface CourseService {
     CourseResponseDto createCourse(CourseRequestDto dto);
@@ -24,4 +26,6 @@ public interface CourseService {
             int size);
 
     void deleteCourse(String title);
+
+    List<Course> getAllCoursesNoPagination();
 }
