@@ -1,6 +1,7 @@
 package com.omega.school.dto;
 
 import com.omega.school.model.Level;
+import com.omega.school.model.Course;
 import com.omega.school.model.Group;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegistrationOptionsDto {
+public class OptionsDto {
     private List<Level> levels;
     private List<Group> groups;
+    private List<Course> courses;
 }

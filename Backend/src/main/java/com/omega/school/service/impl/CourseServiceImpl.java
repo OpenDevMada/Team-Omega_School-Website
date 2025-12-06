@@ -158,4 +158,9 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(() -> new EntityNotFoundException("Cours non trouvé"));
         courseRepository.delete(course);
     }
+
+    @Override
+    public List<Course> getAllCoursesNoPagination() {
+        return courseRepository.findAll();
+    }
 }
