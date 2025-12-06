@@ -5,18 +5,21 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { SeeProfileCard } from "../see-profile-card";
 import type { Teacher } from "@/types/teacher";
-import { teacherService } from "../admin-teachers/update-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserMinus2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { teacherService } from "@/services/teacher";
+import { useAuthUser } from "@/services/auth";
+import type { Student } from "@/types/student";
 
 export function TeachersListOnStudentBoard() {
   const [search, setSearch] = useState<string>("");
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useAuthUser();
 
   useEffect(() => {
-    teacherService.getAll().then((teachers) => {
+    teacherService.getByStudentRegistration((user as Student).registrationNumber).then((teachers) => {
       setLoading(false);
       setTeachers(teachers);
     });

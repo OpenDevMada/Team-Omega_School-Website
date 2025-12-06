@@ -1,9 +1,9 @@
 import { TeachersList } from "./_components/admin-teachers";
 import { TeachersListOnStudentBoard } from "./_components/student-teachers";
-import { getAuthentifiedUser } from "@/services/auth";
+import { useAuthUser } from "@/services/auth";
 
 export default function TeachersPage() {
-  const user = getAuthentifiedUser();
+  const {user} = useAuthUser();
 
   return (
     <div>

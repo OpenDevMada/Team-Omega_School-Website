@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { courseService } from "@/services/courses";
 import { Search } from "lucide-react";
 import { Input } from "../ui/input";
-import { getAuthentifiedUser } from "@/services/auth";
+import { useAuthUser } from "@/services/auth";
 
 type Props = {
   query: string;
@@ -20,14 +20,19 @@ export function CoursesHeader({ query, setQuery }: Props) {
   const onSubmit = async (values: z.infer<typeof courseSchema>) => {
     startTransition(async () => {
       await new Promise(res => setTimeout(res, 1500));
-      const createdCourse = await courseService.create(values);
-      if (createdCourse) {
-        toast.success(`Cours crée avec succes`);
-        setOpen(false);
+      try {
+        const createdCourse = await courseService.create(values);
+        if (createdCourse) {
+          toast.success(`Cours crée avec succes`);
+          setOpen(false);
+        }
+      } catch (error: any) {
+        console.error("Course creation error:", error);
+        toast.error(error.response?.data?.error || "Une erreur est survenue lors de la création du cours.");
       }
     });
   };
-  const user = getAuthentifiedUser();
+  const { user } = useAuthUser();
   const descriptionAccordingToUserRole = user?.role === "ADMIN" ? "Gérez les cours" : user?.role === "STUDENT" ? "Découvrez vos cours au sein d'Omega school" : "Voyez les cours auquel vous etes pris en charge"
 
   return (

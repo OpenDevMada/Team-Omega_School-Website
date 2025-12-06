@@ -98,6 +98,7 @@ export function RegistrationForm({
         form.reset();
       } catch (e) {
         console.error("Registration error:", e);
+        console.log("Erreur #registration", e);
         toast.error("Une erreur est survenue.");
         // throw e;
       }
