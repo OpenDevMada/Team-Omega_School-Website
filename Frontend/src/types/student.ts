@@ -19,6 +19,7 @@ export interface Student extends User {
   registrationNumber: string;
   level: Level;
   group: Group;
+  emergencyContact?: string
 }
 
 export type StudentPostData = Required<

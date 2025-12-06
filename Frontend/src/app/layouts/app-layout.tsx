@@ -18,19 +18,18 @@ import { Toaster } from "sonner";
 import { AppSidebar } from "@/components/app-sidebar";
 import { getFrenchLabel, getRouteData } from "@/utils/breadcrumb";
 import { Home } from "lucide-react";
-import { mockStudent } from "@/seeders/user";
 import type { Role } from "@/types/user";
 import { ErrorBoundary } from "@/utils/error-boudary";
 import { Error } from "@/routes/error";
+import { useAuthUser } from "@/services/auth";
 
 export default function AppLayout() {
   const location = useLocation();
   const pathname = location.pathname.slice(1);
 
   const route = getRouteData(pathname);
-  const userRole: Role = "ADMIN";
-
-  const user = mockStudent;
+  const {user} = useAuthUser()
+  const userRole: Role | undefined = user?.role;
 
   return (
     <ErrorBoundary fallback={<Error />}>
@@ -40,7 +39,7 @@ export default function AppLayout() {
 
           <div className="flex min-h-screen w-full">
 
-            <AppSidebar userRole={userRole} />
+            <AppSidebar userRole={userRole as Role} />
 
             <div className="flex-1 flex flex-col">
               <header className="flex w-full justify-between dark:border-b dark:border-gray-800 h-16 items-center bg-sidebar sticky top-0 z-5 gap-4 px-4 shadow-sm">
@@ -77,11 +76,11 @@ export default function AppLayout() {
                   <div className="flex items-center gap-2 hover:bg-gray-100 hover:dark:bg-gray-800 py-2 px-3 rounded">
                     <Avatar>
                       <Suspense fallback={<Skeleton />}>
-                        {user.avatar && <AvatarImage src={user.avatar} alt={user.firstName} />}
-                        <AvatarFallback>{user.firstName[0].toUpperCase()}</AvatarFallback>
+                        {user?.avatar && <AvatarImage src={user.avatar} alt={user.firstName} />}
+                        <AvatarFallback>{user?.firstName[0].toUpperCase()}</AvatarFallback>
                       </Suspense>
                     </Avatar>
-                    <p className="text-sm">{user.firstName}</p>
+                    <p className="text-sm">{user?.firstName}</p>
                   </div>
                 </div>
               </header>
