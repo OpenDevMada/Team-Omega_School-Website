@@ -8,7 +8,10 @@ import * as z from "zod";
 import type { courseSchema } from "@/schemas/course.schema";
 import { toast } from "sonner";
 import { Skeleton } from "../ui/skeleton";
-import { getAuthentifiedUser } from "@/services/auth";
+import { useAuthUser } from "@/services/auth";
+import type { Role } from "@/types/user";
+import type { Teacher } from "@/types/teacher";
+import type { Student } from "@/types/student";
 
 export function MainCourses() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -17,13 +20,41 @@ export function MainCourses() {
   const filtered = courses.filter((c) =>
     c.title.toLowerCase().includes(query.toLowerCase())
   );
-  const user = getAuthentifiedUser();
+  const { user } = useAuthUser();
+
   useEffect(() => {
-    courseService.getAll().then((courses) => {
-      setCourses(courses);
-      setLoading(false);
-    });
-  }, []);
+    if (!user) return;
+
+    switch (user.role) {
+      case "ADMIN":
+        courseService.getAll().then((courses) => {
+          setCourses(courses);
+          setLoading(false);
+        });
+        break;
+
+      case "TEACHER":
+        courseService
+          .getByTeacherMatricule((user as Teacher).matriculeNumber)
+          .then((courses) => {
+            setCourses(courses);
+            setLoading(false);
+          });
+        break;
+
+      case "STUDENT":
+        courseService
+          .getByStudentRegistrationNumber((user as Student).registrationNumber)
+          .then((courses) => {
+            setCourses(courses);
+            setLoading(false);
+          });
+        break;
+
+      default:
+        setLoading(false);
+    }
+  }, [user]);
 
   const handleUpdate = async (data: z.infer<typeof courseSchema>) => {
     const updated = await courseService.update(data.title, data);
@@ -36,7 +67,7 @@ export function MainCourses() {
   };
 
   const handleDelete = async (title: string) => {
-    await courseService.delete(`/${title}`);
+    await courseService.delete(title);
     toast.success(`Le cours ${title} a été supprimé avec succes`);
     courses.filter(course => course.title.trim() == title.trim());
   };
@@ -54,7 +85,7 @@ export function MainCourses() {
         ) : filtered.length > 0 ? (
           filtered.map((course) => (
             <CourseCard
-              role={user?.role ?? "STUDENT"}
+              role={user?.role as Role}
               key={course.title}
               {...course}
               onEdit={handleUpdate}

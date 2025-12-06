@@ -3,10 +3,13 @@ import {
   BookOpen,
   Cake,
   Calendar,
+  Layers,
   Mail,
   MapPin,
   Phone,
+  PhoneCall,
   User,
+  User2Icon,
   UserCheck,
   Users,
 } from "lucide-react";
@@ -23,111 +26,119 @@ import { Lock } from "lucide-react"
 import { PasswordChangeTab } from "./password-change-tab"
 import type { Student } from "@/types/student";
 import type { Teacher } from "@/types/teacher";
+import type { User as UserType } from "@/types/user";
 
 type UserProfileProps = {
-  user: Teacher | Student;
-  isTeacher?: boolean;
+  user: Teacher | Student | UserType;
   coursesLink?: string;
 };
 
 export function UserProfile({
   user,
-  isTeacher = false,
   coursesLink = "/courses",
 }: UserProfileProps) {
+  const isTeacher = user.role === "TEACHER";
+  const isStudent = user.role === "STUDENT";
+  const isAdmin = user.role === "ADMIN";
+
   const infos: { label: string; data: JSX.Element[] }[] = [
     {
       label: "Profil et coordonnées",
       data: [
+        <InfoItem icon={<Mail />} label="Email" value={user.email} key="email" />,
+        <InfoItem icon={<Phone />} label="Phone" value={user.phoneNumber !== "" ? user.phoneNumber : "Non mentionné"} key="phone" />,
+        <InfoItem icon={<MapPin />} label="Adresse" value={user.address} key="address" />,
+      ],
+    },
+
+    isTeacher && {
+      label: "Informations scolaires",
+      data: [
         <InfoItem
-          icon={<Mail />}
-          label="Email"
-          value={user.email}
-          key={user.email}
+          icon={<Calendar />}
+          label="Date d'entrée"
+          value={format(user.createdAt, "PPP", { locale: fr })}
+          key="entry"
         />,
         <InfoItem
-          icon={<Phone />}
-          label="Phone"
-          value={user.phoneNumber}
-          key={user.phoneNumber}
+          icon={<UserCheck />}
+          label="Rôle"
+          value="Enseignant"
+          key="role"
         />,
         <InfoItem
-          icon={<MapPin />}
-          label="Adresse"
-          value={user.address}
-          key={user.address}
+          icon={<BookOpen />}
+          label="Cours"
+          value={(user as Teacher).courses}
+          key="courses"
         />,
       ],
     },
-    {
+
+    isStudent && {
       label: "Informations scolaires",
-      data: isTeacher
-        ? [
+      data: [
+        <div className="flex items-center justify-between">
           <InfoItem
-            icon={<Calendar />}
-            label="Date d'entree chez Omega school"
-            value={user.createdAt}
-            key={format(user.createdAt, "PPPp")}
-          />,
+            icon={<Users />}
+            label="Group"
+            value={(user as Student).group?.name}
+            key="group"
+          />
+          <Separator orientation="vertical" />
           <InfoItem
-            icon={<UserCheck />}
-            label="Role dans l'etablissement"
-            value={
-              user.role === "ADMIN"
-                ? "Admin"
-                : user.role === "STUDENT"
-                  ? "Etudiant"
-                  : user.sex === "FEMININ"
-                    ? "Enseignante"
-                    : "Enseignant"
-            }
-            key={user.role}
-          />,
-          <InfoItem
-            icon={<BookOpen />}
-            label="Cours"
-            value={(user as Teacher).courses}
-            key={(user as Teacher).courses.length}
-          />,
-        ]
-        : user && "level" in user && "group" in user
-          ? [
-            <InfoItem
-              icon={<Users />}
-              label="Group"
-              value={(user as Student).group?.name}
-            />,
-            <InfoItem
-              icon={<Calendar />}
-              label="Date d'entree chez Omega school"
-              value={user.createdAt}
-            />,
-            <InfoItem
-              icon={<UserCheck />}
-              label="Role dans l'etablissement"
-              value={user.role}
-            />,
-          ]
-          : [],
+            icon={<Layers />}
+            label="Niveau"
+            value={(user as Student).level?.name}
+            key="level"
+          />
+        </div>,
+        <InfoItem
+          icon={<Calendar />}
+          label="Date d'entrée"
+          value={format(user.createdAt, "PPP", { locale: fr })}
+          key="entry"
+        />,
+        <InfoItem
+          icon={<UserCheck />}
+          label="Rôle"
+          value="Étudiant"
+          key="role"
+        />,
+      ],
+    },
+
+    isAdmin && {
+      label: "Informations administratives",
+      data: [
+        <InfoItem
+          icon={<Calendar />}
+          label="Administrateur depuis"
+          value={format(user.createdAt, "PPP", { locale: fr })}
+          key="entry"
+        />,
+        <InfoItem
+          icon={<UserCheck />}
+          label="Rôle"
+          value="Administrateur"
+          key="role"
+        />,
+      ],
     },
     {
       label: "Informations personnelles",
       data: [
-        <InfoItem
-          icon={<User />}
-          label="Sexe"
-          value={user.sex}
-          key={user.sex}
-        />,
+        <InfoItem icon={<User />} label="Sexe" value={user.sex === "FEMININ" ? "Féminin" : "Masculin"} key="sex" />,
         <InfoItem
           icon={<Cake />}
           label="Date de naissance"
           value={format(user.birthDate, "PPP", { locale: fr })}
-          key={format(user.birthDate, "PPPp")}
+          key="birthdate"
         />,
+        isStudent && <InfoItem icon={<PhoneCall />} label="Contact d'urgence" value={(user as Student).emergencyContact ?? "Non mentionne"} key="emergencyContact" />
       ],
     },
-  ];
+  ].filter(Boolean) as any;
 
   const cover = "/images/profile-bg.jpeg";
 
@@ -145,13 +156,17 @@ export function UserProfile({
 
         <CardHeader className="relative backdrop-blur-md px-8 pt-10 pb-2">
           <div className="absolute -top-22 left-8">
-            {user.avatar && (
+            {user.avatar ? (
               <img
                 src={user.avatar}
                 alt={`${user.firstName} ${user.lastName}`}
                 loading="lazy"
                 className="lg:w-44 md:w-44 w-32 aspect-square rounded-full border-4 border-yellow-200 shadow-xl object-cover"
               />
+            ) : (
+              <div className="lg:w-44 md:w-44 w-32 aspect-square rounded-full border-4 border-yellow-200 bg-yellow-50 z-5 shadow-xl flex items-center justify-center">
+                <User2Icon className="w-18 h-18 text-yellow-500" />
+              </div>
             )}
           </div>
 
@@ -161,17 +176,18 @@ export function UserProfile({
                 {user.firstName} {user.lastName}
               </CardTitle>
               <span className="flex items-center gap-2">
-                {isTeacher ? (
+                {isTeacher && (
                   <p className="text-sm text-muted-foreground">
                     {(user as Teacher).bio}
                   </p>
-                ) : (
+                )}
+                {isStudent && (
                   <>
-                    <p className="text sm">
-                      {(user as Student).registrationNumber}
-                    </p>
                     <p className="text-sm text-muted-foreground">
                       {(user as Student).level.name}
+                    </p>
+                    <p className="text sm">
+                      {(user as Student).registrationNumber}
                     </p>
                   </>
                 )}

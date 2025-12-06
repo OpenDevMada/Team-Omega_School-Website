@@ -4,7 +4,7 @@ import { TeachersHeader } from "./teachers-header";
 import type { UserSearchType } from "../user-search.type";
 import { FilterBar } from "../filter-bar";
 import type { Teacher } from "@/types/teacher";
-import { teacherService } from "./update-dialog";
+import { teacherService } from "@/services/teacher";
 
 export function TeachersList() {
   const [search, setSearch] = useState("");

@@ -16,9 +16,15 @@ class CourseService extends BaseService<
     super("/courses");
   }
 
-  async getTeacher(matricule: string) {
+  async getByTeacherMatricule(matricule: string) {
     return api
       .get<Course[]>(`/courses/teacher/${matricule}`, { withCredentials: true })
+      .then((res) => res.data);
+  }
+
+  async getByStudentRegistrationNumber(number: string) {
+    return api
+      .get<Course[]>(`/courses/student/${number}`, { withCredentials: true })
       .then((res) => res.data);
   }
 }

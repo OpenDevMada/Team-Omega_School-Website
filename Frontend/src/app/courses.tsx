@@ -2,7 +2,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import type { Course } from "@/types/course";
-import { courseService } from "@/services/courses";
 import {
   Empty,
   EmptyDescription,
@@ -12,16 +11,27 @@ import {
 } from "@/components/ui/empty"
 import { BookX } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
+import { api } from "@/lib/api";
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    courseService.getAll().then((courses) => {
-      setLoading(false);
-      setCourses(courses);
-    });
+    const fetchCourses = async () => {
+      try {
+        const res = await api.get("/public/options");
+        setCourses(res.data.courses as Course[]);
+      } catch (error) {
+        console.error(`Fetch courses error: ${error}`);
+        toast.error("Erreur lors du chargement des cours");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCourses()
   }, []);
 
   return (
