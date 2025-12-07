@@ -20,7 +20,6 @@ export const ROUTES = {
     GRADES: "/grades",
     COURSES: "/courses",
     LEVELSANDGROUPS: "/levels",
-    ANNOUNCEMENT: "/announcement",
     SETTINGS: "/settings",
   },
 } as const;
