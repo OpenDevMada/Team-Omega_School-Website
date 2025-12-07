@@ -13,7 +13,7 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import * as React from "react";
+import { useEffect, useState } from "react";
 
 export function BirthDateField() {
   const form = useFormContext();
@@ -23,16 +23,21 @@ export function BirthDateField() {
       control={form.control}
       name="birthDate"
       render={({ field }) => {
-        const [open, setOpen] = React.useState(false);
-
         const initialDate =
           field.value && !isNaN(new Date(field.value).getTime())
             ? new Date(field.value)
             : undefined;
 
-        const [month, setMonth] = React.useState<Date | undefined>(initialDate);
+        const [open, setOpen] = useState(false);
+        const [month, setMonth] = useState<Date | undefined>(initialDate);
 
-        const selectedDate = initialDate;
+        useEffect(() => {
+          if (initialDate && !field.value) {
+            field.onChange(initialDate);
+          }
+        }, [initialDate, field]);
+
+        const selectedDate = field.value ? new Date(field.value) : undefined;
 
         return (
           <FormItem className="flex flex-col">

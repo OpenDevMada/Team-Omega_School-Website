@@ -26,7 +26,7 @@ export function StudentsHeader() {
 
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>
-          <Button className="bg-(--yellow) hover:bg-yellow-500 text-white shadow-sm">
+          <Button className="bg-(--green) hover:bg-green-950 text-white shadow-sm">
             <UserPlus2 className="w-4 h-4" /> Ajouter un élève
           </Button>
         </AlertDialogTrigger>

@@ -10,16 +10,15 @@ import type { User } from "@/types/user";
 export default function ProfilePage() {
   const Profile = () => {
     const { user, loading } = useAuthUser();
-    console.log(user)
 
     if (loading) {
-      return <div className="flex flex-col items-center justify-center min-h-[70vh] w-full">
+      return <div className="flex flex-col items-center justify-center min-h-[70vh] w-full gap-4">
         <Spinner className="size-8" />
         Chargement des donnees
       </div>
     }
 
-    return <UserProfile user={user as Student | Teacher | User} />
+    return <UserProfile user={user as Student | Teacher | User} loading={loading} />
   }
 
   return (

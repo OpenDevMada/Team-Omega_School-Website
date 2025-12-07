@@ -1,6 +1,7 @@
 import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { api } from "@/lib/api";
 import type { Student } from "@/types/student";
 import type { Teacher } from "@/types/teacher";
@@ -29,15 +30,31 @@ export const DeleteUserButton = ({ user, withLabel = false, onSuccess }: { user:
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button
-          title={`Supprimer ${user.firstName}`}
-          variant={withLabel ? "destructive" : "ghost"}
-          size={withLabel ? "default" : "icon-sm"}
-          className="flex items-center gap-2"
-        >
-          {withLabel && "Supprimer"}
-          <Trash2 color={withLabel ? "white" : "red"} />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            {withLabel ? (
+              <Button
+                variant="destructive"
+                size="default"
+                className="flex items-center gap-2"
+              >
+                Supprimer
+                <Trash2 color="white" />
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="flex items-center gap-2"
+              >
+                <Trash2 color="red" />
+              </Button>
+            )}
+          </TooltipTrigger>
+          <TooltipContent>
+            {`Supprimer ${user.firstName}`}
+          </TooltipContent>
+        </Tooltip>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
