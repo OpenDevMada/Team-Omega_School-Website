@@ -92,7 +92,8 @@ export const teachers: Teacher[] = [
     updatedAt: new Date(),
     courses: [],
     passwordHash: "",
-    sex: "MASCULIN"
+    sex: "MASCULIN",
+    mustChangePassword: false
   };
   return teacher;
 });

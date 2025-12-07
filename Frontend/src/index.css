@@ -6,8 +6,10 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: "Instrument sans", system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --ds-font: "Dancing script", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Instrument sans", system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
+  --ds-font: "Dancing script", "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
   --green: #0ea972;
   --blue: #1e40af;
   --yellow: #facc15;

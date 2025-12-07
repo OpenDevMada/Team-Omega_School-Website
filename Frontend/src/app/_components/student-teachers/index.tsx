@@ -15,14 +15,10 @@ import type { Student } from "@/types/student";
 export function TeachersListOnStudentBoard() {
   const [search, setSearch] = useState<string>("");
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const { user } = useAuthUser();
+  const { user, loading } = useAuthUser();
 
   useEffect(() => {
-    teacherService.getByStudentRegistration((user as Student).registrationNumber).then((teachers) => {
-      setLoading(false);
-      setTeachers(teachers);
-    });
+    teacherService.getByStudentRegistration((user as Student).registrationNumber).then(setTeachers);
   }, []);
 
   return (

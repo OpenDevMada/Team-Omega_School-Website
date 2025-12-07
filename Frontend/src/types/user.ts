@@ -15,6 +15,7 @@ export interface BaseUser {
   role: Role;
   createdAt: Date;
   updatedAt: Date;
+  mustChangePassword: boolean;
 }
 
 export interface User extends BaseUser {

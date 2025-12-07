@@ -56,6 +56,7 @@ export const mockTeacher: Teacher = {
   passwordHash: "",
   birthDate: new Date(1990, 4, 12),
   avatar: "https://randomuser.me/api/portraits/women/45.jpg",
+  mustChangePassword: false
 };
 
 export const mockStudent: Student = {
@@ -86,4 +87,5 @@ export const mockStudent: Student = {
   passwordHash: "",
   birthDate: new Date(2009, 10, 20),
   avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+  mustChangePassword: true
 };
