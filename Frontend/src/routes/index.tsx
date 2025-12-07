@@ -18,7 +18,6 @@ import { ProtectedRoute } from "@/app/_components/protected-route";
 import CoursesPage from "@/app/courses";
 import StudentsPage from "@/app/students";
 import TeachersPage from "@/app/teachers";
-import { AnnouncementsPage } from "@/app/announcement";
 import AppCoursesPage from "@/app/app-courses";
 import DashboardPage from "@/app/dashboard";
 import GroupsAndLevelsPage from "@/app/groupsAndLevels";
@@ -28,6 +27,7 @@ import { Error } from "./error";
 import ForgetPasswordPage from "@/app/forget-password";
 import GradesPage from "@/app/grades";
 import { ROUTES } from "@/utils/constants";
+import ContactPage from "@/app/contact";
 
 const routes = createRoutesFromElements(
   <>
@@ -47,24 +47,27 @@ const routes = createRoutesFromElements(
         path={ROUTES.WEBSITE.AUTH.FORGET_PASSWORD}
         element={<ForgetPasswordPage />}
       />
+      <Route
+        path={ROUTES.WEBSITE.CONTACT}
+        element={<ContactPage />}
+      />
+      <Route path="/*" element={<NotFound />} />
     </Route>
     <Route element={<ProtectedRoute />}>
-    <Route element={<AppLayout />} errorElement={<Error />} hasErrorBoundary>
-      <Route path={ROUTES.APP.DASHBOARD} element={<DashboardPage />} />
-      <Route path={ROUTES.APP.PROFILE} element={<ProfilePage />} />
-      <Route path={ROUTES.APP.STUDENTS} element={<StudentsPage />} />
-      <Route path={ROUTES.APP.TEACHERS} element={<TeachersPage />} />
-      <Route path={ROUTES.APP.COURSES} element={<AppCoursesPage />} />
-      <Route path={ROUTES.APP.GRADES} element={<GradesPage />} />
-      <Route path={ROUTES.APP.ANNOUNCEMENT} element={<AnnouncementsPage />} />
-      <Route
-        path={ROUTES.APP.LEVELSANDGROUPS}
-        element={<GroupsAndLevelsPage />}
-      />
-      <Route path={ROUTES.APP.SETTINGS} element={<SettingsPage />} />
+      <Route element={<AppLayout />} errorElement={<Error />} hasErrorBoundary>
+        <Route path={ROUTES.APP.DASHBOARD} element={<DashboardPage />} />
+        <Route path={ROUTES.APP.PROFILE} element={<ProfilePage />} />
+        <Route path={ROUTES.APP.STUDENTS} element={<StudentsPage />} />
+        <Route path={ROUTES.APP.TEACHERS} element={<TeachersPage />} />
+        <Route path={ROUTES.APP.COURSES} element={<AppCoursesPage />} />
+        <Route path={ROUTES.APP.GRADES} element={<GradesPage />} />
+        <Route
+          path={ROUTES.APP.LEVELSANDGROUPS}
+          element={<GroupsAndLevelsPage />}
+        />
+        <Route path={ROUTES.APP.SETTINGS} element={<SettingsPage />} />
+      </Route>
     </Route>
-    </Route>
-    <Route path="/*" element={<NotFound />} />
   </>
 );
 
