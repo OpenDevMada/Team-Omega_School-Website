@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ToggleThemeButton2, ThemeProvider } from "@/context/theme";
+import { ThemeProvider, ToggleThemeButton } from "@/context/theme";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "sonner";
 
@@ -22,6 +22,7 @@ import type { Role } from "@/types/user";
 import { ErrorBoundary } from "@/utils/error-boudary";
 import { Error } from "@/routes/error";
 import { useAuthUser } from "@/services/auth";
+import { NotificationsPopover } from "@/components/breadcrumb-notification";
 
 export default function AppLayout() {
   const location = useLocation();
@@ -71,9 +72,10 @@ export default function AppLayout() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <ToggleThemeButton2 />
+                  <NotificationsPopover />
+                  <ToggleThemeButton />
 
-                  <div className="flex items-center gap-2 hover:bg-gray-100 hover:dark:bg-gray-800 py-2 px-3 rounded">
+                  <div className="flex items-center gap-2 hover:bg-gray-50 hover:dark:bg-gray-950 transition-all duration-100 py-2 px-3 rounded">
                     <Avatar>
                       <Suspense fallback={<Skeleton />}>
                         {user?.avatar && <AvatarImage src={user.avatar} alt={user.firstName} />}
