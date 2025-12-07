@@ -1,8 +1,9 @@
 import { TeacherCard } from "@/components/teacher-card";
+import type { Teacher } from "@/types/teacher";
 import { GraduationCap } from "lucide-react";
 
 interface TeachersGridProps {
-  filteredTeachers: typeof import("@/seeders/users").teachers;
+  filteredTeachers: Teacher[];
   onDeleted?: () => void;
 }
 
