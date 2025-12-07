@@ -29,7 +29,7 @@ export default function AppLayout() {
   const pathname = location.pathname.slice(1);
 
   const route = getRouteData(pathname);
-  const {user} = useAuthUser()
+  const { user } = useAuthUser()
   const userRole: Role | undefined = user?.role;
 
   return (
@@ -52,7 +52,8 @@ export default function AppLayout() {
                       <BreadcrumbItem>
                         <BreadcrumbLink href="/">
                           <div className="flex items-center gap-1">
-                            <Home size={16} /> App
+                            <Home size={16} />
+                            <span className="hidden md:inline">App</span>
                           </div>
                         </BreadcrumbLink>
                       </BreadcrumbItem>

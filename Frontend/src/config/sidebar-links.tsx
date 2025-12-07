@@ -6,7 +6,6 @@ import {
   BookOpen,
   UsersRound,
   UserCircle2,
-  Megaphone,
   Layers,
   Cog,
   BookCheck,
@@ -19,7 +18,6 @@ export const sidebarLinks = [
   { id: "students", title: "Étudiants", href: ROUTES.APP.STUDENTS, icon: UsersRound },
   { id: "teachers", title: "Professeurs", href: ROUTES.APP.TEACHERS, icon: UserCircle2 },
   { id: "grades", title: "Notes", href: ROUTES.APP.GRADES, icon: BookCheck },
-  { id: "announcement", title: "Annonces", href: ROUTES.APP.ANNOUNCEMENT, icon: Megaphone },
   { id: "levels", title: "Groupe et niveau", href: ROUTES.APP.LEVELSANDGROUPS, icon: Layers },
   { id: "settings", title: "Parametre", href: ROUTES.APP.SETTINGS, icon: Cog },
 ];
