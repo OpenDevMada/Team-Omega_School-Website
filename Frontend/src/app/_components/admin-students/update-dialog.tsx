@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { UserFields } from "@/components/forms/user-form";
 import { StudentFormFields } from "@/components/forms/student-form";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import type { Group, Level, Student } from "@/types/student";
 import { Separator } from "@/components/ui/separator";
@@ -25,18 +25,24 @@ type Props = {
 export function StudentUpdateDialog({ student, onClose, onUpdated, groups, levels }: Props) {
   const form = useForm<z.infer<typeof studentPostDataSchema>>({
     resolver: zodResolver(studentPostDataSchema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      birthDate: undefined,
-      sex: "MASCULIN",
-      address: "",
-      phoneNumber: "",
-      level: "",
-      group: ""
-    },
+    defaultValues: {}
   });
+
+  useEffect(() => {
+    if (student) {
+      form.reset({
+        firstName: student.firstName,
+        lastName: student.lastName,
+        email: student.email,
+        birthDate: student.birthDate ? new Date(student.birthDate) : undefined,
+        sex: student.sex,
+        address: student.address,
+        phoneNumber: student.phoneNumber,
+        level: student.level.name,
+        group: student.group.name
+      });
+    }
+  }, [student]);
 
   const [pending, startTransition] = useTransition();
 

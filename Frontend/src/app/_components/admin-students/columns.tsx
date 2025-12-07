@@ -70,7 +70,7 @@ export const columns = (
       },
       enableColumnFilter: true,
       // @ts-expect-error
-      cell: ({ row }) => <Badge variant={"outline"} className="capitalize">{row.getValue("sex").toLowerCase()}</Badge>,
+      cell: ({ row }) => <Badge variant={"outline"} className={`capitalize ${row.getValue("sex") === "MASCULIN" ? "bg-(--blue)" : "bg-(--green)"} text-white`}>{row.getValue("sex").toLowerCase()}</Badge>,
     },
     {
       accessorKey: "email",
@@ -105,7 +105,7 @@ export const columns = (
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="ghost" onClick={() => onEdit(student)}>
-                  <Edit className="w-4 h-4 text-(--yellow)" />
+                  <Edit className="w-4 h-4 text-(--green)" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
