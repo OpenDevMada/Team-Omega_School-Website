@@ -1,8 +1,10 @@
 package com.omega.school.controller;
 
+import com.omega.school.dto.ChangePasswordRequest;
 import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
+import com.omega.school.handler.InvalidPasswordException;
 import com.omega.school.model.Role;
 import com.omega.school.model.User;
 import com.omega.school.service.UserService;
@@ -20,27 +22,27 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/users")
-@PreAuthorize("hasAuthority('ADMIN')")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
-
     public ResponseEntity<User> createUser(@Valid @RequestBody UserRequestDto userDto) {
         User createdUser = userService.createUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/{id}")
-
     public ResponseEntity<User> getUserById(@PathVariable UUID id) {
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         return userService.getUserByEmail(email)
@@ -48,13 +50,14 @@ public class UserController {
                 .orElseThrow(() -> new EntityNotFoundException("Utilisateur non trouvé"));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
-
     public ResponseEntity<Page<User>> getAllUsers(Pageable pageable) {
         Page<User> users = userService.getAllUsers(pageable);
         return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/role/{role}")
     public ResponseEntity<Page<User>> getByRole(@PathVariable Role role, Pageable pageable) {
         Page<User> users = userService.getUsersByRole(role, pageable);
@@ -64,15 +67,15 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{id}")
-
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @Valid @RequestBody UserUpdateDto updatedUser) {
         User updated = userService.updateUser(id, updatedUser);
         return ResponseEntity.ok(updated);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PatchMapping("/{id}")
-
     public ResponseEntity<User> partialUpdateUser(
             @PathVariable UUID id,
             @RequestBody UserPartialUpdateDto dto) {
@@ -81,10 +84,25 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
 
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}/change-password")
+    public ResponseEntity<?> changePassword(
+            @PathVariable UUID id,
+            @Valid @RequestBody ChangePasswordRequest request) {
+
+        try {
+            userService.changePassword(id, request);
+            return ResponseEntity.ok("Mot de passe mis à jour avec succès");
+        } catch (InvalidPasswordException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
