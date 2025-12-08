@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -117,18 +118,26 @@ public class GradeServiceImpl implements GradeService {
         }
 
         @Override
-        public Map<String, Object> getGradesByStudentForTeacher(String studentRegistration, String teacherId, int page,
+        public Map<String, Object> getGradesByStudentForTeacher(String studentRegistration, UUID teacherId, int page,
                         int size) {
                 Pageable pageable = PageRequest.of(page, size);
-                Page<Grade> gradePage = gradeRepository.findByStudentRegistrationAndTeacherId(studentRegistration,
-                                teacherId, pageable);
-                List<GradeResponseDto> content = gradePage.getContent().stream().map(GradeMapper::toDto)
+
+                Page<Grade> gradePage = gradeRepository.findByStudentRegistrationAndTeacherId(
+                                studentRegistration,
+                                teacherId,
+                                pageable);
+
+                List<GradeResponseDto> content = gradePage.getContent()
+                                .stream()
+                                .map(GradeMapper::toDto)
                                 .collect(Collectors.toList());
+
                 Map<String, Object> response = new HashMap<>();
                 response.put("content", content);
                 response.put("currentPage", gradePage.getNumber());
                 response.put("totalItems", gradePage.getTotalElements());
                 response.put("totalPages", gradePage.getTotalPages());
+
                 return response;
         }
 
@@ -137,9 +146,10 @@ public class GradeServiceImpl implements GradeService {
 
                 switch (currentUser.getRole()) {
                         case TEACHER -> {
-                                return getGradesByStudentForTeacher(registration, currentUser.getUserId().toString(),
-                                                page, size);
+
+                                return getGradesByStudentForTeacher(registration, currentUser.getUserId(), page, size);
                         }
+
                         case STUDENT -> {
                                 Student student = studentRepository.findById(currentUser.getUserId())
                                                 .orElseThrow(() -> new EntityNotFoundException("Étudiant non trouvé"));
@@ -151,8 +161,8 @@ public class GradeServiceImpl implements GradeService {
 
                                 return getGradesByStudentRegistration(registration, page, size);
                         }
-                        default -> {
 
+                        default -> {
                                 return getGradesByStudentRegistration(registration, page, size);
                         }
                 }

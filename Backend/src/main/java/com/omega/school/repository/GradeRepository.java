@@ -23,7 +23,14 @@ public interface GradeRepository extends JpaRepository<Grade, GradeId> {
     @Query("SELECT g FROM Grade g WHERE g.course.title = :title")
     Page<Grade> findByCourseTitle(String title, Pageable pageable);
 
-    @Query("SELECT g FROM Grade g WHERE g.student.registrationNumber = :registration AND g.course.teacher.userId = :teacherId")
-    Page<Grade> findByStudentRegistrationAndTeacherId(String registration, String teacherId, Pageable pageable);
+    @Query("""
+            SELECT g FROM Grade g
+            WHERE g.student.registrationNumber = :registration
+            AND g.course.teacher.userId = :teacherId
+            """)
+    Page<Grade> findByStudentRegistrationAndTeacherId(
+            String registration,
+            UUID teacherId,
+            Pageable pageable);
 
 }
