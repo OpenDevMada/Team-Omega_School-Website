@@ -35,9 +35,9 @@ export function TeachersHeader({onCreated}: {onCreated: () => void}) {
           <AlertDialogHeader>
             <div className="flex justify-between items-start w-full">
               <div className="flex items-start flex-col">
-                <AlertDialogTitle>Créer un nouvel élève</AlertDialogTitle>
+                <AlertDialogTitle>Créer un nouvel enseignant</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Renseignez les informations de l'élève.
+                  Renseignez les informations de l'enseignant.
                 </AlertDialogDescription>
               </div>
               <AlertDialogCancel asChild>
