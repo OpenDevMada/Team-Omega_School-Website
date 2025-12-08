@@ -26,9 +26,17 @@ import type { GradeRequestDto, GradeResponseDto } from "@/types/grade";
 import { toast } from "sonner";
 import { gradeSchema } from "@/schemas/grade.schema";
 import { Separator } from "../ui/separator";
-import { useTransition, type Dispatch, type SetStateAction } from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { BookPlus, Edit } from "lucide-react";
+import { useEffect, useState, useTransition, type Dispatch, type SetStateAction } from "react";
+// import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { BookPlus } from "lucide-react";
+import { Combobox, type BaseUser } from "../combobox";
+import type { Student } from "@/types/student";
+import type { Course } from "@/types/course";
+import { studentService } from "@/services/students";
+import { courseService } from "@/services/courses";
+import { api } from "@/lib/api";
+import { ROUTES } from "@/utils/constants";
+import { Spinner } from "../ui/spinner";
 
 type GradeForm = z.infer<typeof gradeSchema>;
 type Props = {
@@ -57,6 +65,8 @@ export function GradeFormDialog({
   });
 
   const [pending, startTransition] = useTransition();
+  const [students, setStudents] = useState<Student[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
 
   const submit = form.handleSubmit(async (values) => {
     startTransition(async () => {
@@ -74,7 +84,8 @@ export function GradeFormDialog({
           toast.success("Note créée");
           onSaved?.(created);
         } else {
-          const updated = await gradeService.update(values.studentRegistration, payload);
+          const res = await api.put(ROUTES.APP.GRADES, payload);
+          const updated = res.data as GradeResponseDto;
           toast.success("Note mise à jour");
           onSaved?.(updated);
         }
@@ -87,23 +98,34 @@ export function GradeFormDialog({
     });
   });
 
+  useEffect(() => {
+    studentService.getAll().then(setStudents).catch(() => toast.error("Erreur", { description: "Impossible de charger les etudiants" }));
+    courseService.getAll().then(setCourses).catch(() => toast.error("Erreur", { description: "Impossible de charger les cours" }));
+  }, []);
+
+  const courseOptions: BaseUser[] = courses.map((c) => ({
+    id: c.title,
+    label: c.title,
+  }));
+
+  const studentOptions: BaseUser[] = students.map((s) => ({
+    id: s.registrationNumber,
+    label: `${s.firstName} ${s.lastName}`,
+    number: s.registrationNumber,
+    avatar: s.avatar,
+  }));
+
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        {mode === "create" ? <Button className="bg-(--blue) w-auto md:w-auto hover:bg-blue-900 text-white"><BookPlus /> Créer une note</Button> : <Tooltip>
-          <TooltipTrigger asChild>
-            <Button className="bg-(--yellow) hover:bg-yellow-500 text-white" size={"icon-sm"}><Edit /></Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            Modifier
-          </TooltipContent>
-        </Tooltip>}
+        {mode === "create" && <Button className="bg-(--blue) w-auto md:w-auto hover:bg-blue-900 text-white"><BookPlus /> Créer une note</Button>}
       </AlertDialogTrigger>
 
       <AlertDialogContent className="max-w-lg">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-(--yellow) text-xl tracking-tight">{mode === "create" ? "Créer une note" : "Modifier la note"}</AlertDialogTitle>
         </AlertDialogHeader>
+        
         <Separator />
 
         <Form {...form}>
@@ -113,9 +135,14 @@ export function GradeFormDialog({
               name="studentRegistration"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Numéro d'inscription</FormLabel>
+                  <FormLabel>Étudiant</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="S-2025-001" />
+                    <Combobox
+                      items={studentOptions}
+                      placeholder="Sélectionner un étudiant"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -127,9 +154,14 @@ export function GradeFormDialog({
               name="courseTitle"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Titre du cours</FormLabel>
+                  <FormLabel>Cours</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Mathématiques" />
+                    <Combobox
+                      items={courseOptions}
+                      placeholder="Sélectionner un cours"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -175,8 +207,8 @@ export function GradeFormDialog({
               <AlertDialogCancel asChild>
                 <Button variant="outline">Annuler</Button>
               </AlertDialogCancel>
-              <Button type="submit" disabled={pending}>
-                {pending ? "En cours..." : mode === "create" ? "Créer" : "Enregistrer"}
+              <Button type="submit" className="text-white" disabled={pending}>
+                {pending ? <><Spinner /> En cours...</> : mode === "create" ? "Créer" : "Enregistrer"}
               </Button>
             </AlertDialogFooter>
           </form>

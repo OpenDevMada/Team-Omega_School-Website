@@ -1,5 +1,3 @@
-import type { Student } from "@/types/student";
-
 export const ROUTES = {
   WEBSITE: {
     AUTH: {
@@ -34,34 +32,8 @@ export const ENDPOINTS = {
     VERIFY_EMAIL_OTP: "/auth/verify-otp",
     RESET_PASSWORD: "/auth/reset-password",
   },
-  TEACHERS: {
-    ALL: "/teachers",
-    GET_BY_ID: (id: string) => `/teachers/${id}`,
-    UPDATE: (id: string) => `/teachers/${id}`,
-    DELETE: (id: string) => `/teachers/${id}`,
-  },
-  STUDENTS: {
-    ALL: "/students",
-    GET_BY_REGISTRATION_NUMBER: (student: Student) =>
-      `/students/${student.registrationNumber}`,
-    UPDATE: (student: Student) =>
-      `/students/put/${student.registrationNumber}`,
-    DELETE: (student: Student) =>
-      `/students/delete/${student.registrationNumber}`,
-  },
-  STATS: {
-    GLOBAL: "/dashboard/stat",
-  },
-  COURSES: {
-    ALL: "/courses",
-    UPDATE: (title: string) => `/courses/${title}`,
-    DELETE: (title: string) => `/courses/${title}`,
-    GET_BY_STUDENT_REGISTRATION: (registrationNumber: string) =>
-      `/courses/${registrationNumber}`,
-  },
-  ANNOUNCEMENTS: {
-    ALL: "/announcements",
-    UPDATE: (title: string) => `/announcements/${title}`,
-    DELETE: (title: string) => `/announcements/${title}`
+  RELATIONS: {
+    STUDENTS_TEACHER: (matricule: string) => `/relations/teacher/${matricule}/students`,
+    TEACHERS_STUDENT: (registrationNumber: string) => `/relations/student/${registrationNumber}/teachers`,
   }
 } as const;

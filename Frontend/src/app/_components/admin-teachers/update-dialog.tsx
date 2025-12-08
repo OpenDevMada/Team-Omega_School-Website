@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTransition, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useTransition, type Dispatch, type SetStateAction } from "react";
 import { Edit, X } from "lucide-react";
 import type { TeacherUpdateDto } from "@/types/teacher";
 import type z from "zod";
@@ -12,23 +12,14 @@ import { Button } from "@/components/ui/button";
 import { teacherSchemaDto } from "@/schemas/teacher.schema";
 import { Form } from "@/components/ui/form";
 import { UserFields } from "@/components/forms/user-form";
+import { teacherService } from "@/services/teacher";
 
 export function TeacherUpdateDialog({ teacher, id, setOpen }: { teacher: TeacherUpdateDto, id: string, setOpen: Dispatch<SetStateAction<boolean>> }) {
   const [pending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof teacherSchemaDto>>({
     resolver: zodResolver(teacherSchemaDto),
-    defaultValues: {
-      firstName: teacher.firstName,
-      lastName: teacher.lastName,
-      email: teacher.email,
-      birthDate: teacher.birthDate,
-      sex: teacher.sex,
-      address: teacher.address,
-      phoneNumber: teacher.phoneNumber,
-      bio: teacher.bio ?? "",
-      matriculeNumber: teacher.matriculeNumber,
-    },
+    defaultValues: {},
   });
 
   const onSubmit = (values: z.infer<typeof teacherSchemaDto>) => {
@@ -44,6 +35,22 @@ export function TeacherUpdateDialog({ teacher, id, setOpen }: { teacher: Teacher
       }
     });
   };
+
+  useEffect(() => {
+      if (teacher) {
+        form.reset({
+          firstName: teacher.firstName,
+          lastName: teacher.lastName,
+          email: teacher.email,
+          birthDate: teacher.birthDate ? new Date(teacher.birthDate) : undefined,
+          sex: teacher.sex,
+          address: teacher.address,
+          phoneNumber: teacher.phoneNumber,
+          bio: teacher.bio,
+          matriculeNumber: teacher.matriculeNumber
+        });
+      }
+    }, [teacher]);
 
   return (
     <AlertDialog>
