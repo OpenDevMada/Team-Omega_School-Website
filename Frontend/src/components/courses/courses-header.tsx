@@ -11,20 +11,23 @@ import { useAuthUser } from "@/services/auth";
 type Props = {
   query: string;
   setQuery: Dispatch<SetStateAction<string>>;
+  onCourseCreated?: () => void;
 }
 
-export function CoursesHeader({ query, setQuery }: Props) {
+export function CoursesHeader({ query, setQuery, onCourseCreated }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [pending, startTransition] = useTransition();
 
   const onSubmit = async (values: z.infer<typeof courseSchema>) => {
     startTransition(async () => {
       await new Promise(res => setTimeout(res, 1500));
+      toast(JSON.stringify(values))
       try {
         const createdCourse = await courseService.create(values);
         if (createdCourse) {
           toast.success(`Cours crée avec succes`);
           setOpen(false);
+          onCourseCreated?.();
         }
       } catch (error: any) {
         console.error("Course creation error:", error);
