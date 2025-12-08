@@ -3,40 +3,46 @@ import type { Grade } from "@/types/grade";
 import type { Role } from "@/types/user";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { GradeFormDialog } from "./form-dialog";
-import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 import { Spinner } from "../ui/spinner";
 import type { Dispatch, SetStateAction } from "react";
 
 export const gradeColumns = (
-  open: boolean,
-  setOpen: Dispatch<SetStateAction<boolean>>,
+  setEditingGrade: Dispatch<SetStateAction<Grade | null>>,
   role: Role,
   onDelete?: (g: Grade) => void,
-  onRefresh?: () => void,
-  loading?: boolean,
+  loading?: boolean
 ): ColumnDef<Grade>[] => {
   const canEdit = role === "ADMIN" || role === "TEACHER";
   const canDelete = role === "ADMIN";
 
-  return [
+  const cols: ColumnDef<Grade>[] = [
     {
       id: "select",
-      header: ({ table }) => (
+      header: ({ table }) =>
         role === "STUDENT" ? null : (
           <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
+            checked={table.getIsAllPageRowsSelected()}
             onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
           />
-        )
-      ),
+        ),
       cell: ({ row }) =>
         role === "STUDENT" ? null : (
           <Checkbox
@@ -49,97 +55,118 @@ export const gradeColumns = (
     },
     {
       accessorKey: "studentRegistration",
-      header: "Étudiant"
+      header: "Étudiant",
     },
     {
       accessorKey: "courseTitle",
-      header: "Cours"
+      header: "Cours",
     },
     {
       accessorKey: "value",
-      header: "Note"
+      header: "Note",
+      cell: ({ row }) => (
+        <span className="font-semibold">{row.original.value}/20</span>
+      ),
     },
     {
       accessorKey: "comment",
       header: "Commentaire",
-      cell: ({ row }) => <span>{row.original.comment || "Aucun"}</span>
+      cell: ({ row }) => (
+        <span className="text-muted-foreground">
+          {row.original.comment || "Aucun"}
+        </span>
+      ),
     },
     {
       accessorKey: "createdAt",
       header: "Créé le",
-      cell: ({ row }) => (
-        <span>{format(row.original.createdAt, "PPP", { locale: fr })}</span>
-      )
+      cell: ({ row }) => format(row.original.createdAt, "PPP", { locale: fr }),
     },
     {
       accessorKey: "updatedAt",
       header: "Mis à jour",
-      cell: ({ row }) => (
-        <span>{format(row.original.updatedAt, "PPP", { locale: fr })}</span>
-      )
+      cell: ({ row }) => format(row.original.updatedAt, "PPP", { locale: fr }),
     },
-
-    (canEdit || canDelete
-      ? {
-        id: "actions",
-        header: "Actions",
-        cell: ({ row }) => {
-          const g = row.original;
-          return (
-            <div className="flex gap-2">
-              {canEdit && (
-                <GradeFormDialog
-                  open={open}
-                  setOpen={(value) => !value && setOpen(!value)}
-                  mode="update"
-                  defaultValues={{
-                    studentRegistration: g.studentRegistration,
-                    courseTitle: g.courseTitle,
-                    value: g.value,
-                    comment: g.comment ?? "",
-                  }}
-                  onSaved={() => onRefresh?.()}
-                />
-              )}
-
-              {canDelete && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          variant={"destructive"}
-                          size={"icon-sm"}
-                          className="flex items-center gap-2"
-                        >
-                          <Trash2 />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Supprimer cette note de {row.original.studentRegistration}</AlertDialogTitle>
-                          <AlertDialogDescription>Etes-vous sure ? Cette action est irreversible.</AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter className="flex items-center gap-4">
-                          <Button variant={"destructive"} size={"default"} disabled={loading} onClick={() => onDelete}>
-                            {loading ? <Spinner /> : "Continer"}
-                          </Button>
-                          <AlertDialogCancel asChild>
-                            <Button variant={"outline"} size={"default"}>Annuler</Button>
-                          </AlertDialogCancel>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </TooltipTrigger>
-                  <TooltipContent>Supprimer</TooltipContent>
-                </Tooltip>
-              )}
-            </div>
-          );
-        },
-      } : {
-        accessorKey: "",
-        header: ""
-      })
   ];
+
+  if (canEdit || canDelete) {
+    cols.push({
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const g = row.original;
+        return (
+          <div className="flex gap-2">
+            {canEdit && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={() => {
+                      setEditingGrade(g);
+                    }}
+                  >
+                    <Edit className="w-4 h-4 text-green-600" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Modifier</TooltipContent>
+              </Tooltip>
+            )}
+
+            {canDelete && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="hover:bg-red-50 dark:hover:bg-red-950"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                      </Button>
+                    </AlertDialogTrigger>
+
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Supprimer la note de {g.studentRegistration} ?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Cette action est irréversible. La note pour le cours "{g.courseTitle}" sera définitivement supprimée.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel asChild>
+                          <Button variant="outline">Annuler</Button>
+                        </AlertDialogCancel>
+                        <Button
+                          variant="destructive"
+                          disabled={loading}
+                          onClick={() => onDelete?.(g)}
+                        >
+                          {loading ? (
+                            <>
+                              <Spinner className="mr-2" />
+                              Suppression...
+                            </>
+                          ) : (
+                            "Supprimer"
+                          )}
+                        </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </TooltipTrigger>
+                <TooltipContent>Supprimer</TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        );
+      },
+    });
+  }
+
+  return cols;
 };

@@ -23,39 +23,34 @@ export function MainCourses() {
   ) : [];
   const { user } = useAuthUser();
 
-  useEffect(() => {
+  const fetchCourses = async (makeLoading: boolean) => {
     if (!user) return;
-
-    switch (user.role) {
-      case "ADMIN":
-        courseService.getAll().then((courses) => {
-          setCourses(courses);
-          setLoading(false);
-        });
-        break;
-
-      case "TEACHER":
-        courseService
-          .getByTeacherMatricule((user as Teacher).matriculeNumber)
-          .then((courses) => {
-            setCourses(courses);
-            setLoading(false);
-          });
-        break;
-
-      case "STUDENT":
-        courseService
-          .getByStudentRegistrationNumber((user as Student).registrationNumber)
-          .then((courses) => {
-            console.log(courses)
-            setCourses(courses);
-            setLoading(false);
-          });
-        break;
-
-      default:
-        setLoading(false);
+    if (makeLoading) {
+      setLoading(true);
     }
+    try {
+      switch (user.role) {
+        case "ADMIN":
+          setCourses(await courseService.getAll());
+          break;
+        case "TEACHER":
+          setCourses(await courseService.getByTeacherMatricule((user as Teacher).matriculeNumber));
+          break;
+        case "STUDENT":
+          setCourses(await courseService.getByStudentRegistrationNumber((user as Student).registrationNumber));
+          break;
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      if (makeLoading) {
+        setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses(true);
   }, [user]);
 
   const handleUpdate = async (data: z.infer<typeof courseSchema>) => {
@@ -71,12 +66,14 @@ export function MainCourses() {
   const handleDelete = async (title: string) => {
     await courseService.delete(title);
     toast.success(`Le cours ${title} a été supprimé avec succes`);
-    setCourses(courses.filter(course => course.title.trim() !== title.trim()));
+    setTimeout(async () => {
+      await fetchCourses(false);
+    }, 500);
   };
 
   return (
     <div className="minw-full px-6 py-4 flex flex-col gap-6">
-      <CoursesHeader query={query} setQuery={setQuery} />
+      <CoursesHeader query={query} setQuery={setQuery} onCourseCreated={() => fetchCourses(false)} />
       <div className="grid grid-cols-1 sm:grid-cols-2 items-center justify-center w-full md:grid-cols-3 gap-4">
         {!loading && user && filtered.length > 0 ? (
           filtered.map((course, idx) => (
@@ -103,7 +100,9 @@ export function MainCourses() {
                 </EmptyMedia>
                 <EmptyContent>
                   <EmptyTitle>0 cours</EmptyTitle>
-                  <EmptyDescription>Vous n'etes inscrit a aucun cours pour le moment</EmptyDescription>
+                  <EmptyDescription>
+                    {user?.role === "STUDENT" ? "Vous êtes inscrit à aucun cours pour le moment" : user?.role === "TEACHER" ? "Vous êtes pris en charge d'aucun cours actuellement": ""}
+                  </EmptyDescription>
                 </EmptyContent>
               </EmptyHeader>
             </Empty>

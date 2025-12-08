@@ -28,6 +28,7 @@ import type { Teacher } from "@/types/teacher";
 import type { User as UserType } from "@/types/user";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { JSX } from "react";
+import { Badge } from "@/components/ui/badge";
 
 type UserProfileProps = {
   user: Teacher | Student | UserType;
@@ -40,7 +41,6 @@ export function UserProfile({
   loading,
   coursesLink = "/courses",
 }: UserProfileProps) {
-  console.log(user)
   const isTeacher = user.role === "TEACHER";
   const isStudent = user.role === "STUDENT";
   const isAdmin = user.role === "ADMIN";
@@ -170,7 +170,7 @@ export function UserProfile({
                     <p className="text-sm text-muted-foreground">{(user as Student).level.name}</p>
                     <p className="text-sm">{(user as Student).registrationNumber}</p>
                   </>
-                ) : null}
+                ) : <Badge variant={"secondary"}>Équipe administrative</Badge>}
               </span>
             </div>
 

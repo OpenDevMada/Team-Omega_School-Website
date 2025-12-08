@@ -8,17 +8,23 @@ import type { Teacher } from "@/types/teacher";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserMinus2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { teacherService } from "@/services/teacher";
 import { useAuthUser } from "@/services/auth";
 import type { Student } from "@/types/student";
+import { api } from "@/lib/api";
+import { ENDPOINTS } from "@/utils/constants";
 
 export function TeachersListOnStudentBoard() {
   const [search, setSearch] = useState<string>("");
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const { user, loading } = useAuthUser();
 
+  const fetchTeachers = async () => {
+    const res = await api.get(ENDPOINTS.RELATIONS.TEACHERS_STUDENT((user as Student).registrationNumber));
+    setTeachers(res.data);
+  }
+
   useEffect(() => {
-    teacherService.getByStudentRegistration((user as Student).registrationNumber).then(setTeachers);
+    fetchTeachers();
   }, []);
 
   return (
@@ -49,7 +55,7 @@ export function TeachersListOnStudentBoard() {
               <Skeleton key={i} className="h-80 w-full rounded-xl bg-muted animate-pulse" />
             ))}
           </div>
-        ) : teachers.length > 1 ?
+        ) : teachers.length > 0 ?
           teachers.map((teacher) => (
             <Card
               key={teacher.userId}
@@ -98,7 +104,7 @@ export function TeachersListOnStudentBoard() {
           )) : (
             <div className="col-span-full flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
               <UserMinus2 className="w-12 h-12 mb-2 text-gray-400" />
-              <p>Aucun professeur trouvé.</p>
+              <p>Aucun enseignant trouvé.</p>
             </div>
           )}
       </div>
