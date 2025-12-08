@@ -14,25 +14,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-
-import type { Student } from "@/types/student"
-import type { Teacher } from "@/types/teacher"
-import { useState, useMemo } from "react"
+import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
+export type BaseUser = {
+  id: string;
+  label: string;
+  number?: string;
+  avatar?: string | null;
+};
+
 type Props = {
-  users: (Teacher | Student)[]
-  label: string
-}
+  items: BaseUser[];
+  placeholder: string;
+  value?: string;
+  onChange?: (value: string) => void;
+};
 
-export function Combobox({ users, label }: Props) {
-  const [open, setOpen] = useState<boolean>(false)
-  const [value, setValue] = useState<string>("");
+export function Combobox({ items, placeholder, value, onChange }: Props) {
+  const [open, setOpen] = useState<boolean>(false);
 
-  const selectedUser = useMemo(
-    () => users.find((user) => user.firstName === value),
-    [value, users]
-  )
+  const selected = items.find((i) => i.id === value);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -41,38 +43,52 @@ export function Combobox({ users, label }: Props) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[300px] justify-between"
+          className="w-full justify-between"
         >
-          {selectedUser ? `${selectedUser.firstName} ${selectedUser.lastName}` : `Selectionner un ${label}...`}
+          {selected ? selected.label : placeholder}
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
+
       <PopoverContent className="w-full p-0">
         <Command>
-          <CommandInput placeholder={`Recherchez un ${label.toLowerCase()}`} className="h-9" />
+          <CommandInput placeholder={placeholder} className="h-9" />
           <CommandList>
-            <CommandEmpty>Pas de {label} trouve.</CommandEmpty>
+            <CommandEmpty>Aucun élément trouvé.</CommandEmpty>
             <CommandGroup>
-              {users.map((user) => (
+              {items.map((item) => (
                 <CommandItem
-                  key={user.userId}
-                  value={user.firstName}
+                  key={item.id}
+                  value={item.id}
                   onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
+                    onChange?.(currentValue);
+                    setOpen(false);
                   }}
                 >
                   <div className="flex items-center gap-2">
-                    <Avatar>
-                      {user.avatar && <AvatarImage src={user.avatar} alt={user.firstName} />}
-                      <AvatarFallback>{user.firstName[0].toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    {user.firstName} {user.lastName}
+                    {item.avatar ? (
+                      <Avatar>
+                        <AvatarImage src={item.avatar} />
+                        <AvatarFallback>
+                          {item.label[0].toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    ) : null}
+
+                    <div className="flex flex-col">
+                      <span>{item.label}</span>
+                      {item.number && (
+                        <span className="text-xs text-muted-foreground">
+                          {item.number}
+                        </span>
+                      )}
+                    </div>
                   </div>
+
                   <Check
                     className={cn(
                       "ml-auto",
-                      value === user.firstName ? "opacity-100" : "opacity-0"
+                      value === item.id ? "opacity-100" : "opacity-0"
                     )}
                   />
                 </CommandItem>
@@ -82,5 +98,5 @@ export function Combobox({ users, label }: Props) {
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

@@ -74,13 +74,18 @@ export function CreateAdmin() {
 
   const onSubmit = (data: AdminForm) => {
     startTransition(async () => {
-      await new Promise((res) => setTimeout(res, 3000));
-      const created = await adminService.create(data);
-      if (created) {
-        toast.success("Admin créé avec succes !");
-        form.reset();
-      } else {
-        toast.error("Une erreur est survenue.");
+      try {
+        await new Promise((res) => setTimeout(res, 3000));
+        const created = await adminService.create(data);
+        if (created) {
+          toast.success("Admin créé avec succes !");
+          form.reset();
+        } else {
+          toast.error("Une erreur est survenue.");
+        }
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Une erreur est survenue");
+        console.log("Erreur", error);
       }
     });
   };
@@ -264,7 +269,7 @@ export function CreateAdmin() {
               <Button
                 type="submit"
                 disabled={pending}
-                className="md:w-full w-auto text-white"
+                className="w-auto text-white"
               >
                 {pending ? (
                   <>

@@ -17,6 +17,7 @@ import { getLinksForRole } from "@/config/sidebar-links";
 import { SidebarOptInForm } from "@/components/sidebar-opt-in-form";
 import { useMemo } from "react";
 import type { Role } from "@/types/user";
+import { authService } from "@/services/auth";
 
 export function AppSidebar({ userRole }: { userRole: Role }) {
   const location = useLocation();
@@ -73,7 +74,7 @@ export function AppSidebar({ userRole }: { userRole: Role }) {
 
       <SidebarFooter className="p-4 flex flex-col gap-4 border-t border-gray-500/20 dark:border-white/20">
         <SidebarOptInForm />
-        <Button variant="outline" className="cursor-pointer" size="lg">
+        <Button variant="outline" className="cursor-pointer" size="lg" onClick={authService.signOut}>
           <LogOut className="w-5 h-5 mr-2" /> Se déconnecter
         </Button>
       </SidebarFooter>

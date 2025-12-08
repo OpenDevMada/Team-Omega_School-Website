@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
 
-
 const emailSchema = userSchema.pick({
   email: true,
 });
@@ -24,9 +23,9 @@ interface ApiLoginResponse {
 }
 
 interface ApiResetPasswordResponse {
-  details?: string
-  error?: string
-  status?: number
+  details?: string;
+  error?: string;
+  status?: number;
 }
 
 export const authService = {
@@ -66,7 +65,10 @@ export const authService = {
       } else if (error.response?.status === 403) {
         toast.error("Accès refusé");
       } else {
-        toast.error(error.response?.data?.details || "Erreur de connexion. Veuillez réessayer.");
+        toast.error(
+          error.response?.data?.details ||
+            "Erreur de connexion. Veuillez réessayer."
+        );
       }
 
       throw error;
@@ -74,12 +76,19 @@ export const authService = {
   },
   signOut: async () => {
     try {
-      await api.post(ENDPOINTS.AUTH.SIGN_OUT);
+      toast.promise(
+        new Promise(() => setTimeout(() => window.location.href = "/login", 1500)),
+        {
+          loading: "Deconnexion...",
+          success: "Redirection...",
+          error: "Erreur lors de la deconnexion",
+        }
+      );
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-    localStorage.removeItem("access-token-frontend");
-    localStorage.removeItem("userRole");
+      localStorage.removeItem("access-token-frontend");
+      localStorage.removeItem("userRole");
     }
   },
   sendEmailForResetingPassword: async ({
@@ -100,7 +109,10 @@ export const authService = {
       throw error;
     }
   },
-  verifyEmailOtp: async (email: string, otpValue: string): Promise<boolean | null> => {
+  verifyEmailOtp: async (
+    email: string,
+    otpValue: string
+  ): Promise<boolean | null> => {
     try {
       const response = await api.post(
         ENDPOINTS.AUTH.VERIFY_EMAIL_OTP,

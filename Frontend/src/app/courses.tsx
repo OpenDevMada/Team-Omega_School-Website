@@ -61,7 +61,7 @@ export default function CoursesPage() {
               </div>
               <div className="mt-4 flex justify-between">
                 <Button variant="secondary" size="sm">Voir</Button>
-                <Button size="sm">S'inscrire</Button>
+                <Button size="sm" onClick={() => toast.warning("Vous devez vous connecter pour vous inscrire.")}>S'inscrire</Button>
               </div>
             </CardContent>
           </Card>

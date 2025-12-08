@@ -31,6 +31,11 @@ export function DataTable({ columns, data, loading }: Props) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 7
+      }
+    }
   });
 
   return (

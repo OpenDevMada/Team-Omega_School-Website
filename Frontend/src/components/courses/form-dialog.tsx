@@ -23,9 +23,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import { courseSchema } from "@/schemas/course.schema";
 import { Spinner } from "../ui/spinner";
+import { Combobox, type BaseUser } from "../combobox";
+import type { Teacher } from "@/types/teacher";
+import { teacherService } from "@/services/teacher";
+import { toast } from "sonner";
 
 interface CoursesFormDialogProps {
   open: boolean;
@@ -57,11 +61,27 @@ export function CoursesFormDialog({
     },
   });
 
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+
   const onSubmit = async (values: z.infer<typeof courseSchema>) => {
     await onSubmitAction(values);
     form.reset(values);
-    setOpen(false);
   };
+
+  const teacherOptions: BaseUser[] = teachers.map((t) => ({
+    id: t.matriculeNumber,
+    label: `${t.firstName} ${t.lastName}`,
+    number: t.matriculeNumber,
+    avatar: t.avatar,
+  }));
+  
+
+  useEffect(() => {
+    teacherService.getAll().then(setTeachers).catch((e: any) => {
+      toast.error("Erreur lors du chargement des enseignants");
+      console.log("Erreur", e);
+    })
+  }, []);
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -114,13 +134,22 @@ export function CoursesFormDialog({
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="teacherMatricule" render={({ field }) => (
-              <FormItem>
-                <FormLabel>Matricule du professeur</FormLabel>
-                <FormControl><Input placeholder="Ex : TCH-2025-01" {...field} /></FormControl>
-                <FormMessage />
-              </FormItem>
-            )} />
+            <FormField
+              control={form.control}
+              name="teacherMatricule"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Matricule du professeur</FormLabel>
+                  <Combobox
+                    items={teacherOptions}
+                    placeholder="Selectionner un professeur"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="flex justify-end gap-3 pt-2">
               <AlertDialogCancel asChild>
