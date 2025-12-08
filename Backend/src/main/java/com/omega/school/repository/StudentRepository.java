@@ -28,4 +28,9 @@ public interface StudentRepository extends JpaRepository<Student, UUID> {
 
     Optional<Student> findByEmail(String email);
 
+    @Query("SELECT DISTINCT e.student FROM Enrollment e WHERE e.course.teacher.userId = :teacherId")
+    List<Student> findStudentsByTeacher(@Param("teacherId") UUID teacherId);
+
+    @Query("SELECT DISTINCT e.course.teacher FROM Enrollment e WHERE e.student.registrationNumber = :registration")
+    List<com.omega.school.model.Teacher> findTeachersByStudent(@Param("registration") String registration);
 }
