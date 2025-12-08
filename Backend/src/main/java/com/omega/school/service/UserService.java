@@ -3,6 +3,7 @@ package com.omega.school.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.omega.school.dto.ChangePasswordRequest;
 import com.omega.school.dto.UserPartialUpdateDto;
 import com.omega.school.dto.UserRequestDto;
 import com.omega.school.dto.UserUpdateDto;
@@ -27,4 +28,6 @@ public interface UserService {
     User partialUpdateUser(UUID id, UserPartialUpdateDto dto);
 
     void deleteUser(UUID id);
+
+    void changePassword(UUID userId, ChangePasswordRequest request);
 }

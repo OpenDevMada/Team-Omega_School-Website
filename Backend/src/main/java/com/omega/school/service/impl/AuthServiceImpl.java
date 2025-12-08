@@ -114,6 +114,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
         user.setPasswordHash(passwordEncoder.encode(newPassword));
+        user.setMustChangePassword(false);
         userRepository.save(user);
 
         otpService.deleteOtp(email);
