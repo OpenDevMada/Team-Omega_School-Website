@@ -123,7 +123,7 @@ export function UserProfile({
     },
   ].filter(Boolean) as any;
 
-  const cover = "/images/profile-bg.jpeg";
+  const cover = "/images/profile-bg.webp";
 
   return (
     <div className="flex justify-center min-h-screen">
