@@ -8,7 +8,7 @@ export default function LoginPage() {
         <Link to="/" className="flex items-center gap-3 mb-10">
           <div className="flex items-center justify-center gap-4 md:flex-row flex-col">
             <img
-              src="/images/logo_opendev.jpg"
+              src="/images/logo_opendev.webp"
               alt="logo-opendev"
               className="md:rounded-full rounded-xl md:w-20 w-32 md:h-20 h-32"
             />
@@ -23,7 +23,7 @@ export default function LoginPage() {
       </div>
       <div className="relative hidden lg:block">
         <img
-          src="/images/profile-bg.jpeg"
+          src="/images/profile-bg.webp"
           alt="Background"
           className="absolute inset-0 h-full w-full object-cover brightness-90 dark:brightness-[0.25] dark:grayscale"
         />

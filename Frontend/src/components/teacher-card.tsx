@@ -54,13 +54,12 @@ export function TeacherCard({
           <div className="flex items-center gap-2 mt-2">
             <AlertDialog open={open} onOpenChange={setOpen}>
               <AlertDialogTrigger asChild>
-                <Button variant="outline" size="icon-sm">
+                <Button variant="outline" title="Voir son profil" size="icon-sm">
                   <Eye />
                 </Button>
               </AlertDialogTrigger>
 
               <AlertDialogContent className="max-w-md p-6">
-                {/* Dialog header */}
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-4">
                     {teacher.avatar ? (
@@ -90,7 +89,6 @@ export function TeacherCard({
                   </AlertDialogCancel>
                 </div>
                 <Separator />
-                {/* Dialog body */}
                 <div className="space-y-3">
                   {teacher.bio && (
                     <p className="text-sm text-muted-foreground italic">
@@ -127,7 +125,6 @@ export function TeacherCard({
                     </div>
                   )}
                 </div>
-                {/* Dialog footer */}
                 <AlertDialogFooter>
                   <TeacherUpdateDialog teacher={teacher} id={teacher.userId} setOpen={setOpen} />
                   <AlertDialogAction asChild>
@@ -137,7 +134,7 @@ export function TeacherCard({
               </AlertDialogContent>
             </AlertDialog>
 
-            <Button title="Appeler" variant="outline" size={"icon-sm"}>
+            <Button title="Appeler" disabled variant="outline" size={"icon-sm"}>
               <PhoneCall />
             </Button>
           </div>
