@@ -7,7 +7,7 @@ export function PeriodSelector() {
 
   const periods = [
     { value: 'Actuelle', label: 'Actuelle' },
-    { value: '2025-11', label: 'Novembre 2025' },
+    { value: '2025-12', label: 'Decembre 2025' },
   ];
 
   return (
@@ -22,6 +22,7 @@ export function PeriodSelector() {
                 key={period.value}
                 variant={selectedPeriod === period.value ? 'default' : 'outline'}
                 onClick={() => setSelectedPeriod(period.value)}
+                className='dark:text-white'
               >
                 {period.label}
               </Button>
