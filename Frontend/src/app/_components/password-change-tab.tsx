@@ -17,9 +17,12 @@ import { PasswordTips } from "@/components/auth/password-tips";
 import { toast } from "sonner";
 import { passwordSchema } from "@/schemas/user.schema";
 import { Spinner } from "@/components/ui/spinner";
+import { api } from "@/lib/api";
+import { useAuthUser } from "@/services/auth";
 
 export function PasswordChangeTab() {
   const [pending, startTransition] = useTransition();
+  const { user } = useAuthUser();
 
   const form = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
@@ -32,20 +35,21 @@ export function PasswordChangeTab() {
 
   const onSubmit = (values: z.infer<typeof passwordSchema>) => {
     startTransition(async () => {
-      await new Promise(res => setTimeout(res, 2000));
-      const response = await fetch("/api/password/change", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
+      try {
+        await new Promise(res => setTimeout(res, 2000));
+        const response = await api.put(`/users/${user?.userId}/change-password`, { oldPassword: values.currentPassword, newPassword: values.newPassword });
 
-      if (!response.ok) {
-        toast.error("Une erreur est survenue");
-        return;
+        if (!response.data) {
+          toast.error("Une erreur est survenue");
+          return;
+        }
+
+        toast.success(response.data || "Mot de passe mis à jour !");
+        form.reset();
+      } catch (error: any) {
+        toast.error(error.response?.data);
+        console.log("Erreur updating password", error);
       }
-
-      toast.success("Mot de passe mis à jour !");
-      form.reset();
     });
   };
 

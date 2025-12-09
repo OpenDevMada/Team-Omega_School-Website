@@ -28,6 +28,7 @@ import ForgetPasswordPage from "@/app/forget-password";
 import GradesPage from "@/app/grades";
 import { ROUTES } from "@/utils/constants";
 import ContactPage from "@/app/contact";
+import AdminPanelPage from "@/app/admins";
 
 const routes = createRoutesFromElements(
   <>
@@ -56,6 +57,7 @@ const routes = createRoutesFromElements(
     <Route element={<ProtectedRoute />}>
       <Route element={<AppLayout />} errorElement={<Error />} hasErrorBoundary>
         <Route path={ROUTES.APP.DASHBOARD} element={<DashboardPage />} />
+        <Route path={ROUTES.APP.ADMINS} element={<AdminPanelPage />} />
         <Route path={ROUTES.APP.PROFILE} element={<ProfilePage />} />
         <Route path={ROUTES.APP.STUDENTS} element={<StudentsPage />} />
         <Route path={ROUTES.APP.TEACHERS} element={<TeachersPage />} />
