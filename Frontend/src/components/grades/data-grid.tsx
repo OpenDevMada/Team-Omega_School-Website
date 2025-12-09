@@ -29,10 +29,15 @@ export function StudentGradesGrid({ grades }: { grades: GradeResponseDto[] }) {
             </CardHeader>
 
             <CardContent className="space-y-2">
-              <p className="flex items-center gap-2">
-                <span className="font-semibold flex items-center gap-1"><MessageSquareText size={16} className="text-(--yellow)" /> Commentaire :</span>{" "}
-                {g.comment !== "" ? `🙶 ${g.comment} 🙸` : "Aucun"}
-              </p>
+              <div className="flex items-start flex-col gap-2">
+                <span className="font-semibold flex items-center gap-1">
+                  <MessageSquareText size={16} className="text-(--yellow)" />
+                  Commentaire
+                </span>{" "}
+                <p className="text-sm text-muted-foreground">
+                  {g.comment !== "" ? `🙶 ${g.comment} 🙸` : "Aucun"}
+                </p>
+              </div>
 
               <p className="text-sm flex items-center gap-2 text-muted-foreground mt-2">
                 <CalendarDays size={18} className="text-(--blue)" />

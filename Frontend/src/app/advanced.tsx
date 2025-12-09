@@ -9,8 +9,13 @@ import {
 } from "@/components/ui/card";
 import { DeleteAdmin } from "./_components/private/admin-dialog";
 import { Separator } from "@/components/ui/separator";
+import { useAuthUser } from "@/services/auth";
+import type { User } from "@/types/user";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AdvancedSettingsPage() {
+  const { user, loading } = useAuthUser();
+
   return (
     <div className="flex flex-col items-center md:items-start justify-start min-h-screen w-full md:py-8 py-2">
       <div className="flex text-left w-full md:px-12 px-6 mb-8 flex-col gap-2">
@@ -52,7 +57,11 @@ export default function AdvancedSettingsPage() {
           </TabsContent>
 
           <TabsContent value="delete-account">
-            <DeleteAdmin id={"ADM-2930"} /> {/* use admin id here */}
+            {loading ? (
+              <Skeleton className="w-20 h-10" />
+            ) : (
+              <DeleteAdmin id={(user as User).userId ?? ""} />
+            )}
           </TabsContent>
         </div>
       </Tabs>

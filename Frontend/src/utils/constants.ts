@@ -13,6 +13,7 @@ export const ROUTES = {
   APP: {
     DASHBOARD: "/dashboard",
     PROFILE: "/profile",
+    ADMINS: "/admins",
     TEACHERS: "/teachers",
     STUDENTS: "/students",
     GRADES: "/grades",
